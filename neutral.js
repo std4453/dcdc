@@ -1,8 +1,9 @@
-import { choose, uniform, interp } from './utils';
-import drawText from './text';
-import split from './split';
+import { choose, uniform, interp, opposite, scatter, translate } from './utils';
 
-export default ({ gui, ctx, invalidate, width, height }) => {
+export default ({
+    gui, invalidate, width, height,
+    inflated: { drawText: { fn: drawText, options: fontOptions }, split: { fn: split } },
+}) => {
     const options = {
         lineSpacing: 1.5,
     };
@@ -11,7 +12,7 @@ export default ({ gui, ctx, invalidate, width, height }) => {
     folder.add(options, 'lineSpacing', 0.5, 5, 0.01).onChange(invalidate);
     folder.open();
 
-    const render = (text, { splitOptions, fontOptions }) => {
+    const fn = (text) => {
         const parts = 2;
         const dir = choose('vertical', 'horizontal');
         const align = choose('begin', 'end');
@@ -24,14 +25,14 @@ export default ({ gui, ctx, invalidate, width, height }) => {
         const y = opposite(uniform(x0, x1), position === 'right');
         let point = interp(width, height, x, y, dir);
         const delta = scatter(fontOptions.size * options.lineSpacing * (position === 'left' ? 1 : -1), dir, true);
-        split(text, parts, splitOptions).forEach((part) => {
+        split(text, parts).forEach((part) => {
             const { x, y } = point;
-            drawText(ctx, part, x, y, { dir, align, ...fontOptions });
+            drawText(part, x, y, { dir, align });
             point = translate(point, delta);
         });
     };
 
     return {
-        options, folder, render,
+        options, folder, fn,
     };
 };

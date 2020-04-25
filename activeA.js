@@ -1,8 +1,9 @@
-import { choose, uniform, interp } from './utils';
-import drawText from './text';
-import split from './split';
+import { choose, uniform, interp, opposite } from './utils';
 
-export default ({ gui, ctx, invalidate, width, height }) => {
+export default ({
+    gui, invalidate, width, height,
+    inflated: { drawText: { fn: drawText }, split: { fn: split } },
+}) => {
     const options = {
         minAngle: -0.1,
         maxAngle: 0,
@@ -13,7 +14,7 @@ export default ({ gui, ctx, invalidate, width, height }) => {
     folder.add(options, 'maxAngle', -0.5, 0.5, 0.01).onChange(invalidate);
     folder.open();
 
-    const render = (text, { splitOptions, fontOptions }) => {
+    const fn = (text) => {
         const parts = 2;
         const angle = Math.PI * uniform(options.minAngle, options.maxAngle);
         const dir = choose('horizontal', 'vertical');
@@ -28,13 +29,13 @@ export default ({ gui, ctx, invalidate, width, height }) => {
             { value: [0.25, 0.4], weight: 2 },
         );
         const b = uniform(y0, y1);
-        split(text, parts, splitOptions).forEach((part, i) => {
+        split(text, parts).forEach((part, i) => {
             const rx = opposite(a, i === 1);
             const ry = opposite(b, i === 1);
             const { x, y } = interp(width, height, rx, ry, dir);
-            drawText(ctx, part, x, y, { dir, rotate: angle, align: 'middle', ...fontOptions });
+            drawText(part, x, y, { dir, rotate: angle, align: 'middle' });
         })
     };
 
-    return { options, folder, render };
+    return { options, folder, fn };
 }
