@@ -15,31 +15,38 @@ container.appendChild(canvas);
 
 const ctx = canvas.getContext('2d');
 
+const textWidth = (text, { size, spacing }) => {
+    // VERY SIMPLE
+    return size * text.length + spacing * size * (text.length - 1);
+}
+
 const drawText = (text, x0, y0, {
-    size = 20, dir = 'horizontal', align = 'begin', color = '#000', rotate = 0,
-    fontFamily = 'Hiragino Mincho Pro', fontWeight = 900,
+    size, dir = 'horizontal', align = 'begin', color, rotate = 0,
+    fontFamily, fontWeight, spacing, ignoreWhitespaces,
 } = {}) => {
+    if (ignoreWhitespaces) text = text.split(/\s+/).join('');
     ctx.save();
     ctx.translate(x0, y0);
     ctx.rotate(rotate);
     let x = 0, y = 0;
+    const width = textWidth(text, { size, spacing });
     if (align === 'middle') {
         switch (dir) {
             case 'horizontal':
-                x -= size * text.length / 2;
+                x -= width / 2;
                 break;
             case 'vertical':
-                y -= size * text.length / 2;
+                y -= width / 2;
                 break;
         }
     }
     if (align === 'end') {
         switch (dir) {
             case 'horizontal':
-                x -= size * text.length;
+                x -= width;
                 break;
             case 'vertical':
-                y -= size * text.length;
+                y -= width;
                 break;
         }
     }
@@ -51,10 +58,10 @@ const drawText = (text, x0, y0, {
         ctx.fillText(ch, x, y);
         switch (dir) {
             case 'horizontal':
-                x += size;
+                x += size * (1 + spacing);
                 break;
             case 'vertical':
-                y += size;
+                y += size * (1 + spacing);
                 break;
         }
     }
@@ -72,7 +79,7 @@ const choose = (...choices) => {
     return choices[choices.length - 1].value;
 }
 
-const split = (text, parts, { randomness = 2 } = {}) => {
+const split = (text, parts, { randomness } = {}) => {
     const step = text.length / parts;
     const deltas = [0, ...new Array(parts - 1).fill(0).map(() => (Math.random() - 0.5) * 2 * randomness), 0];
     const splitted = [];
@@ -119,13 +126,13 @@ const scatter = (val, dir, opposite = false, mirrored = false) => {
     }
 }
 
-const balanced = (text, { size, splitOptions = {}, fontOptions = {} }) => {
+const balanced = (text, { balancedOptions: { minDist, maxDist }, splitOptions = {}, fontOptions = {} }) => {
     const parts = text.length > 12 ? 2 : choose({ value: 1, weight: 0.7 }, { value: 2, weight: 0.3 });
     const dir = choose('vertical', 'horizontal');
-    const dist = uniform(0.6, 0.8);
+    const dist = uniform(minDist, maxDist);
     split(text, parts, splitOptions).forEach((part, i) => {
         const { x, y } = interp(0.5, (divide(parts, i) - 0.5) * dist + 0.5, dir);
-        drawText(part, x, y, { size, dir, align: 'middle', ...fontOptions });
+        drawText(part, x, y, { dir, align: 'middle', ...fontOptions });
     });
 }
 
@@ -138,7 +145,7 @@ const opposite = (n, f) => {
     return f ? 1 - n : n;
 }
 
-const neutral = (text, { size, splitOptions = {}, fontOptions = {} }) => {
+const neutral = (text, { neutralOptions: { lineSpacing }, splitOptions = {}, fontOptions = {} }) => {
     const parts = 2;
     const dir = choose('vertical', 'horizontal');
     const align = choose('begin', 'end');
@@ -150,17 +157,17 @@ const neutral = (text, { size, splitOptions = {}, fontOptions = {} }) => {
     const x = opposite(uniform(0.1, 0.25), align === 'end');
     const y = opposite(uniform(x0, x1), position === 'right');
     let point = interp(x, y, dir);
-    const delta = scatter(size * 1.5 * (position === 'left' ? 1 : -1), dir, true);
+    const delta = scatter(fontOptions.size * lineSpacing * (position === 'left' ? 1 : -1), dir, true);
     split(text, parts, splitOptions).forEach((part) => {
         const { x, y } = point;
-        drawText(part, x, y, { size, dir, align, ...fontOptions });
+        drawText(part, x, y, { dir, align, ...fontOptions });
         point = translate(point, delta);
     });
 }
 
-const activeA = (text, { size, splitOptions = {}, fontOptions = {} } = {}) => {
+const activeA = (text, { activeAOptions: { minAngle, maxAngle}, splitOptions = {}, fontOptions = {} } = {}) => {
     const parts = 2;
-    const angle = Math.PI * uniform(-0.1, 0);
+    const angle = Math.PI * uniform(minAngle, maxAngle);
     const dir = choose('horizontal', 'vertical');
     const [x0, x1] = choose(
         { value: [0.25, 0.35], weight: 3 },
@@ -177,12 +184,11 @@ const activeA = (text, { size, splitOptions = {}, fontOptions = {} } = {}) => {
         const rx = opposite(a, i === 1);
         const ry = opposite(b, i === 1);
         const { x, y } = interp(rx, ry, dir);
-        drawText(part, x, y, { size, dir, rotate: angle, align: 'middle', ...fontOptions });
+        drawText(part, x, y, { dir, rotate: angle, align: 'middle', ...fontOptions });
     })
 }
 
 const options = {
-    size: 90,
     fps: 10,
     clearOptions: {
         color: '#F2F2F2',
@@ -194,32 +200,66 @@ const options = {
         activeA: true,
     },
     fontOptions: {
+        size: 90,
         color: '#000000',
         fontFamily: 'Hiragino Mincho Pro',
         fontWeight: 900,
+        spacing: 0,
+        ignoreWhitespaces: true,
+    },
+    splitOptions: {
+        randomness: 2,
+    },
+    balancedOptions: {
+        minDist: 0.6,
+        maxDist: 0.8,
+    },
+    neutralOptions: {
+        lineSpacing: 1.5,
+    },
+    activeAOptions: {
+        minAngle: -0.1,
+        maxAngle: 0,
     },
 };
 
 const gui = new dat.GUI();
-gui.add(options, 'size', 20, 200);
 gui.add(options, 'fps', 1, 240);
 
-const clearFolder = gui.addFolder('Clear');
+const clearFolder = gui.addFolder('clear');
 clearFolder.addColor(options.clearOptions, 'color');
 clearFolder.add(options.clearOptions, 'fade', 0, 1);
 clearFolder.open();
 
-const modeFolder = gui.addFolder('Modes');
+const modeFolder = gui.addFolder('modes');
 modeFolder.add(options.modes, 'balanced');
 modeFolder.add(options.modes, 'neutral');
 modeFolder.add(options.modes, 'activeA');
-modeFolder.open();
+// modeFolder.open();
 
-const fontFolder = gui.addFolder('Font');
+const fontFolder = gui.addFolder('font');
+fontFolder.add(options.fontOptions, 'size', 20, 200);
 fontFolder.addColor(options.fontOptions, 'color');
 fontFolder.add(options.fontOptions, 'fontFamily');
 fontFolder.add(options.fontOptions, 'fontWeight', 100, 900, 100);
+fontFolder.add(options.fontOptions, 'spacing', -0.5, 0.5, 0.01);
+fontFolder.add(options.fontOptions, 'ignoreWhitespaces');
 fontFolder.open();
+
+const splitFolder = gui.addFolder('split');
+splitFolder.add(options.splitOptions, 'randomness', 0, 3, 0.01);
+splitFolder.open();
+
+const balancedFolder = gui.addFolder('balanced');
+balancedFolder.add(options.balancedOptions, 'minDist', 0, 1.5, 0.01);
+balancedFolder.add(options.balancedOptions, 'maxDist', 0, 1.5, 0.01);
+
+const neutralFolder = gui.addFolder('neutral');
+neutralFolder.add(options.neutralOptions, 'lineSpacing', 0.5, 5, 0.01);
+
+const activeAFolder = gui.addFolder('activeA');
+activeAFolder.add(options.activeAOptions, 'minAngle', -0.5, 0.5, 0.01);
+activeAFolder.add(options.activeAOptions, 'maxAngle', -0.5, 0.5, 0.01);
 
 const frame = () => {
     clear(options.clearOptions);
