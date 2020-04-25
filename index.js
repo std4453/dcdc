@@ -1,7 +1,14 @@
+import Color from 'color';
+import * as dat from 'dat.gui';
+
+const width = 1920;
+const height = 1080;
+
 const container = document.querySelector('#container');
 const canvas = document.createElement('canvas');
-canvas.width = 1920;
-canvas.height = 1080;
+
+canvas.width = width;
+canvas.height = height;
 canvas.style.transform = `scale(${1 / window.devicePixelRatio})`;
 canvas.style.transformOrigin = 'left top';
 container.appendChild(canvas);
@@ -10,6 +17,7 @@ const ctx = canvas.getContext('2d');
 
 const drawText = (text, x0, y0, {
     size = 20, dir = 'horizontal', align = 'begin', color = '#000', rotate = 0,
+    fontFamily = 'Hiragino Mincho Pro', fontWeight = 900,
 } = {}) => {
     ctx.save();
     ctx.translate(x0, y0);
@@ -38,7 +46,7 @@ const drawText = (text, x0, y0, {
     ctx.textBaseline = { horizontal: 'middle', vertical: 'top' }[dir];
     ctx.textAlign = { horizontal: 'start', vertical: 'center' }[dir];
     ctx.fillStyle = color;
-    ctx.font = `bold ${size}px \'Hiragino Mincho Pro\'`;
+    ctx.font = `${fontWeight} ${size}px \'${fontFamily}\'`;
     for (const ch of text.split('')) {
         ctx.fillText(ch, x, y);
         switch (dir) {
@@ -75,9 +83,6 @@ const split = (text, parts, { randomness = 2 } = {}) => {
     }
     return splitted;
 }
-
-const width = 1920;
-const height = 1080;
 
 const interp = (a, b, dir = 'horizontal') => {
     switch (dir) {
@@ -124,8 +129,8 @@ const balanced = (text, { size, splitOptions = {}, fontOptions = {} }) => {
     });
 }
 
-const clear = () => {
-    ctx.fillStyle = 'rgba(242, 242, 242, 0.3)';
+const clear = ({ color, fade = 1.0 }) => {
+    ctx.fillStyle = Color(color).alpha(fade).string();
     ctx.fillRect(0, 0, width, height);
 }
 
@@ -176,8 +181,48 @@ const activeA = (text, { size, splitOptions = {}, fontOptions = {} } = {}) => {
     })
 }
 
+const options = {
+    size: 90,
+    fps: 10,
+    clearOptions: {
+        color: '#F2F2F2',
+        fade: 0.8,
+    },
+    modes: {
+        balanced: true,
+        neutral: true,
+        activeA: true,
+    },
+    fontOptions: {
+        color: '#000000',
+        fontFamily: 'Hiragino Mincho Pro',
+        fontWeight: 900,
+    },
+};
+
+const gui = new dat.GUI();
+gui.add(options, 'size', 20, 200);
+gui.add(options, 'fps', 1, 240);
+
+const clearFolder = gui.addFolder('Clear');
+clearFolder.addColor(options.clearOptions, 'color');
+clearFolder.add(options.clearOptions, 'fade', 0, 1);
+clearFolder.open();
+
+const modeFolder = gui.addFolder('Modes');
+modeFolder.add(options.modes, 'balanced');
+modeFolder.add(options.modes, 'neutral');
+modeFolder.add(options.modes, 'activeA');
+modeFolder.open();
+
+const fontFolder = gui.addFolder('Font');
+fontFolder.addColor(options.fontOptions, 'color');
+fontFolder.add(options.fontOptions, 'fontFamily');
+fontFolder.add(options.fontOptions, 'fontWeight', 100, 900, 100);
+fontFolder.open();
+
 const frame = () => {
-    clear();
+    clear(options.clearOptions);
     const text = choose(
         '被害妄想携帯女子',
         'ジェットブーツで大気圏を突破して',
@@ -188,16 +233,14 @@ const frame = () => {
         '太陽曰く燃えよカオス',
         'インターネットが遅いさん',
         'ごめん　ゆずれない　ゆずれない',
-        // ''
     );
-    const options = { size: 90 };
     const fn = choose(
-        balanced,
-        neutral,
-        activeA,
+        { value: balanced, weight: options.modes.balanced ? 1 : 0 },
+        { value: neutral, weight: options.modes.neutral ? 1 : 0 },
+        { value: activeA, weight: options.modes.activeA ? 1 : 0 },
     );
     fn(text, options);
+    setTimeout(frame, 1000 / options.fps);
 }
 
-setInterval(frame, 30);
-// frame();
+frame();
