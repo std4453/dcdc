@@ -2,7 +2,7 @@ const container = document.querySelector('#container');
 const canvas = document.createElement('canvas');
 canvas.width = 1920;
 canvas.height = 1080;
-canvas.style.transform = 'scale(0.5)';
+canvas.style.transform = `scale(${1 / window.devicePixelRatio})`;
 canvas.style.transformOrigin = 'left top';
 container.appendChild(canvas);
 
@@ -125,7 +125,7 @@ const balanced = (text, { size, splitOptions = {}, fontOptions = {} }) => {
 }
 
 const clear = () => {
-    ctx.fillStyle = 'rgb(242, 242, 242)';
+    ctx.fillStyle = 'rgba(242, 242, 242, 0.3)';
     ctx.fillRect(0, 0, width, height);
 }
 
@@ -186,6 +186,9 @@ const frame = () => {
         '千本桜　夜ニ紛レ',
         'にゃん　にゃん　にゃん　ステップ踏んで',
         '太陽曰く燃えよカオス',
+        'インターネットが遅いさん',
+        'ごめん　ゆずれない　ゆずれない',
+        // ''
     );
     const options = { size: 90 };
     const fn = choose(
@@ -196,5 +199,5 @@ const frame = () => {
     fn(text, options);
 }
 
-setInterval(frame, 100);
+setInterval(frame, 30);
 // frame();
