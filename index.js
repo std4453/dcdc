@@ -13,6 +13,10 @@ canvas.style.transform = `scale(${1 / window.devicePixelRatio})`;
 canvas.style.transformOrigin = 'left top';
 container.appendChild(canvas);
 
+let redraw = true;
+const invalidate = () => { redraw = true; };
+canvas.addEventListener('click', invalidate);
+
 const ctx = canvas.getContext('2d');
 
 const textWidth = (text, sizes, spacing) => {
@@ -200,15 +204,8 @@ const activeA = (text, { activeAOptions: { minAngle, maxAngle}, splitOptions = {
 
 const options = {
     fps: 10,
-    clearOptions: {
-        color: '#F2F2F2',
-        fade: 0.8,
-    },
-    modes: {
-        balanced: true,
-        neutral: true,
-        activeA: true,
-    },
+    mode: 'balanced',
+    background: '#F2F2F2',
     fontOptions: {
         size: 90,
         color: '#000000',
@@ -236,65 +233,57 @@ const options = {
 
 const gui = new dat.GUI();
 gui.remember(options);
-
-gui.add(options, 'fps', 1, 240);
-
-const clearFolder = gui.addFolder('clear');
-clearFolder.addColor(options.clearOptions, 'color');
-clearFolder.add(options.clearOptions, 'fade', 0, 1);
-clearFolder.open();
-
-const modeFolder = gui.addFolder('modes');
-modeFolder.add(options.modes, 'balanced');
-modeFolder.add(options.modes, 'neutral');
-modeFolder.add(options.modes, 'activeA');
-// modeFolder.open();
+gui.add(options, 'mode', ['balanced', 'neutral', 'activeA']).onChange(invalidate);
+gui.addColor(options, 'background').onChange(invalidate);
 
 const fontFolder = gui.addFolder('font');
-fontFolder.add(options.fontOptions, 'size', 20, 200);
-fontFolder.addColor(options.fontOptions, 'color');
-fontFolder.add(options.fontOptions, 'fontFamily');
-fontFolder.add(options.fontOptions, 'fontWeight', 100, 900, 100);
-fontFolder.add(options.fontOptions, 'spacing', -0.5, 0.5, 0.01);
-fontFolder.add(options.fontOptions, 'ignoreWhitespaces');
-fontFolder.add(options.fontOptions, 'sizeRandomness', 0, 1, 0.01);
+fontFolder.add(options.fontOptions, 'size', 20, 200).onChange(invalidate);
+fontFolder.addColor(options.fontOptions, 'color').onChange(invalidate);
+fontFolder.add(options.fontOptions, 'fontFamily').onChange(invalidate);
+fontFolder.add(options.fontOptions, 'fontWeight', 100, 900, 100).onChange(invalidate);
+fontFolder.add(options.fontOptions, 'spacing', -0.5, 0.5, 0.01).onChange(invalidate);
+fontFolder.add(options.fontOptions, 'ignoreWhitespaces').onChange(invalidate);
+fontFolder.add(options.fontOptions, 'sizeRandomness', 0, 1, 0.01).onChange(invalidate);
 fontFolder.open();
 
 const splitFolder = gui.addFolder('split');
-splitFolder.add(options.splitOptions, 'randomness', 0, 3, 0.01);
+splitFolder.add(options.splitOptions, 'randomness', 0, 3, 0.01).onChange(invalidate);
 splitFolder.open();
 
 const balancedFolder = gui.addFolder('balanced');
-balancedFolder.add(options.balancedOptions, 'minDist', 0, 1.5, 0.01);
-balancedFolder.add(options.balancedOptions, 'maxDist', 0, 1.5, 0.01);
+balancedFolder.add(options.balancedOptions, 'minDist', 0, 1.5, 0.01).onChange(invalidate);
+balancedFolder.add(options.balancedOptions, 'maxDist', 0, 1.5, 0.01).onChange(invalidate);
+balancedFolder.open();
 
 const neutralFolder = gui.addFolder('neutral');
-neutralFolder.add(options.neutralOptions, 'lineSpacing', 0.5, 5, 0.01);
+neutralFolder.add(options.neutralOptions, 'lineSpacing', 0.5, 5, 0.01).onChange(invalidate);
+neutralFolder.open();
 
 const activeAFolder = gui.addFolder('activeA');
-activeAFolder.add(options.activeAOptions, 'minAngle', -0.5, 0.5, 0.01);
-activeAFolder.add(options.activeAOptions, 'maxAngle', -0.5, 0.5, 0.01);
+activeAFolder.add(options.activeAOptions, 'minAngle', -0.5, 0.5, 0.01).onChange(invalidate);
+activeAFolder.add(options.activeAOptions, 'maxAngle', -0.5, 0.5, 0.01).onChange(invalidate);
+activeAFolder.open();
 
 const frame = () => {
-    clear(options.clearOptions);
-    const text = choose(
-        '被害妄想携帯女子',
-        'ジェットブーツで大気圏を突破して',
-        '短気呑気男子電気消さないで',
-        'ただいま参上！電波シスター☆',
-        '千本桜　夜ニ紛レ',
-        'にゃん　にゃん　にゃん　ステップ踏んで',
-        '太陽曰く燃えよカオス',
-        'インターネットが遅いさん',
-        'ごめん　ゆずれない　ゆずれない',
-    );
-    const fn = choose(
-        { value: balanced, weight: options.modes.balanced ? 1 : 0 },
-        { value: neutral, weight: options.modes.neutral ? 1 : 0 },
-        { value: activeA, weight: options.modes.activeA ? 1 : 0 },
-    );
-    fn(text, options);
-    setTimeout(frame, 1000 / options.fps);
+    if (redraw) {
+        redraw = false;
+        clear({ color: options.background });
+        const text = choose(
+            '被害妄想携帯女子',
+            'ジェットブーツで大気圏を突破して',
+            '短気呑気男子電気消さないで',
+            'ただいま参上！電波シスター☆',
+            '千本桜　夜ニ紛レ',
+            'にゃん　にゃん　にゃん　ステップ踏んで',
+            '太陽曰く燃えよカオス',
+            'インターネットが遅いさん',
+            'ごめん　ゆずれない　ゆずれない',
+        );
+        const fn = { balanced, neutral, activeA }[options.mode];
+        [balancedFolder, neutralFolder, activeAFolder].forEach(f => f.hide());
+        ({ balanced: balancedFolder, neutral: neutralFolder, activeA: activeAFolder })[options.mode].show();
+        fn(text, options);
+    }
+    requestAnimationFrame(frame);
 }
-
 frame();
