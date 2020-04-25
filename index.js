@@ -37,12 +37,13 @@ const choose = (...choices) => {
     return choices[choices.length - 1].value;
 }
 
-const split = (text, parts) => {
+const split = (text, parts, { randomness = 2 } = {}) => {
     const step = text.length / parts;
+    const deltas = [0, ...new Array(parts - 1).fill(0).map(() => (Math.random() - 0.5) * 2 * randomness), 0];
     const splitted = [];
     for (let i = 0; i < parts; ++i) {
-        const begin = Math.round(i * step);
-        const end = Math.round((i + 1) * step);
+        const begin = Math.round(i * step + deltas[i]);
+        const end = Math.round((i + 1) * step + deltas[i + 1]);
         splitted.push(text.substring(begin, end));
     }
     return splitted;
@@ -86,8 +87,8 @@ const scatter = (val, dir, opposite = false) => {
     }
 }
 
-const balanced = (text, { size = 90 } = {}) => {
-    const parts = choose({ value: 1, weight: 0.7 }, { value: 2, weight: 0.3 });
+const balanced = (text, { size }) => {
+    const parts = text.length > 12 ? 2 : choose({ value: 1, weight: 0.7 }, { value: 2, weight: 0.3 });
     const dir = choose('vertical', 'horizontal');
     const dist = uniform(0.6, 0.8);
     split(text, parts).forEach((part, i) => {
@@ -110,6 +111,8 @@ setInterval(() => {
         'ジェットブーツで大気圏を突破して',
         '短気呑気男子電気消さないで',
         'ただいま参上！電波シスター☆',
+        '千本桜　夜ニ紛レ',
+        'にゃん　にゃん　にゃん　ステップ踏んで',
     );
-    balanced(text);
+    balanced(text, { size: 90 });
 }, 100);
