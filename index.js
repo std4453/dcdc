@@ -40,10 +40,12 @@ const init = () => {
     const options = {
         mode: modes[0],
         background: '#F2F2F2',
+        text: '',
     };
     const gui = new dat.GUI();
     gui.add(options, 'mode', modes).onChange(invalidate);
     gui.addColor(options, 'background').onChange(invalidate);
+    gui.add(options, 'text').onChange(invalidate);
 
     // initialize modules
     const inflated = {};
@@ -55,7 +57,7 @@ const init = () => {
         seedrandom(seed, { global: true });
         ctx.fillStyle = Color(options.background).string();
         ctx.fillRect(0, 0, width, height);
-        const text = choose(
+        const text = options.text !== '' ? options.text : choose(
             '被害妄想携帯女子',
             'ジェットブーツで大気圏を突破して',
             '短気呑気男子電気消さないで',
