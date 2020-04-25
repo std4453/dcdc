@@ -224,6 +224,8 @@ const options = {
 };
 
 const gui = new dat.GUI();
+gui.remember(options);
+
 gui.add(options, 'fps', 1, 240);
 
 const clearFolder = gui.addFolder('clear');
