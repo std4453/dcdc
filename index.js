@@ -8,7 +8,13 @@ container.appendChild(canvas);
 
 const ctx = canvas.getContext('2d');
 
-const drawText = (text, x, y, { size = 20, dir = 'horizontal', align = 'begin', color = '#000'} = {}) => {
+const drawText = (text, x0, y0, {
+    size = 20, dir = 'horizontal', align = 'begin', color = '#000', rotate = 0,
+} = {}) => {
+    ctx.save();
+    ctx.translate(x0, y0);
+    ctx.rotate(rotate);
+    let x = 0, y = 0;
     if (align === 'middle') {
         switch (dir) {
             case 'horizontal':
@@ -44,6 +50,7 @@ const drawText = (text, x, y, { size = 20, dir = 'horizontal', align = 'begin', 
                 break;
         }
     }
+    ctx.restore();
 }
 
 const choose = (...choices) => {
@@ -146,6 +153,29 @@ const neutral = (text, { size, splitOptions = {}, fontOptions = {} }) => {
     });
 }
 
+const activeA = (text, { size, splitOptions = {}, fontOptions = {} } = {}) => {
+    const parts = 2;
+    const angle = Math.PI * uniform(-0.1, 0);
+    const dir = choose('horizontal', 'vertical');
+    const [x0, x1] = choose(
+        { value: [0.25, 0.35], weight: 3 },
+        { value: [0.35, 0.45], weight: 2 },
+        { value: [0.45, 0.50], weight: 0.5 },
+    );
+    const a = uniform(x0, x1);
+    const [y0, y1] = choose(
+        { value: [0.15, 0.25], weight: 3 },
+        { value: [0.25, 0.4], weight: 2 },
+    );
+    const b = uniform(y0, y1);
+    split(text, parts, splitOptions).forEach((part, i) => {
+        const rx = opposite(a, i === 1);
+        const ry = opposite(b, i === 1);
+        const { x, y } = interp(rx, ry, dir);
+        drawText(part, x, y, { size, dir, rotate: angle, align: 'middle', ...fontOptions });
+    })
+}
+
 const frame = () => {
     clear();
     const text = choose(
@@ -161,6 +191,7 @@ const frame = () => {
     const fn = choose(
         balanced,
         neutral,
+        activeA,
     );
     fn(text, options);
 }
