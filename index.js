@@ -1,5 +1,6 @@
 import Color from 'color';
 import * as dat from 'dat.gui';
+import seedrandom from 'seedrandom';
 
 const width = 1920;
 const height = 1080;
@@ -13,11 +14,22 @@ canvas.style.transform = `scale(${1 / window.devicePixelRatio})`;
 canvas.style.transformOrigin = 'left top';
 container.appendChild(canvas);
 
-let redraw = true;
+let redraw, seed;
 const invalidate = () => { redraw = true; };
-canvas.addEventListener('click', invalidate);
+const reseed = () => {
+    seed = `${new Date().getTime()}`;
+}
+invalidate();
+reseed();
+canvas.addEventListener('click', () => {
+    reseed();
+    invalidate();
+});
 window.addEventListener('keypress', (e) => {
-    if (e.key === ' ') invalidate();
+    if (e.key === ' ') {
+        reseed();
+        invalidate();
+    }
 });
 
 const ctx = canvas.getContext('2d');
@@ -270,6 +282,7 @@ activeAFolder.open();
 const frame = () => {
     if (redraw) {
         redraw = false;
+        seedrandom(seed, { global: true });
         clear({ color: options.background });
         const text = choose(
             '被害妄想携帯女子',
