@@ -107,13 +107,13 @@ const scatter = (val, dir, opposite = false, mirrored = false) => {
     }
 }
 
-const balanced = (text, { size }) => {
+const balanced = (text, { size, splitOptions = {}, fontOptions = {} }) => {
     const parts = text.length > 12 ? 2 : choose({ value: 1, weight: 0.7 }, { value: 2, weight: 0.3 });
     const dir = choose('vertical', 'horizontal');
     const dist = uniform(0.6, 0.8);
-    split(text, parts).forEach((part, i) => {
+    split(text, parts, splitOptions).forEach((part, i) => {
         const { x, y } = interp(0.5, (divide(parts, i) - 0.5) * dist + 0.5, dir);
-        drawText(part, x, y, { size, dir, align: 'middle' });
+        drawText(part, x, y, { size, dir, align: 'middle', ...fontOptions });
     });
 }
 
@@ -126,7 +126,7 @@ const opposite = (n, f) => {
     return f ? 1 - n : n;
 }
 
-const neutral = (text, { size }) => {
+const neutral = (text, { size, splitOptions = {}, fontOptions = {} }) => {
     const parts = 2;
     const dir = choose('vertical', 'horizontal');
     const align = choose('begin', 'end');
@@ -139,9 +139,9 @@ const neutral = (text, { size }) => {
     const y = opposite(uniform(x0, x1), position === 'right');
     let point = interp(x, y, dir);
     const delta = scatter(size * 1.5 * (position === 'left' ? 1 : -1), dir, true);
-    split(text, parts).forEach((part) => {
+    split(text, parts, splitOptions).forEach((part) => {
         const { x, y } = point;
-        drawText(part, x, y, { size, dir, align });
+        drawText(part, x, y, { size, dir, align, ...fontOptions });
         point = translate(point, delta);
     });
 }
