@@ -8,7 +8,27 @@ container.appendChild(canvas);
 
 const ctx = canvas.getContext('2d');
 
-const drawText = (text, x, y, { size = 20, dir = 'horizontal', color = '#000'} = {}) => {
+const drawText = (text, x, y, { size = 20, dir = 'horizontal', align = 'begin', color = '#000'} = {}) => {
+    if (align === 'middle') {
+        switch (dir) {
+            case 'horizontal':
+                x -= size * text.length / 2;
+                break;
+            case 'vertical':
+                y -= size * text.length / 2;
+                break;
+        }
+    }
+    if (align === 'end') {
+        switch (dir) {
+            case 'horizontal':
+                x -= size * text.length;
+                break;
+            case 'vertical':
+                y -= size * text.length;
+                break;
+        }
+    }
     ctx.textBaseline = { horizontal: 'middle', vertical: 'top' }[dir];
     ctx.textAlign = { horizontal: 'start', vertical: 'center' }[dir];
     ctx.fillStyle = color;
@@ -75,11 +95,11 @@ const translate = ({ x: x1, y: y1 }, { x: x2, y: y2 }) => {
     return { x: x1 + x2, y: y1 + y2 };
 }
 
-const scatter = (val, dir, opposite = false) => {
+const scatter = (val, dir, opposite = false, mirrored = false) => {
     if (opposite) dir = { vertical: 'horizontal', horizontal: 'vertical' }[dir];
     switch (dir) {
         case 'horizontal': return {
-            x: val, y: 0,
+            x: mirrored ? -val : val, y: 0,
         }
         case 'vertical': return {
             x: 0, y: val,
@@ -92,10 +112,8 @@ const balanced = (text, { size }) => {
     const dir = choose('vertical', 'horizontal');
     const dist = uniform(0.6, 0.8);
     split(text, parts).forEach((part, i) => {
-        const p1 = interp(0.5, (divide(parts, i) - 0.5) * dist + 0.5, dir);
-        const p2 = scatter(-part.length * size / 2, dir);
-        const { x, y } =  translate(p1, p2);
-        drawText(part, x, y, { size, dir });
+        const { x, y } = interp(0.5, (divide(parts, i) - 0.5) * dist + 0.5, dir);
+        drawText(part, x, y, { size, dir, align: 'middle' });
     });
 }
 
@@ -104,7 +122,31 @@ const clear = () => {
     ctx.fillRect(0, 0, width, height);
 }
 
-setInterval(() => {
+const opposite = (n, f) => {
+    return f ? 1 - n : n;
+}
+
+const neutral = (text, { size }) => {
+    const parts = 2;
+    const dir = choose('vertical', 'horizontal');
+    const align = choose('begin', 'end');
+    const position = choose('left', 'right');
+    const [x0, x1] = choose(
+        { value: [0.35, 0.43], weight: 3 },
+        { value: [0.25, 0.35], weight: 2 },
+        { value: [0.1, 0.25], weight: 1 });
+    const x = opposite(uniform(0.1, 0.25), align === 'end');
+    const y = opposite(uniform(x0, x1), position === 'right');
+    let point = interp(x, y, dir);
+    const delta = scatter(size * 1.5 * (position === 'left' ? 1 : -1), dir, true);
+    split(text, parts).forEach((part) => {
+        const { x, y } = point;
+        drawText(part, x, y, { size, dir, align });
+        point = translate(point, delta);
+    });
+}
+
+const frame = () => {
     clear();
     const text = choose(
         '被害妄想携帯女子',
@@ -113,6 +155,15 @@ setInterval(() => {
         'ただいま参上！電波シスター☆',
         '千本桜　夜ニ紛レ',
         'にゃん　にゃん　にゃん　ステップ踏んで',
+        '太陽曰く燃えよカオス',
     );
-    balanced(text, { size: 90 });
-}, 100);
+    const options = { size: 90 };
+    const fn = choose(
+        balanced,
+        neutral,
+    );
+    fn(text, options);
+}
+
+setInterval(frame, 100);
+// frame();
