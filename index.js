@@ -16,6 +16,9 @@ container.appendChild(canvas);
 let redraw = true;
 const invalidate = () => { redraw = true; };
 canvas.addEventListener('click', invalidate);
+window.addEventListener('keypress', (e) => {
+    if (e.key === ' ') invalidate();
+});
 
 const ctx = canvas.getContext('2d');
 
