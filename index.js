@@ -68,7 +68,8 @@ const init = () => {
         seedrandom(seed, { global: true });
         ctx.fillStyle = Color(options.background).string();
         ctx.fillRect(0, 0, width, height);
-        const text = options.text !== '' ? options.text : choose(...exampleText);
+        const randomText = choose(...exampleText);
+        const text = options.text !== '' ? options.text : randomText;
         const render = inflated[options.mode].fn;
         modes.map(key => inflated[key].folder).forEach(f => f.hide());
         inflated[options.mode].folder.show();
