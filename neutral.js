@@ -6,15 +6,18 @@ export default ({
 }) => {
     const options = {
         lineSpacing: 1.5,
+        lockDir: 'none',
     };
 
     const folder = gui.addFolder('neutral');
     folder.add(options, 'lineSpacing', 0.5, 5, 0.01).onChange(invalidate);
+    folder.add(options, 'lockDir', ['none', 'horizontal', 'vertical']).onChange(invalidate);
     folder.open();
 
     const fn = (text) => {
         const parts = 2;
-        const dir = choose('vertical', 'horizontal');
+        const dirRnd = choose('vertical', 'horizontal');
+        const dir = options.lockDir !== 'none' ? options.lockDir : dirRnd;
         const align = choose('begin', 'end');
         const position = choose('left', 'right');
         const [x0, x1] = choose(
