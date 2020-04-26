@@ -11,7 +11,7 @@ export default ({
         lockParts: 'none',
     };
 
-    const folder = gui.addFolder('balanced');
+    const folder = gui.addFolder('balancedA');
     folder.add(options, 'minDist', 0, 1.5, 0.01).onChange(invalidate);
     folder.add(options, 'maxDist', 0, 1.5, 0.01).onChange(invalidate);
     folder.add(options, 'lockDir', ['none', 'horizontal', 'vertical']).onChange(invalidate);

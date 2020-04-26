@@ -1,6 +1,6 @@
 import inside from 'point-in-polygon';
-import { uniform } from './utils';
 import pickRandom from 'pick-random';
+import { uniform } from './utils';
 
 const distToShape = ({ x: x1, y: y1, r: r1 }, { x: x2, y: y2 }) => {
     // Chebyshev distance

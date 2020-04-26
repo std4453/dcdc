@@ -5,6 +5,7 @@ import seedrandom from 'seedrandom';
 import drawText from './text';
 import split from './split';
 import balancedA from './balancedA';
+import balancedB from './balancedB';
 import neutral from './neutral';
 import activeA from './activeA';
 import activeB from './activeB';
@@ -12,8 +13,8 @@ import activeB from './activeB';
 import { choose } from './utils';
 
 const width = 1920, height = 1080;
-const modules = { drawText, split, balancedA, neutral, activeA, activeB };
-const modes = ['balancedA', 'neutral', 'activeA', 'activeB'];
+const modules = { drawText, split, balancedA, balancedB, neutral, activeA, activeB };
+const modes = ['balancedA', 'balancedB', 'neutral', 'activeA', 'activeB'];
 const exampleText = [
     '被害妄想携帯女子',
     'ジェットブーツで大気圏を突破して',
