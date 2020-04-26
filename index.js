@@ -1,16 +1,19 @@
 import Color from 'color';
 import * as dat from 'dat.gui';
 import seedrandom from 'seedrandom';
+
+import drawText from './text';
+import split from './split';
 import balanced from './balanced';
 import neutral from './neutral';
 import activeA from './activeA';
-import drawText from './text';
-import split from './split';
+import activeB from './activeB';
+
 import { choose } from './utils';
 
 const width = 1920, height = 1080;
-const modules = { drawText, split, balanced, neutral, activeA };
-const modes = ['balanced', 'neutral', 'activeA'];
+const modules = { drawText, split, balanced, neutral, activeA, activeB };
+const modes = ['balanced', 'neutral', 'activeA', 'activeB'];
 const exampleText = [
     '被害妄想携帯女子',
     'ジェットブーツで大気圏を突破して',
@@ -47,6 +50,7 @@ const init = () => {
             invalidate();
         }
     });
+    const applySeed = () => { seedrandom(seed, { global: true }) };
 
     const options = {
         mode: modes[0],
@@ -61,11 +65,11 @@ const init = () => {
     // initialize modules
     const inflated = {};
     for (const key in modules) {
-        inflated[key] = modules[key]({ gui, ctx, invalidate, width, height, inflated });
+        inflated[key] = modules[key]({ gui, ctx, invalidate, width, height, inflated, applySeed });
     }
 
     const rerender = () => {
-        seedrandom(seed, { global: true });
+        applySeed();
         ctx.fillStyle = Color(options.background).string();
         ctx.fillRect(0, 0, width, height);
         const randomText = choose(...exampleText);

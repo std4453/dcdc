@@ -14,6 +14,7 @@
     "color": "^3.1.2",
     "dat.gui": "^0.7.7",
     "pick-random": "^2.0.0",
+    "point-in-polygon": "^1.0.1",
     "random": "^2.2.0",
     "seedrandom": "^3.0.5"
   },
