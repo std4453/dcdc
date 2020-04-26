@@ -42,6 +42,54 @@ const bestCandidate = (bounds, { tries, width, height, maxR, minR = 0 }) => {
     return shapes;
 }
 
+const sort = (chosen, { ctx, debug, angle, scale }) => {
+    const chains = [];
+    chosen = chosen.sort(({ x: x1, y: y1 }, { x: x2, y: y2 }) => (x1 + y1) - (x2 + y2));
+    while (chosen.length > 0) {
+        // characters that is on the leftmost must be beginning of chain
+        const chain = [];
+        chain.push(chosen.splice(0, 1)[0]);
+        while (true) {
+            const { x: x1, y: y1, r: r1 } = chain[chain.length - 1];
+            if (debug) {
+                ctx.strokeStyle = 'rgba(255, 0, 0, 0.6)';
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x1 + scale * r1, y1 + scale * r1 * Math.tan(angle));
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x1 + scale * r1, y1 - scale * r1 * Math.tan(angle));
+                ctx.stroke();
+            }
+            const candidates = [...chosen]
+                .map((shape, i) => ({ ...shape, i }))
+                .map(({ x: x2, y: y2, r: r2, i }) => ({
+                    x: x2, y: y2, r: r2, i,
+                    s: Math.abs(Math.atan2(-(y2 - y1), x2 - x1)) / angle,
+                    d: (x2 - x1) / r1 / scale,
+                }))
+                .filter(({ s }) => s < 1)
+                .map(({ d, s, ...rest }) => ({
+                    ...rest,
+                    k: s + d,
+                }))
+                .sort(({ k: k1 }, { k: k2 }) => k1 - k2);
+            if (candidates.length === 0) break;
+            if (debug) {
+                ctx.strokeStyle = 'rgba(0, 0, 255, 0.6)';
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(candidates[0].x, candidates[0].y);
+                ctx.stroke();
+            }
+            chain.push(chosen.splice(candidates[0].i, 1)[0]);
+        }
+        chains.push(chain);
+    }
+    return chains
+        .sort(([{ y: y1 }], [{ y: y2 }]) => y1 - y2)
+        .reduce((a, b) => [...a, ...b], []);
+}
+
 export default ({
     gui, invalidate, width, height, ctx, applySeed,
     inflated: { drawText: { fn: drawText, options: fontOptions } },
@@ -55,7 +103,8 @@ export default ({
         tries: 10000,
         scale: 1.0,
         drawBounds: false,
-        sort: 7.1,
+        sortAngle: 0.2,
+        sortScale: 3,
     };
 
     const folder = gui.addFolder('activeB');
@@ -66,11 +115,13 @@ export default ({
     folder.add(options, 'y1', 0, 1, 0.01).onChange(invalidate);
     folder.add(options, 'tries', 100, 50000, 100).onChange(invalidate);
     folder.add(options, 'scale', 0, 2, 0.01).onChange(invalidate);
-    folder.add(options, 'sort', 0, 10, 0.1).onChange(invalidate);
+    folder.add(options, 'sortAngle', 0, 0.5, 0.01).onChange(invalidate);
+    folder.add(options, 'sortScale', 0, 10, 0.01).onChange(invalidate);
     folder.add(options, 'drawBounds').onChange(invalidate);
     folder.open();
 
     const fn = (text) => {
+        text = text.split(/\s+/).join('');
         const bounds = [
             { x: width * options.x0, y: height * options.y0 },
             { x: width * options.x1, y: height * options.y0 },
@@ -86,18 +137,16 @@ export default ({
         });
 
         if (options.drawBounds) {
-            ctx.strokeStyle = '1px solid rgba(0, 0, 0, 0.2)';
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.6)';
             for (const { x, y, r } of shapes) {
                 ctx.strokeRect(x - r, y - r, r * 2, r * 2);
             }
         }
 
         applySeed();
-        const chosen = pickRandom(shapes, { count: Math.min(shapes.length, text.length) })
-            .sort(({ x: x1, y: y1 }, { x: x2, y: y2 }) => {
-                return (x1 + y1 * options.sort) - (x2 + y2 * options.sort);
-            });
-        chosen.forEach(({ x, y, r }, i) => {
+        const chosen = pickRandom(shapes, { count: Math.min(shapes.length, text.length) });
+        const sorted = sort(chosen, { ctx, debug: options.drawBounds, angle: options.sortAngle * Math.PI, scale: options.sortScale });
+        sorted.forEach(({ x, y, r }, i) => {
             drawText(text[i], x, y, { size: r * 2 * options.scale, align: 'middle' });
         });
     };
