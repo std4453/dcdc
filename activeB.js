@@ -102,6 +102,7 @@ export default ({
         y1: 0.8,
         tries: 10000,
         scale: 1.0,
+        sort: true,
         sortAngle: 0.2,
         sortScale: 3,
         debug: false,
@@ -115,6 +116,7 @@ export default ({
     folder.add(options, 'y1', 0, 1, 0.01).onChange(invalidate);
     folder.add(options, 'tries', 100, 50000, 100).onChange(invalidate);
     folder.add(options, 'scale', 0, 2, 0.01).onChange(invalidate);
+    folder.add(options, 'sort').onChange(invalidate);
     folder.add(options, 'sortAngle', 0, 0.5, 0.01).onChange(invalidate);
     folder.add(options, 'sortScale', 0, 10, 0.01).onChange(invalidate);
     folder.add(options, 'debug').onChange(invalidate);
@@ -145,7 +147,9 @@ export default ({
 
         applySeed();
         const chosen = pickRandom(shapes, { count: Math.min(shapes.length, text.length) });
-        const sorted = sort(chosen, { ctx, debug: options.debug, angle: options.sortAngle * Math.PI, scale: options.sortScale });
+        const sorted = options.sort
+            ? sort(chosen, { ctx, debug: options.debug, angle: options.sortAngle * Math.PI, scale: options.sortScale })
+            : chosen;
         sorted.forEach(({ x, y, r }, i) => {
             drawText(text[i], x, y, { size: r * 2 * options.scale, align: 'middle' });
         });

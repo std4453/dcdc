@@ -7,15 +7,17 @@ export default ({
     const options = {
         lineSpacing: 1.5,
         lockDir: 'none',
+        parts: 2,
     };
 
     const folder = gui.addFolder('neutral');
     folder.add(options, 'lineSpacing', 0.5, 5, 0.01).onChange(invalidate);
     folder.add(options, 'lockDir', ['none', 'horizontal', 'vertical']).onChange(invalidate);
+    folder.add(options, 'parts', 1, 5, 1).onChange(invalidate);
     folder.open();
 
     const fn = (text) => {
-        const parts = 2;
+        const parts = options.parts;
         const dirRnd = choose('vertical', 'horizontal');
         const dir = options.lockDir !== 'none' ? options.lockDir : dirRnd;
         const align = choose('begin', 'end');
