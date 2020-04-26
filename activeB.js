@@ -102,9 +102,9 @@ export default ({
         y1: 0.8,
         tries: 10000,
         scale: 1.0,
-        drawBounds: false,
         sortAngle: 0.2,
         sortScale: 3,
+        debug: false,
     };
 
     const folder = gui.addFolder('activeB');
@@ -117,7 +117,7 @@ export default ({
     folder.add(options, 'scale', 0, 2, 0.01).onChange(invalidate);
     folder.add(options, 'sortAngle', 0, 0.5, 0.01).onChange(invalidate);
     folder.add(options, 'sortScale', 0, 10, 0.01).onChange(invalidate);
-    folder.add(options, 'drawBounds').onChange(invalidate);
+    folder.add(options, 'debug').onChange(invalidate);
     folder.open();
 
     const fn = (text) => {
@@ -136,7 +136,7 @@ export default ({
             minR: fontOptions.size * options.minR,
         });
 
-        if (options.drawBounds) {
+        if (options.debug) {
             ctx.strokeStyle = 'rgba(0, 0, 0, 0.6)';
             for (const { x, y, r } of shapes) {
                 ctx.strokeRect(x - r, y - r, r * 2, r * 2);
@@ -145,7 +145,7 @@ export default ({
 
         applySeed();
         const chosen = pickRandom(shapes, { count: Math.min(shapes.length, text.length) });
-        const sorted = sort(chosen, { ctx, debug: options.drawBounds, angle: options.sortAngle * Math.PI, scale: options.sortScale });
+        const sorted = sort(chosen, { ctx, debug: options.debug, angle: options.sortAngle * Math.PI, scale: options.sortScale });
         sorted.forEach(({ x, y, r }, i) => {
             drawText(text[i], x, y, { size: r * 2 * options.scale, align: 'middle' });
         });
