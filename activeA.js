@@ -5,18 +5,18 @@ export default ({
     inflated: { drawText: { fn: drawText }, split: { fn: split } },
 }) => {
     const options = {
-        minAngle: -0.1,
+        minAngle: -0.2,
         maxAngle: 0,
     };
 
     const folder = gui.addFolder('activeA');
-    folder.add(options, 'minAngle', -0.5, 0.5, 0.01).onChange(invalidate);
-    folder.add(options, 'maxAngle', -0.5, 0.5, 0.01).onChange(invalidate);
+    folder.add(options, 'minAngle', -1, 1, 0.01).onChange(invalidate);
+    folder.add(options, 'maxAngle', -1, 1, 0.01).onChange(invalidate);
     folder.open();
 
     const fn = (text) => {
         const parts = 2;
-        const angle = Math.PI * uniform(options.minAngle, options.maxAngle);
+        const angle = Math.PI / 2 * uniform(options.minAngle, options.maxAngle);
         const dir = choose('horizontal', 'vertical');
         const [x0, x1] = choose(
             { value: [0.25, 0.35], weight: 3 },

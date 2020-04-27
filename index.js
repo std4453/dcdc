@@ -81,8 +81,8 @@ const init = () => {
         render(text, options);
     };
 
-    invalidate();
     reseed();
+    invalidate();
 }
 
 init();

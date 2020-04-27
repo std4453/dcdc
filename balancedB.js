@@ -6,15 +6,15 @@ export default ({
     inflated: { drawText: { fn: drawText, options: fontOptions }, split: { fn: split } },
 }) => {
     const options = {
-        minDist: 1.5,
-        maxDist: 3.0,
+        meanDist: 2.0,
+        variance: 0.3,
         lockRows: 'none',
         lockCols: 'none',
     };
 
     const folder = gui.addFolder('balancedB');
-    folder.add(options, 'minDist', 0.5, 5, 0.01).onChange(invalidate);
-    folder.add(options, 'maxDist', 0.5, 5, 0.01).onChange(invalidate);
+    folder.add(options, 'meanDist', 0.5, 10, 0.01).onChange(invalidate);
+    folder.add(options, 'variance', 0, 1, 0.01).onChange(invalidate);
     folder.add(options, 'lockRows', ['none', '2', '3', '4']).onChange(invalidate);
     folder.add(options, 'lockCols', ['none', '2', '3', '4']).onChange(invalidate);
     folder.open();
@@ -24,7 +24,7 @@ export default ({
         const rows = options.lockRows === 'none' ? rowsRnd : parseInt(options.lockRows);
         const colsRnd = choose(2, 3, 4);
         const cols = options.lockCols === 'none' ? colsRnd : parseInt(options.lockCols);
-        const dist = uniform(options.minDist, options.maxDist) * fontOptions.size;
+        const dist = uniform(1 - options.variance, 1 + options.variance) * options.meanDist * fontOptions.size;
         const indices = pickRandom(
             new Array(cols).fill(0).map(
                 (_, u) => new Array(rows).fill(0).map((_, v) => ({ u, v }))

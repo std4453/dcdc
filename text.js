@@ -20,25 +20,27 @@ export default ({ invalidate, gui, ctx }) => {
         fontWeight: 900,
         spacing: 0,
         ignoreWhitespaces: true,
-        sizeRnd: 0,
-        rotateRnd: 0,
+        sizeVar: 0,
+        meanRotate: 0,
+        rotateVar: 0,
     };
 
     const folder = gui.addFolder('font');
     folder.add(options, 'size', 20, 200).onChange(invalidate);
+    folder.add(options, 'sizeVar', 0, 1, 0.01).onChange(invalidate);
     folder.addColor(options, 'color').onChange(invalidate);
     folder.add(options, 'fontFamily').onChange(invalidate);
     folder.add(options, 'fontWeight', 100, 900, 100).onChange(invalidate);
     folder.add(options, 'spacing', -0.5, 0.5, 0.01).onChange(invalidate);
     folder.add(options, 'ignoreWhitespaces').onChange(invalidate);
-    folder.add(options, 'sizeRnd', 0, 1, 0.01).onChange(invalidate);
-    folder.add(options, 'rotateRnd', 0, 1, 0.01).onChange(invalidate);
+    folder.add(options, 'meanRotate', -1, 1, 0.01).onChange(invalidate);
+    folder.add(options, 'rotateVar', 0, 1, 0.01).onChange(invalidate);
     folder.open();
 
     const fn = (text, x0, y0, additionalOptions) => {
         const {
             size, dir = 'horizontal', align = 'begin', color, rotate = 0,
-            fontFamily, fontWeight, spacing, ignoreWhitespaces, sizeRnd = 0,
+            fontFamily, fontWeight, spacing, ignoreWhitespaces, sizeVar = 0,
             alignBaseline = true,
         } = {
             ...options,
@@ -49,7 +51,7 @@ export default ({ invalidate, gui, ctx }) => {
         ctx.translate(x0, y0);
         ctx.rotate(rotate);
         let x = 0, y = 0;
-        const sizes = new Array(text.length).fill(0).map(() => size * uniform(1 - sizeRnd / 2, 1 + sizeRnd / 2));
+        const sizes = new Array(text.length).fill(0).map(() => size * uniform(1 - sizeVar / 2, 1 + sizeVar / 2));
         const width = textWidth(text, sizes, spacing);
         if (align === 'middle') {
             switch (dir) {
@@ -88,7 +90,9 @@ export default ({ invalidate, gui, ctx }) => {
             const by = alignBaseline && dir === 'horizontal' ? y - (sizes[i] - size) / 2 : y;
             ctx.save();
             ctx.translate(bx, by);
-            ctx.rotate(uniform(-Math.PI / 2 * options.rotateRnd, Math.PI / 2 * options.rotateRnd));
+            ctx.rotate(uniform(
+                Math.PI / 2 * (options.meanRotate - options.rotateVar), 
+                Math.PI / 2 * (options.meanRotate + options.rotateVar)));
             ctx.fillText(ch, 0, 0);
             ctx.restore();
             switch (dir) {
