@@ -27,9 +27,16 @@
             height: 100%;
             width: 100%;
         }
+        #container {
+            position: fixed;
+            left: 0;
+            top: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body style="margin: 0; overflow: hidden;">
+    <div id="container"></div>
     <div id="rete"></div>
     <script src="./index.js"></script>
 </body>
