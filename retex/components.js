@@ -2,7 +2,6 @@ import Rete from 'rete';
 import typeName from 'type-name';
 import * as _ from 'lodash';
 
-import controls from './controls';
 import sockets from './sockets';
 
 class BeanComponent extends Rete.Component {
