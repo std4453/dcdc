@@ -18,7 +18,7 @@ class BeanComponent extends Rete.Component {
             const input = new Rete.Input(name, displayName, sockets[type]);
             node.data[name] = defaultVal;
             if (hasControl && controls[type]) {
-                input.addControl(new controls[type](this.editor, name, defaultVal));
+                input.addControl(new controls[type](this.editor, name, displayName, defaultVal));
             }
             node.addInput(input);
         }
