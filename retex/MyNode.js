@@ -7,7 +7,21 @@ import ControlPanel, {
 import typeName from 'type-name';
 import './styles.css';
 
-function DefaultInput({ name, inputDef: { type, defaultVal, options }, inputDef }) {
+function Label({ name, align = 'left' }) {
+    return (
+        <div className="container">
+            <div style={{ textAlign: align }}>
+                <span style={{ verticalAlign: 'sub', color: 'rgb(235, 235, 235) '}}>
+                    {name}
+                </span>
+            </div>
+        </div>
+    );
+}
+
+function DefaultInput({ name, inputDef: { type, defaultVal, options }, inputDef, io }) {
+    if (io.connections.length !== 0) return <Label name={name}/>
+
     if (!type) type = typeName(defaultVal);
     
     if (type === 'string') return <Text label={name}/>
@@ -18,7 +32,7 @@ function DefaultInput({ name, inputDef: { type, defaultVal, options }, inputDef 
     }
     if (type === 'color') return <Color label={name} format="rgb"/>
     if (type === 'select') return <Select label={name} options={options}/>
-    return <Text label={name}/>
+    return <Label name={name}/>
 }
 
 class MyNode extends Node {
@@ -44,7 +58,7 @@ class MyNode extends Node {
             > 
                 {outputs.map((output) => (
                     <div className="retex-port retex-output" key={output.key}>
-                        <Text label={output.name} />
+                        <Label name={output.name} align="right"/>
                         <Socket type="output" socket={output.socket} io={output} innerRef={bindSocket} />
                     </div>
                 ))}
@@ -54,7 +68,7 @@ class MyNode extends Node {
                 {inputs.map(input => (
                     <div className="retex-port retex-input" key={input.key} onPointerMove={(e) => { e.stopPropagation(); }}>
                         <Socket type="input" socket={input.socket} io={input} innerRef={bindSocket} />
-                        {!input.showControl() && <DefaultInput name={input.name} inputDef={node.inputDefs[input.name]}/>}
+                        {!input.showControl() && <DefaultInput name={input.name} inputDef={node.inputDefs[input.name]} io={input}/>}
                         {input.showControl() && <Control className="input-control" control={input.control} innerRef={bindControl} />}
                     </div>
                 ))}
