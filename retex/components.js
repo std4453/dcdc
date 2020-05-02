@@ -11,15 +11,21 @@ class BeanComponent extends Rete.Component {
         this.inputDefs = inputDefs;
         this.outputDefs = outputDefs;
     }
-
+    
     builder(node) {
-        node.inputDefs = this.inputDefs;
+        node.inputDefs = _.cloneDeep(this.inputDefs);
+        for (const key of Object.keys(node.inputDefs)) {
+            if (key in node.data) node.inputDefs[key].defaultVal = node.data[key];
+        }
         node.outputDefs = this.outputDefs;
         
-        for (let [name, { type, defaultVal, hasControl = true, displayName = name }] of _.toPairs(this.inputDefs)) {
+        for (let [name, { type, defaultVal, displayName = name }] of _.toPairs(this.inputDefs)) {
             if (!type) type = typeName(defaultVal);
+            if (name in node.data) defaultVal = node.data[name];
             const input = new Rete.Input(name, displayName, sockets[type]);
-            node.data[name] = defaultVal;
+            if (!(name in node.data)) {
+                node.data[name] = defaultVal;
+            }
             node.addInput(input);
         }
         for (const [name, { type, displayName = name }] of _.toPairs(this.outputDefs)) {
