@@ -11,8 +11,8 @@ class CanvasComponent extends BeanComponent {
         super(
             'Canvas',
             {
-                width: { defaultVal: 1920 },
-                height: { defaultVal: 1080 },
+                width: { defaultVal: 1920, min: 360, max: 2160 },
+                height: { defaultVal: 1080, min: 240, max: 1920 },
                 background: { type: 'color', defaultVal: '#F2F2F2' },
             },
             {

@@ -13,13 +13,13 @@ class BeanComponent extends Rete.Component {
     }
 
     builder(node) {
+        node.inputDefs = this.inputDefs;
+        node.outputDefs = this.outputDefs;
+        
         for (let [name, { type, defaultVal, hasControl = true, displayName = name }] of _.toPairs(this.inputDefs)) {
             if (!type) type = typeName(defaultVal);
             const input = new Rete.Input(name, displayName, sockets[type]);
             node.data[name] = defaultVal;
-            if (hasControl && controls[type]) {
-                input.addControl(new controls[type](this.editor, name, displayName, defaultVal));
-            }
             node.addInput(input);
         }
         for (const [name, { type, displayName = name }] of _.toPairs(this.outputDefs)) {

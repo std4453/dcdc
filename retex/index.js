@@ -2,12 +2,13 @@ import Rete from 'rete';
 import ConnectionPlugin from 'rete-connection-plugin';
 import ReactRenderPlugin from 'rete-react-render-plugin';
 import ContextMenuPlugin from 'rete-context-menu-plugin';
+import MyNode from './MyNode';
 import components from "../components";
 
 export default () => {
     const editor = new Rete.NodeEditor('dcdc@0.1.0', document.querySelector('#rete'));
     editor.use(ConnectionPlugin);
-    editor.use(ReactRenderPlugin);
+    editor.use(ReactRenderPlugin, { component: MyNode });
     editor.use(ContextMenuPlugin);
 
     const engine = new Rete.Engine('dcdc@0.1.0');

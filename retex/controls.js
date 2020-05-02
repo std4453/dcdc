@@ -1,30 +1,41 @@
-import React, { useState, useCallback } from 'react';
-import Rete from 'rete';
+// import React, { useCallback } from 'react';
+// import Rete from 'rete';
+// import { Slider, Typography, createMuiTheme, ThemeProvider } from '@material-ui/core';
 
-function NumberControlInner({ id, displayName, defaultVal, emitter, putData }) {
-    const [value, setValue] = useState(defaultVal);
-    const onChange = useCallback(({ target: { value } }) => {
-        setValue(value),
-        putData(id, value);
-        emitter.trigger("process");
-    }, [id, emitter]);
+// function NumberControlInner({ id, displayName, defaultVal, emitter, putData }) {
+//     const onChange = useCallback((_, value) => {
+//         putData(id, value);
+//         emitter.trigger("process");
+//     }, [id, emitter]);
+//     const onPointerMove = useCallback((e) => {
+//         e.stopPropagation();
+//     }, []);
 
-    return (
-        <input value={value} onChange={onChange} type="number" />
-    );
-}
+//     return (
+//         <ThemeProvider theme={theme}>
+//             <Typography gutterBottom>
+//                 {displayName}
+//             </Typography>
+//             <Slider
+//                 defaultValue={defaultVal}
+//                 onChange={onChange}
+//                 onPointerMove={onPointerMove}
+//             />
+//         </ThemeProvider>
+//     );
+// }
 
-class NumberControl extends Rete.Control {
-    constructor(emitter, key, displayName, defaultVal) {
-        super(key);
-        this.render = 'react';
-        this.component = NumberControlInner;
-        this.props = { emitter, defaultVal, displayName, id: key, putData: this.putData.bind(this) };
-    }
-}
+// class NumberControl extends Rete.Control {
+//     constructor(emitter, key, displayName, defaultVal) {
+//         super(key);
+//         this.render = 'react';
+//         this.component = NumberControlInner;
+//         this.props = { emitter, defaultVal, displayName, id: key, putData: this.putData.bind(this) };
+//     }
+// }
 
 const controls = {
-    number: NumberControl,
+    // number: NumberControl,
 };
 
 export default controls;
