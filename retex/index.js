@@ -2,6 +2,7 @@ import Rete from 'rete';
 import ConnectionPlugin from 'rete-connection-plugin';
 import ReactRenderPlugin from 'rete-react-render-plugin';
 import ContextMenuPlugin from 'rete-context-menu-plugin';
+import TaskPlugin from 'rete-task-plugin';
 import MyNode from './MyNode';
 import components from "../components";
 
@@ -10,6 +11,7 @@ export default async () => {
     editor.use(ConnectionPlugin);
     editor.use(ReactRenderPlugin, { component: MyNode });
     editor.use(ContextMenuPlugin);
+    editor.use(TaskPlugin);
     
     const engine = new Rete.Engine('dcdc@0.1.0');
     

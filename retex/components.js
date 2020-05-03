@@ -5,10 +5,18 @@ import * as _ from 'lodash';
 import sockets from './sockets';
 
 class BeanComponent extends Rete.Component {
-    constructor(name, inputDefs, outputDefs) {
+    constructor(name, inputDefs, outputDefs, initTask) {
         super(name);
         this.inputDefs = inputDefs;
         this.outputDefs = outputDefs;
+        this.task = {
+            outputs: _.fromPairs(_.toPairs(this.outputDefs).map(
+                ([key, { type }]) => [key, type === 'continuation' ? 'option' : 'output']
+            )),
+            init(task) {
+                if (initTask) initTask(task, this);
+            },
+        };
     }
     
     builder(node) {
@@ -34,18 +42,19 @@ class BeanComponent extends Rete.Component {
         return node;
     }
 
-    async worker(node, inputPorts, outputPorts) {
-        const inputs = {};
-        for (const [name, { required }] of _.toPairs(this.inputDefs)) {
-            if (required && inputPorts[name].length === 0) return;
-            const value = inputPorts[name].length ? (inputPorts[name][0]) : node.data[name];
-            inputs[name] = value;
+    async worker(node, inputs, data) {
+        // console.log(node);
+        const inputVals = {};
+        for (const [name, { required }] of _.toPairs(this.component.inputDefs)) {
+            if (!(name in inputs)) inputs[name] = [];
+            if (required && inputs[name].length === 0) return;
+            const value = inputs[name].length
+                ? (inputs[name][0])
+                : node.data[name];
+            inputVals[name] = value;
         }
 
-        const outputs = await this.exec(inputs);
-        for (const [name] of _.toPairs(this.outputDefs)) {
-            outputPorts[name] = outputs[name];
-        }
+        return await this.component.exec.call(this, inputVals, data);
     }
 }
 

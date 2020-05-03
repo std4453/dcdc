@@ -1,5 +1,4 @@
 import { BeanComponent } from '../retex/components';
-import { uniform } from '../utils';
 
 const textWidth = (text, sizes, spacing) => {
     // VERY SIMPLE
@@ -18,39 +17,38 @@ class FontComponent extends BeanComponent {
         super(
             'Font',
             {
-                ctx: { type: 'canvas', required: true },
+                cc: { type: 'continuation' },
                 text: { defaultVal: '被害妄想携帯女子' },
                 x0: { defaultVal: 960, min: -1000, max: 3000 },
                 y0: { defaultVal: 540, min: -1000, max: 3000 },
                 size: { defaultVal: 90, min: 10, max: 400 },
-                dir: { defaultVal: 'horizontal', type: 'select', options: ['horizontal', 'vertical']},
-                align: { defaultVal: 'begin', type: 'select', options: ['begin', 'middle', 'end']},
-                color: { defaultVal: '#000000', type: 'color' },
-                fontFamily: { defaultVal: 'Hiragino Mincho Pro' },
-                fontWeight: { defaultVal: 900, min: 100, max: 900, step: 100 },
+                dir: { defaultVal: 'horizontal', type: 'select', options: ['horizontal', 'vertical'] },
+                align: { defaultVal: 'begin', type: 'select', options: ['begin', 'middle', 'end'] },
                 spacing: { defaultVal: 0, min: -2, max: 2 },
                 ignoreWhitespaces: { defaultVal: true },
                 alignBaseline: { defaultVal: true },
-                sizeVar: { defaultVal: 0 },
-                meanRotate: { defaultVal: 0 },
-                rotateVar: { defaultVal: 0 },
             },
-            {}
+            {
+                cc: { type: 'continuation' },
+                ch: { type: 'string' },
+                x0: { type: 'number' },
+                y0: { type: 'number' },
+                size: { type: 'number' },
+            },
         );
     }
 
-    exec({
-        ctx, text, x0, y0,
-        size, dir, align, color, rotate,
-        fontFamily, fontWeight, spacing, ignoreWhitespaces, sizeVar,
-        alignBaseline, meanRotate, rotateVar,
-    }) {
+    async exec({
+        text, x0, y0,
+        size, dir, align,
+        spacing, ignoreWhitespaces,
+        alignBaseline,
+    }, data) {
+        if (data !== undefined) return data;
+
         if (ignoreWhitespaces) text = text.split(/\s+/).join('');
-        ctx.save();
-        ctx.translate(x0, y0);
-        ctx.rotate(rotate);
-        let x = 0, y = 0;
-        const sizes = new Array(text.length).fill(0).map(() => size * uniform(1 - sizeVar / 2, 1 + sizeVar / 2));
+        let x = x0, y = y0;
+        const sizes = new Array(text.length).fill(size);
         const width = textWidth(text, sizes, spacing);
         if (align === 'middle') {
             switch (dir) {
@@ -80,20 +78,16 @@ class FontComponent extends BeanComponent {
                 y += sizes[0] / 2;
                 break;
         }
-        ctx.textBaseline = 'middle';
-        ctx.textAlign = 'center';
-        ctx.fillStyle = color;
-        text.split('').forEach((ch, i) => {
-            ctx.font = `${fontWeight} ${sizes[i]}px \'${fontFamily}\'`;
+        for (let i = 0; i < text.length; ++i) {
+            const ch = text[i];
             const bx = x;
             const by = alignBaseline && dir === 'horizontal' ? y - (sizes[i] - size) / 2 : y;
-            ctx.save();
-            ctx.translate(bx, by);
-            ctx.rotate(uniform(
-                Math.PI / 2 * (meanRotate - rotateVar),
-                Math.PI / 2 * (meanRotate + rotateVar)));
-            ctx.fillText(ch, 0, 0);
-            ctx.restore();
+            await this.clone(false).run({
+                ch,
+                x0: bx,
+                y0: by,
+                size: sizes[i],
+            });
             switch (dir) {
                 case 'horizontal':
                     x += (sizes[i] + sizes[i + 1]) * (1 + spacing) / 2;
@@ -102,8 +96,8 @@ class FontComponent extends BeanComponent {
                     y += (sizes[i] + sizes[i + 1]) * (1 + spacing) / 2;
                     break;
             }
-        });
-        ctx.restore();
+        }
+        this.closed = ['cc'];
     }
 }
 
