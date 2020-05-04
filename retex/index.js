@@ -60,4 +60,5 @@ export default async () => {
             console.log('Data saved!');
         }, 3000);
     });
+    editor.trigger('process');
 }
