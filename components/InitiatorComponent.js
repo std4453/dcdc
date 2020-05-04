@@ -9,8 +9,7 @@ class InitiatorComponent extends BeanComponent {
                 cc: { type: 'continuation' },
             },
             (task) => {
-                setTimeout(() => task.run(), 1000);
-                // task.reset();
+                task.component.editor.once('postprocess', () => task.run());
             }
         );
     }

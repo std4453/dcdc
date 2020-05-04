@@ -43,7 +43,6 @@ class BeanComponent extends Rete.Component {
     }
 
     async worker(node, inputs, data) {
-        // console.log(node);
         const inputVals = {};
         for (const [name, { required }] of _.toPairs(this.component.inputDefs)) {
             if (!(name in inputs)) inputs[name] = [];

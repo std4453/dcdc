@@ -12,6 +12,22 @@ export default async () => {
     editor.use(ReactRenderPlugin, { component: MyNode });
     editor.use(ContextMenuPlugin);
     editor.use(TaskPlugin);
+    // HACK!!!!
+    editor.bind('postprocess');
+    Object.keys(editor.events).forEach(key => {
+        const onceListeners = [];
+        editor.events[key].onceListeners = onceListeners;
+        editor.on(key, (...args) => {
+            console.log(key);
+            while (onceListeners.length > 0) {
+                const listener = onceListeners.pop();
+                listener(...args);
+            }
+        })
+    });
+    editor.once = (name, fn) => {
+        editor.events[name].onceListeners.push(fn);
+    };
     
     const engine = new Rete.Engine('dcdc@0.1.0');
     
@@ -37,6 +53,7 @@ export default async () => {
         const data = await editor.toJSON();
         lastData = data;
         await engine.process(data);
+        editor.trigger('postprocess');
         setTimeout(() => {
             if (data !== lastData) return;
             localStorage['retex'] = JSON.stringify(data);
