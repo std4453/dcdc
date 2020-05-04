@@ -5,9 +5,7 @@ class InitiatorComponent extends BeanComponent {
         super(
             'Initiator',
             {},
-            {
-                cc: { type: 'continuation' },
-            },
+            {},
             (task) => {
                 task.component.editor.once('postprocess', () => task.run());
             }

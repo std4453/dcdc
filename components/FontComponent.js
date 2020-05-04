@@ -17,7 +17,6 @@ class FontComponent extends BeanComponent {
         super(
             'Font',
             {
-                cc: { type: 'continuation' },
                 text: { defaultVal: '被害妄想携帯女子' },
                 x0: { defaultVal: 960, min: -1000, max: 3000 },
                 y0: { defaultVal: 540, min: -1000, max: 3000 },
@@ -29,7 +28,6 @@ class FontComponent extends BeanComponent {
                 alignBaseline: { defaultVal: true },
             },
             {
-                cc: { type: 'continuation' },
                 ch: { type: 'string' },
                 x0: { type: 'number' },
                 y0: { type: 'number' },
@@ -82,7 +80,7 @@ class FontComponent extends BeanComponent {
             const ch = text[i];
             const bx = x;
             const by = alignBaseline && dir === 'horizontal' ? y - (sizes[i] - size) / 2 : y;
-            await this.clone(false).run({
+            await this.clone().run({
                 ch,
                 x0: bx,
                 y0: by,

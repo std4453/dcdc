@@ -5,7 +5,6 @@ class CharComponent extends BeanComponent {
         super(
             'Char',
             {
-                cc: { type: 'continuation' },
                 ctx: { type: 'canvas', required: true },
                 ch: { defaultVal: '' },
                 x0: { defaultVal: 960, min: -1000, max: 3000 },

@@ -7,6 +7,8 @@ import sockets from './sockets';
 class BeanComponent extends Rete.Component {
     constructor(name, inputDefs, outputDefs, initTask) {
         super(name);
+        inputDefs.cc = { type: 'continuation' };
+        outputDefs.cc = { type: 'continuation' };
         this.inputDefs = inputDefs;
         this.outputDefs = outputDefs;
         this.task = {

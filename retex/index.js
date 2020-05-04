@@ -18,7 +18,6 @@ export default async () => {
         const onceListeners = [];
         editor.events[key].onceListeners = onceListeners;
         editor.on(key, (...args) => {
-            console.log(key);
             while (onceListeners.length > 0) {
                 const listener = onceListeners.pop();
                 listener(...args);
