@@ -34,7 +34,6 @@ export default async () => {
     editor.on('process nodecreated noderemoved connectioncreated connectionremoved', async () => {
         await engine.abort();
         const data = await editor.toJSON();
-        console.log(data);
         lastData = data;
         await engine.process(data);
         setTimeout(() => {

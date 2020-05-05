@@ -4,6 +4,9 @@ import UniformComponent from './UniformComponent';
 import { ArithmeticComponent, Arithmetic2Component } from './ArithmeticComponent';
 import CharComponent from './CharComponent';
 import InitiatorComponent from './InitiatorComponent';
+import StepComponent from './StepComponent';
+import BalancedAComponent from './BalancedAComponent';
+import SplitComponent from './SplitComponent';
 
 export default [
     CanvasComponent, 
@@ -13,4 +16,7 @@ export default [
     Arithmetic2Component,
     CharComponent,
     InitiatorComponent,
+    StepComponent,
+    BalancedAComponent,
+    SplitComponent,
 ];

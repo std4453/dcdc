@@ -10,7 +10,7 @@ class CharComponent extends BeanComponent {
                 x0: { defaultVal: 960, min: -1000, max: 3000 },
                 y0: { defaultVal: 540, min: -1000, max: 3000 },
                 size: { defaultVal: 90, min: 10, max: 400 },
-                rotate: { defaultVal: 0 },
+                rotate: { defaultVal: 0, min: -1, max: 1 },
                 color: { defaultVal: '#000000', type: 'color' },
                 fontFamily: { defaultVal: 'Hiragino Mincho Pro' },
                 fontWeight: { defaultVal: 900, min: 100, max: 900, step: 100 },
@@ -30,7 +30,7 @@ class CharComponent extends BeanComponent {
         ctx.font = `${fontWeight} ${size}px \'${fontFamily}\'`;
         ctx.save();
         ctx.translate(x0, y0);
-        ctx.rotate(rotate);
+        ctx.rotate(rotate * Math.PI);
         ctx.fillText(ch, 0, 0);
         ctx.restore();
     }

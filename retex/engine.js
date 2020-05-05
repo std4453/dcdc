@@ -26,7 +26,6 @@ class Engine {
         }
         try {
             const keys = toposort(graph);
-            console.log(keys);
             await this.run(nodes, keys, 0, {}, data);
         } catch (e) {
             // circular dependency
@@ -56,7 +55,6 @@ class Engine {
         const component = this.components[name];
         const it = component.worker.call(component, inputVals, node, data);
         for await (const outputVals of it) {
-            console.log(outputVals);
             values[id] = outputVals;
             await this.run(nodes, keys, ind + 1, values);
         }

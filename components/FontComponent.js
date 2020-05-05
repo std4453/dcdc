@@ -28,6 +28,7 @@ class FontComponent extends BeanComponent {
                 alignBaseline: { defaultVal: true },
             },
             {
+                i: { type: 'number' },
                 ch: { type: 'string' },
                 x0: { type: 'number' },
                 y0: { type: 'number' },
@@ -79,6 +80,7 @@ class FontComponent extends BeanComponent {
             const bx = x;
             const by = alignBaseline && dir === 'horizontal' ? y - (sizes[i] - size) / 2 : y;
             yield {
+                i,
                 ch,
                 x0: bx,
                 y0: by,
