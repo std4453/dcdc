@@ -19,19 +19,20 @@ function Label({ name, align = 'left' }) {
     );
 }
 
-function DefaultInput({ name, inputDef: { type, defaultVal, options }, inputDef, io }) {
+function DefaultInput({ name, inputDef: { type, defaultVal, options, controlType }, inputDef, io }) {
     if (io.connections.length !== 0) return <Label name={name}/>
 
     if (!type) type = typeName(defaultVal);
+    if (!controlType) controlType = type;
     
-    if (type === 'string') return <Text label={name}/>
-    if (type === 'boolean') return <Checkbox label={name}/>
-    if (type === 'number') {
+    if (controlType === 'string') return <Text label={name}/>
+    if (controlType === 'boolean') return <Checkbox label={name}/>
+    if (controlType === 'number') {
         const { min, max, step = 0.01 } = inputDef;
         return <Range label={name} min={min} max={max} step={step}/>
     }
-    if (type === 'color') return <Color label={name} format="rgb"/>
-    if (type === 'select') return <Select label={name} options={options}/>
+    if (controlType === 'color') return <Color label={name} format="rgb"/>
+    if (controlType === 'select') return <Select label={name} options={options}/>
     return <Label name={name}/>
 }
 
@@ -50,7 +51,8 @@ class MyNode extends Node {
                 title={node.name}
                 initialState={initialState}
                 onChange={(key, value) => {
-                    node.data[key] = value;
+                    const { convert } = node.inputDefs[key];
+                    node.data[key] = convert ? convert(value) : value;
                     editor.trigger('process');
                 }}
                 width={300}

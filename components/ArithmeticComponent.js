@@ -48,4 +48,45 @@ class Arithmetic2Component extends BeanComponent {
     }
 }
 
-export { ArithmeticComponent, Arithmetic2Component };
+class StringComponent extends BeanComponent {
+    constructor() {
+        super(
+            'String',
+            {
+                val: { defaultVal: '', type: 'string' },
+            },
+            {
+                val: { type: 'string' },
+            },
+        );
+    }
+
+    * worker({ val }) {
+        yield { val };
+    }
+}
+
+class NumberComponent extends BeanComponent {
+    constructor() {
+        super(
+            'Number',
+            {
+                val: { defaultVal: 0, controlType: 'string', convert: parseFloat },
+            },
+            {
+                val: { type: 'number' },
+            },
+        );
+    }
+
+    * worker({ val }) {
+        yield { val };
+    }
+}
+
+export {
+    ArithmeticComponent,
+    Arithmetic2Component,
+    NumberComponent,
+    StringComponent,
+};

@@ -1,7 +1,7 @@
 import CanvasComponent from './CanvasComponent';
 import FontComponent from './FontComponent';
 import UniformComponent from './UniformComponent';
-import { ArithmeticComponent, Arithmetic2Component } from './ArithmeticComponent';
+import { ArithmeticComponent, Arithmetic2Component, StringComponent, NumberComponent } from './ArithmeticComponent';
 import CharComponent from './CharComponent';
 import InitiatorComponent from './InitiatorComponent';
 import StepComponent from './StepComponent';
@@ -19,4 +19,6 @@ export default [
     StepComponent,
     BalancedAComponent,
     SplitComponent,
+    StringComponent,
+    NumberComponent,
 ];

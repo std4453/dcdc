@@ -11,7 +11,7 @@ class BalancedAComponent extends BeanComponent {
                 i: { type: 'number' },
                 parts: { type: 'number' },
                 dist: { defaultVal: 0.7, min: 0, max: 1, },
-                dir: { defaultVal: 'horizontal', type: 'select', options: ['horizontal', 'vertical'] },
+                dir: { defaultVal: 'horizontal', type: 'string', controlType: 'select', options: ['horizontal', 'vertical'] },
             },
             {
                 x0: { type: 'number' },
