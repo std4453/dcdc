@@ -14,8 +14,8 @@ class UniformComponent extends BeanComponent {
         );
     }
 
-    exec({ min, max }) {
-        return {
+    * worker({ min, max }) {
+        yield {
             val: min + Math.random() * (max - min),
         };
     }

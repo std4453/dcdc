@@ -19,7 +19,7 @@ class CharComponent extends BeanComponent {
         );
     }
 
-    exec({
+    * worker({
         ctx, ch, x0, y0,
         size, rotate, color,
         fontFamily, fontWeight,

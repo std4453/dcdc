@@ -16,9 +16,9 @@ class ArithmeticComponent extends BeanComponent {
         this.parser = new Parser();
     }
 
-    exec({ expr, x }) {
-        const parsed = this.component.parser.parse(expr);
-        return {
+    * worker({ expr, x }) {
+        const parsed = this.parser.parse(expr);
+        yield {
             y: parsed.evaluate({ x }),
         };
     }
@@ -40,9 +40,9 @@ class Arithmetic2Component extends BeanComponent {
         this.parser = new Parser();
     }
 
-    exec({ expr, x, y }) {
-        const parsed = this.component.parser.parse(expr);
-        return {
+    * worker({ expr, x, y }) {
+        const parsed = this.parser.parse(expr);
+        yield {
             z: parsed.evaluate({ x, y }),
         };
     }

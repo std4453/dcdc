@@ -21,12 +21,12 @@ class CanvasComponent extends BeanComponent {
         );
     }
 
-    exec({ width, height, background }) {
+    async * worker({ width, height, background }) {
         canvas.width = width;
         canvas.height = height;
         ctx.fillStyle = background;
         ctx.fillRect(0, 0, width, height);
-        return { ctx };
+        yield { ctx };
     }
 }
 

@@ -6,13 +6,10 @@ class InitiatorComponent extends BeanComponent {
             'Initiator',
             {},
             {},
-            (task) => {
-                task.component.editor.once('postprocess', () => task.run());
-            }
         );
     }
 
-    async exec() {}
+    async worker() {}
 }
 
 export default InitiatorComponent;

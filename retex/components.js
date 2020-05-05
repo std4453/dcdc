@@ -5,20 +5,10 @@ import * as _ from 'lodash';
 import sockets from './sockets';
 
 class BeanComponent extends Rete.Component {
-    constructor(name, inputDefs, outputDefs, initTask) {
+    constructor(name, inputDefs, outputDefs) {
         super(name);
-        inputDefs.cc = { type: 'continuation' };
-        outputDefs.cc = { type: 'continuation' };
         this.inputDefs = inputDefs;
         this.outputDefs = outputDefs;
-        this.task = {
-            outputs: _.fromPairs(_.toPairs(this.outputDefs).map(
-                ([key, { type }]) => [key, type === 'continuation' ? 'option' : 'output']
-            )),
-            init(task) {
-                if (initTask) initTask(task, this);
-            },
-        };
     }
     
     builder(node) {
@@ -42,20 +32,6 @@ class BeanComponent extends Rete.Component {
             node.addOutput(output);
         }
         return node;
-    }
-
-    async worker(node, inputs, data) {
-        const inputVals = {};
-        for (const [name, { required }] of _.toPairs(this.component.inputDefs)) {
-            if (!(name in inputs)) inputs[name] = [];
-            if (required && inputs[name].length === 0) return;
-            const value = inputs[name].length
-                ? (inputs[name][0])
-                : node.data[name];
-            inputVals[name] = value;
-        }
-
-        return await this.component.exec.call(this, inputVals, data);
     }
 }
 

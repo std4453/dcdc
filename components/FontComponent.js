@@ -36,14 +36,12 @@ class FontComponent extends BeanComponent {
         );
     }
 
-    async exec({
+    async * worker({
         text, x0, y0,
         size, dir, align,
         spacing, ignoreWhitespaces,
         alignBaseline,
-    }, data) {
-        if (data !== undefined) return data;
-
+    }) {
         if (ignoreWhitespaces) text = text.split(/\s+/).join('');
         let x = x0, y = y0;
         const sizes = new Array(text.length).fill(size);
@@ -80,12 +78,12 @@ class FontComponent extends BeanComponent {
             const ch = text[i];
             const bx = x;
             const by = alignBaseline && dir === 'horizontal' ? y - (sizes[i] - size) / 2 : y;
-            await this.clone().run({
+            yield {
                 ch,
                 x0: bx,
                 y0: by,
                 size: sizes[i],
-            });
+            };
             switch (dir) {
                 case 'horizontal':
                     x += (sizes[i] + sizes[i + 1]) * (1 + spacing) / 2;
