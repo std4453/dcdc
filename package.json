@@ -25,7 +25,6 @@
     "rete-connection-plugin": "^0.9.0",
     "rete-context-menu-plugin": "^0.6.0-rc.1",
     "rete-react-render-plugin": "^0.2.0",
-    "rete-task-plugin": "^0.3.0",
     "seedrandom": "^3.0.5",
     "toposort": "^2.0.2",
     "type-name": "^2.0.2"
