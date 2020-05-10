@@ -2,7 +2,7 @@ import React from 'react';
 import { Node, Socket, Control } from 'rete-react-render-plugin';
 import * as _ from 'lodash';
 import DatGui, {
-    DatBoolean, DatColor, DatNumber, DatString, DatPresets, DatFolder
+    DatBoolean, DatColor, DatNumber, DatString, DatSelect,
 } from 'react-dat-gui';
 import typeName from 'type-name';
 import 'react-dat-gui/dist/index.css';
@@ -10,8 +10,12 @@ import './styles.css';
 
 function Label({ name, align = 'left' }) {
     return (
-        <li className="cr">
-            <label style={{ justifyContent: { left: 'flex-start', right: 'flex-end' }[align] }}>
+        <li className="cr text">
+            <label style={{ justifyContent: {
+                    left: 'flex-start',
+                    middle: 'center',
+                    right: 'flex-end',
+                }[align] }}>
                 <span style={{ lineHeight: '25px' }}>
                     {name}
                 </span>
@@ -33,7 +37,7 @@ function DefaultInput({ name, inputDef: { type, defaultVal, options, controlType
         return <DatNumber path={name} label={name} min={min} max={max} step={step} {...props} />
     }
     if (controlType === 'color') return <DatColor path={name} label={name} {...props} />
-    if (controlType === 'select') return <DatPresets path={name} label={name} options={options} {...props} />
+    if (controlType === 'select') return <DatSelect path={name} label={name} options={options} {...props} />
     return <Label name={name} />
 }
 
@@ -76,6 +80,11 @@ class MyNode extends Node {
                     backgroundColor: '#1A1A1A',
                 }}
             >
+                <Wrapper>
+                    {() => <>
+                        <Label name={node.name} align="middle" />
+                    </>}
+                </Wrapper>
                 {outputs.map((output) => (
                     <Wrapper className="retex-port retex-output" key={output.key}>
                         {() => <>
