@@ -12,7 +12,7 @@ function Label({ name, align = 'left' }) {
     return (
         <li className="cr">
             <label style={{ justifyContent: { left: 'flex-start', right: 'flex-end' }[align] }}>
-                <span style={{ lineHeight: '27px' }}>
+                <span style={{ lineHeight: '25px' }}>
                     {name}
                 </span>
             </label>
@@ -20,43 +20,55 @@ function Label({ name, align = 'left' }) {
     );
 }
 
-function DefaultInput({ name, inputDef: { type, defaultVal, options, controlType }, inputDef, io }) {
+function DefaultInput({ name, inputDef: { type, defaultVal, options, controlType }, inputDef, io, ...props }) {
     if (io.connections.length !== 0) return <Label name={name} />
 
     if (!type) type = typeName(defaultVal);
     if (!controlType) controlType = type;
 
-    if (controlType === 'string') return <DatString path={name} label={name} />
-    if (controlType === 'boolean') return <DatBoolean path={name} label={name} />
+    if (controlType === 'string') return <DatString path={name} label={name} {...props} />
+    if (controlType === 'boolean') return <DatBoolean path={name} label={name} {...props} />
     if (controlType === 'number') {
         const { min, max, step = 0.01 } = inputDef;
-        return <DatNumber path={name} label={name} min={min} max={max} step={step} />
+        return <DatNumber path={name} label={name} min={min} max={max} step={step} {...props} />
     }
-    if (controlType === 'color') return <DatColor label={name} format="rgb" />
-    if (controlType === 'select') return <DatPresets label={name} options={options} />
+    if (controlType === 'color') return <DatColor path={name} label={name} {...props} />
+    if (controlType === 'select') return <DatPresets path={name} label={name} options={options} {...props} />
     return <Label name={name} />
 }
 
-class MyNode extends Node {
-    render() {
-        const { node, editor, bindSocket, bindControl } = this.props;
-        const { outputs, controls, inputs, selected } = this.state;
+function Wrapper({ children, className, onPointerMove, ...props }) {
+    return (
+        <div className={className} onPointerMove={onPointerMove}>
+            {children(props)}
+        </div>
+    );
+}
 
+class MyNode extends Node {
+    componentDidMount() {
+        const { node } = this.props;
         const initialState = _.fromPairs(_
             .toPairs(node.inputDefs)
             .map(([name, { defaultVal }]) => [name, defaultVal]));
-        console.log(initialState);
+        this.setState({ data: initialState });
+    }
+
+    render() {
+        const { node, editor, bindSocket, bindControl } = this.props;
+        const { data, outputs, controls, inputs, selected } = this.state;
 
         return (
             <DatGui
-                data={initialState}
+                data={data}
                 onUpdate={(newData) => {
-                    newData = { ...newData, ...node.data };
+                    newData = { ...data, ...newData };
                     for (const key in newData) {
                         const { convert } = node.inputDefs[key];
                         if (convert) newData[key] = convert(newData[key]);
                     }
                     node.data = newData;
+                    this.setState({ data: newData });
                     editor.trigger('process');
                 }}
                 style={{
@@ -65,20 +77,24 @@ class MyNode extends Node {
                 }}
             >
                 {outputs.map((output) => (
-                    <div className="retex-port retex-output" key={output.key}>
-                        <Label name={output.name} align="right" />
-                        <Socket type="output" socket={output.socket} io={output} innerRef={bindSocket} />
-                    </div>
+                    <Wrapper className="retex-port retex-output" key={output.key}>
+                        {() => <>
+                            <Label name={output.name} align="right" />
+                            <Socket type="output" socket={output.socket} io={output} innerRef={bindSocket} />
+                        </>}
+                    </Wrapper>
                 ))}
                 {controls.map(control => (
                     <Control className="control" key={control.key} control={control} innerRef={bindControl} />
                 ))}
                 {inputs.map(input => (
-                    <div className="retex-port retex-input" key={input.key} onPointerMove={(e) => { e.stopPropagation(); }}>
-                        <Socket type="input" socket={input.socket} io={input} innerRef={bindSocket} />
-                        {!input.showControl() && <DefaultInput name={input.name} inputDef={node.inputDefs[input.name]} io={input} />}
-                        {input.showControl() && <Control className="input-control" control={input.control} innerRef={bindControl} />}
-                    </div>
+                    <Wrapper className="retex-port retex-input" key={input.key} onPointerMove={(e) => { e.stopPropagation(); }}>
+                        {props => <>
+                            <Socket type="input" socket={input.socket} io={input} innerRef={bindSocket} />
+                            {!input.showControl() && <DefaultInput name={input.name} inputDef={node.inputDefs[input.name]} io={input} {...props} />}
+                            {input.showControl() && <Control className="input-control" control={input.control} innerRef={bindControl} />}
+                        </>}
+                    </Wrapper>
                 ))}
             </DatGui>
         )
