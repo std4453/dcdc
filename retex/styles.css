@@ -15,11 +15,22 @@
 }
 
 .retex-output .socket.output {
-    margin-right: -32px;
-    margin-left: 14px;
+    margin-right: 8px;
+    margin-left: -16px;
+    transform: translateX(16px);
 }
 
 .retex-input .socket.input {
-    margin-left: -22px;
-    margin-right: 14px;
+    margin-left: -24px;
+    margin-right: 16px;
+    transform: translateX(16px);
+}
+
+.react-dat-gui .dg {
+    overflow: unset;
+}
+
+.react-dat-gui .cr {
+    display: inline-block;
+    width: 100%;
 }
