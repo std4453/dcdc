@@ -8,6 +8,7 @@ import StepComponent from './StepComponent';
 import BalancedAComponent from './BalancedAComponent';
 import SplitComponent from './SplitComponent';
 import BalancedBComponent from './BalancedBComponent';
+import NeutralComponent from './NeutralComponent';
 
 export default [
     CanvasComponent, 
@@ -23,4 +24,5 @@ export default [
     StringComponent,
     NumberComponent,
     BalancedBComponent,
+    NeutralComponent,
 ];
