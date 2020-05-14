@@ -71,7 +71,7 @@ class NumberComponent extends BeanComponent {
         super(
             'Number',
             {
-                val: { defaultVal: 0.0, controlType: 'string', convert: parseFloat },
+                val: { defaultVal: 0.0, min: -Infinity, max: Infinity },
             },
             {
                 val: { type: 'number' },
@@ -84,9 +84,33 @@ class NumberComponent extends BeanComponent {
     }
 }
 
+class DimensionComponent extends BeanComponent {
+    constructor() {
+        super(
+            'Dimension',
+            {
+                x0: { defaultVal: 0.25, min: 0, max: 1 },
+                y0: { defaultVal: 0.25, min: 0, max: 1 },
+                x1: { defaultVal: 0.75, min: 0, max: 1 },
+                y1: { defaultVal: 0.75, min: 0, max: 1 },
+            },
+            {
+                val: { type: 'dimension' },
+            },
+        );
+    }
+
+    * worker({ x0, y0, x1, y1 }) {
+        yield {
+            val: { x0, y0, x1, y1 },
+        };
+    }
+}
+
 export {
     ArithmeticComponent,
     Arithmetic2Component,
     NumberComponent,
     StringComponent,
+    DimensionComponent,
 };
