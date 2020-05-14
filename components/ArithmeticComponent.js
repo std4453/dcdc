@@ -71,7 +71,7 @@ class NumberComponent extends BeanComponent {
         super(
             'Number',
             {
-                val: { defaultVal: 0, controlType: 'string', convert: parseFloat },
+                val: { defaultVal: 0.0, controlType: 'string', convert: parseFloat },
             },
             {
                 val: { type: 'number' },

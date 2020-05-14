@@ -7,6 +7,7 @@ import InitiatorComponent from './InitiatorComponent';
 import StepComponent from './StepComponent';
 import BalancedAComponent from './BalancedAComponent';
 import SplitComponent from './SplitComponent';
+import BalancedBComponent from './BalancedBComponent';
 
 export default [
     CanvasComponent, 
@@ -21,4 +22,5 @@ export default [
     SplitComponent,
     StringComponent,
     NumberComponent,
+    BalancedBComponent,
 ];
