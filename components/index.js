@@ -9,6 +9,7 @@ import BalancedAComponent from './BalancedAComponent';
 import SplitComponent from './SplitComponent';
 import BalancedBComponent from './BalancedBComponent';
 import NeutralComponent from './NeutralComponent';
+import ActiveAComponent from './ActiveAComponent';
 
 export default [
     CanvasComponent, 
@@ -25,4 +26,5 @@ export default [
     NumberComponent,
     BalancedBComponent,
     NeutralComponent,
+    ActiveAComponent,
 ];
