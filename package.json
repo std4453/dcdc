@@ -11,7 +11,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@babel/preset-env": "^7.9.6",
     "color": "^3.1.2",
     "dat.gui": "^0.7.7",
     "expr-eval": "^2.0.2",
@@ -31,9 +30,7 @@
     "type-name": "^2.0.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.6",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "parcel-bundler": "^1.12.4"
+    "babel-plugin-transform-class-properties": "^6.24.1"
   },
   "browserslist": {
     "production": [
