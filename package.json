@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "parcel index.html --no-source-maps",
-    "build": "parcel build index.html --public-url ./ --no-source-maps",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -19,7 +19,10 @@
     "pick-random": "^2.0.0",
     "point-in-polygon": "^1.0.1",
     "random": "^2.2.0",
+    "react": "^16.13.1",
     "react-dat-gui": "^4.0.3",
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.1",
     "rete": "^1.4.3-rc.1",
     "rete-connection-plugin": "^0.9.0",
     "rete-context-menu-plugin": "^0.6.0-rc.1",
@@ -31,5 +34,17 @@
     "@babel/core": "^7.9.6",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "parcel-bundler": "^1.12.4"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
