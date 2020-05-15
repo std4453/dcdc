@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@material-ui/core": "^4.9.14",
     "color": "^3.1.2",
     "dat.gui": "^0.7.7",
     "expr-eval": "^2.0.2",
