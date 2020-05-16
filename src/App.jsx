@@ -1,7 +1,7 @@
-import React from 'react';
-import { MuiThemeProvider, makeStyles, Button, TextField, Grid } from '@material-ui/core';
+import React, { useState, useMemo } from 'react';
+import { MuiThemeProvider, makeStyles } from '@material-ui/core';
 import { createMuiTheme } from '@material-ui/core/styles';
-import logo from './assets/logo-colored.svg';
+import SongSelection from './SongSelection';
 
 import './index.css';
 
@@ -19,46 +19,27 @@ const useStyles = makeStyles({
         overflow: 'hidden',
         height: '100vh',
     },
-    grid: {
-        height: '100%',
-    },
-    input: {
-        width: 500,
-    },
 });
 
-function App({ }) {
+function App() {
     const classes = useStyles();
+    const [step, setStep] = useState('SongSelection');
+    const Component = {
+        SongSelection,
+    }[step];
+
+    const [id, setId] = useState('');
+    const [error, setError] = useState(null);
+
+    const params = {
+        step, setStep,
+        id, setId,
+        error, setError,
+    };
     return (
         <MuiThemeProvider theme={theme}>
             <div className={classes.root}>
-                <Grid
-                    container
-                    justify="center"
-                    spacing={4}
-                    className={classes.grid}
-                    alignItems="center"
-                    direction="column"
-                >
-                    <Grid item>
-                        <img src={logo} alt="" height="51"/>
-                    </Grid>
-                    <Grid item container spacing={1} justify="center">
-                        <Grid item>
-                            <TextField
-                                label="网易云音乐ID"
-                                variant="outlined"
-                                size="small"
-                                classes={{ root: classes.input }}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <Button variant="contained" color="primary" disableElevation>
-                                开始创建
-                        </Button>
-                        </Grid>
-                    </Grid>
-                </Grid>
+                <Component {...params}/>
             </div>
         </MuiThemeProvider>
     )
