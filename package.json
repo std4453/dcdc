@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@material-ui/core": "^4.9.14",
+    "classnames": "^2.2.6",
     "color": "^3.1.2",
     "dat.gui": "^0.7.7",
     "expr-eval": "^2.0.2",
@@ -22,6 +23,7 @@
     "react": "^16.13.1",
     "react-dat-gui": "^4.0.3",
     "react-dom": "^16.13.1",
+    "react-hook-form": "^5.7.2",
     "react-scripts": "^3.4.1",
     "rete": "^1.4.3-rc.1",
     "rete-connection-plugin": "^0.9.0",

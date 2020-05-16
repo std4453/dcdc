@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { MuiThemeProvider, makeStyles } from '@material-ui/core';
 import { createMuiTheme } from '@material-ui/core/styles';
 import SongSelection from './SongSelection';
