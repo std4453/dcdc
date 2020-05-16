@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MuiThemeProvider, makeStyles } from '@material-ui/core';
 import { createMuiTheme } from '@material-ui/core/styles';
 import SongSelection from './SongSelection';
+import Loading from './Loading';
 
 import './index.css';
 
@@ -25,7 +26,7 @@ function App() {
     const classes = useStyles();
     const [step, setStep] = useState('SongSelection');
     const Component = {
-        SongSelection,
+        SongSelection, Loading,
     }[step];
 
     const [id, setId] = useState('');
