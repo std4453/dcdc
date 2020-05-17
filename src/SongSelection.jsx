@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { makeStyles, Button, TextField, Grid } from '@material-ui/core';
+import { makeStyles, Button, TextField, Grid, Link } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 import logo from './assets/logo-colored.svg';
 
@@ -56,6 +56,17 @@ function SongSelection({ setId, setStep }) {
                         >
                             开始创建
                         </Button>
+                    </Grid> 
+                </Grid>
+                <Grid container justify="center">
+                    <Grid item>
+                        <Link
+                            variant = "subtitle2"
+                            href="#"
+                            color="secondary"
+                        >
+                            如何获取?
+                        </Link>
                     </Grid>
                 </Grid>
             </Grid>

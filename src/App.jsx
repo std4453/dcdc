@@ -9,7 +9,7 @@ import './index.css';
 const theme = createMuiTheme({
     palette: {
         primary: { main: '#BB86FC' },
-        secondary: { main: '#BB86FC' },
+        secondary: { main: '#A0A0A0' },
         type: 'dark',
     },
 });
