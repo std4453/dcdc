@@ -60,17 +60,17 @@ function SongSelection({ setId, setStep }) {
                         >
                             开始创建
                         </Button>
-                    </Grid> 
-                    <Container maxWidth = 'sm'>
-                        <Link
-                            variant = "caption"
-                            href="#"
-                            color="secondary"
-                        >
-                            如何获取?
-                        </Link>
-                    </Container>
+                    </Grid>
                 </Grid>
+                <Container maxWidth = 'sm'>
+                    <Link
+                        variant = "caption"
+                        href="#"
+                        color="secondary"
+                    >
+                        如何获取?
+                    </Link>
+                </Container>
             </Grid>
         </form>
     )
