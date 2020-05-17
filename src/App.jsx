@@ -3,6 +3,7 @@ import { MuiThemeProvider, makeStyles } from '@material-ui/core';
 import { createMuiTheme } from '@material-ui/core/styles';
 import SongSelection from './SongSelection';
 import Loading from './Loading';
+import Moodboard from './Moodboard';
 
 import './index.css';
 
@@ -26,16 +27,18 @@ function App() {
     const classes = useStyles();
     const [step, setStep] = useState('SongSelection');
     const Component = {
-        SongSelection, Loading,
+        SongSelection, Loading, Moodboard,
     }[step];
 
     const [id, setId] = useState('');
+    const [data, setData] = useState({});
     const [error, setError] = useState(null);
 
     const params = {
         step, setStep,
         id, setId,
         error, setError,
+        data, setData,
     };
     return (
         <MuiThemeProvider theme={theme}>

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { makeStyles, LinearProgress, Grid } from '@material-ui/core';
 import logo from './assets/logo-colored.svg';
+import sample from './assets/sample.json';
 
 const useStyles = makeStyles({
     grid: {
@@ -15,13 +16,16 @@ const delay = (time) => new Promise((resolve) => {
     setTimeout(resolve, time);
 });
 
-function Loading({ id, setStep }) {
+function Loading({ id, setStep, setData }) {
     const classes = useStyles();
-    useEffect(async () => {
-        // TODO: query backend
-        await delay(5000);
-        setStep('Moodboard');
-    }, [setStep]);
+    useEffect(() => {
+        (async () => {
+            // TODO: query backend
+            await delay(5000);
+            setData(sample);
+            setStep('Moodboard');
+        })();
+    }, [setStep, setData]);
     return (
         <Grid
             container
