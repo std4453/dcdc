@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { makeStyles, Button, Grid, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles({
@@ -14,8 +14,11 @@ const useStyles = makeStyles({
     },
 });
 
-function Segmentation({ id, setStep, data: { song, name: artist, album: [{ al_name: album }] } }) {
+function Segmentation({ setStep, data: { song, name: artist, album: [{ al_name: album }] } }) {
     const classes = useStyles();
+    const nextStep = useCallback(() => {
+        setStep('Generation');
+    }, [setStep]);
     return (
         <Grid
             container
@@ -55,6 +58,7 @@ function Segmentation({ id, setStep, data: { song, name: artist, album: [{ al_na
                             variant="contained"
                             color="primary"
                             disableElevation
+                            onClick={nextStep}
                         >
                             继续创建
                         </Button>
