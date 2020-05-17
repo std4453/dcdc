@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { makeStyles, Button, TextField, Grid, Link } from '@material-ui/core';
+import { makeStyles, Button, TextField, Grid, Link, Container } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 import logo from './assets/logo-colored.svg';
 
@@ -36,7 +36,11 @@ function SongSelection({ setId, setStep }) {
                 <Grid item>
                     <img src={logo} alt="" height="51" />
                 </Grid>
-                <Grid item container spacing={1} justify="center">
+                <Grid item container
+                    spacing={1}
+                    justify="center"
+                    alignItems="center"
+                >
                     <Grid item>
                         <TextField
                             name="id"
@@ -57,17 +61,15 @@ function SongSelection({ setId, setStep }) {
                             开始创建
                         </Button>
                     </Grid> 
-                </Grid>
-                <Grid container justify="center">
-                    <Grid item>
+                    <Container maxWidth = 'sm'>
                         <Link
-                            variant = "subtitle2"
+                            variant = "caption"
                             href="#"
                             color="secondary"
                         >
                             如何获取?
                         </Link>
-                    </Grid>
+                    </Container>
                 </Grid>
             </Grid>
         </form>
