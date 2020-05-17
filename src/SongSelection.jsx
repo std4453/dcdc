@@ -19,7 +19,6 @@ function SongSelection({ setId, setStep }) {
     const classes = useStyles();
     const { register, handleSubmit } = useForm();
     const onSubmit = useCallback(({ id }) => {
-        console.log('asd');
         setId(id);
         setStep('Loading');
     }, [setStep, setId]);

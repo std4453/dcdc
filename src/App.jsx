@@ -4,6 +4,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import SongSelection from './SongSelection';
 import Loading from './Loading';
 import Moodboard from './Moodboard';
+import Segmentation from './Segmentation';
 
 import './index.css';
 
@@ -27,7 +28,7 @@ function App() {
     const classes = useStyles();
     const [step, setStep] = useState('SongSelection');
     const Component = {
-        SongSelection, Loading, Moodboard,
+        SongSelection, Loading, Moodboard, Segmentation,
     }[step];
 
     const [id, setId] = useState('');

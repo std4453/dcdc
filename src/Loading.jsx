@@ -21,9 +21,10 @@ function Loading({ id, setStep, setData }) {
     useEffect(() => {
         (async () => {
             // TODO: query backend
-            await delay(5000);
+            await delay(1000);
             setData(sample);
-            setStep('Moodboard');
+            // setStep('Moodboard');
+            setStep('Segmentation');
         })();
     }, [setStep, setData]);
     return (
