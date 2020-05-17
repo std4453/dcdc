@@ -23,8 +23,7 @@ function Loading({ id, setStep, setData }) {
             // TODO: query backend
             await delay(1000);
             setData(sample);
-            // setStep('Moodboard');
-            setStep('Segmentation');
+            setStep('Moodboard');
         })();
     }, [setStep, setData]);
     return (
