@@ -38,7 +38,11 @@ function Moodboard({ setStep,
                 >
                     {song} / {artist} - {album}
                 </Typography>
-                <Grid container alignItems="center" justify="space-between">
+                <Grid container 
+                    alignItems="center" 
+                    justify="space-evenly" 
+                    spacing={6}
+                >
                     <Grid item container direction="column" xs>
                         <Grid item>
                             <Typography
@@ -68,25 +72,80 @@ function Moodboard({ setStep,
                         </Button>
                     </Grid>
                 </Grid>
-                <Grid container alignItems="center" justify="space-between">
+                <Grid container 
+                    alignItems="center" 
+                    justify="space-between" 
+                    spacing={6}
+                >
                 <Grid item>
                     <MoodboardCanvas
-                        title = 'First Board'
+                        tempo = {tempo}
+                        energy = {energy}
+                        danceability = {danceability}
+                        acousticness = {acousticness}
+                        valence = {valence}
+                        title = {song}
                         i = '1'
                         >
                     </MoodboardCanvas>
                 </Grid>
                 <Grid item>
                     <MoodboardCanvas
-                        title = 'Second Board'
+                        tempo = {tempo}
+                        energy = {energy}
+                        danceability = {danceability}
+                        acousticness = {acousticness}
+                        valence = {valence}
+                        title = {song}
                         i = '2'
                         >
                     </MoodboardCanvas>
                 </Grid>
                 <Grid item>
                     <MoodboardCanvas
-                        title = 'Thrid Board'
+                        tempo = {tempo}
+                        energy = {energy}
+                        danceability = {danceability}
+                        acousticness = {acousticness}
+                        valence = {valence}
+                        title = {song}
                         i = '3'
+                        >
+                    </MoodboardCanvas>
+                </Grid>
+                <Grid item>
+                    <MoodboardCanvas
+                        tempo = {tempo}
+                        energy = {energy}
+                        danceability = {danceability}
+                        acousticness = {acousticness}
+                        valence = {valence}
+                        title = {song}
+                        i = '4'
+                        >
+                    </MoodboardCanvas>
+                </Grid>
+                <Grid item>
+                    <MoodboardCanvas
+                        tempo = {tempo}
+                        energy = {energy}
+                        danceability = {danceability}
+                        acousticness = {acousticness}
+                        valence = {valence}
+                        title = {song}
+                        i = '5'
+                        >
+                    </MoodboardCanvas>
+                </Grid>
+                <Grid item>
+                    <MoodboardCanvas
+                        tempo = {tempo}
+                        energy = {energy}
+                        danceability = {danceability}
+                        acousticness = {acousticness}
+                        valence = {valence}
+                        title = {song}
+                        i = '6'
                         >
                     </MoodboardCanvas>
                 </Grid>
