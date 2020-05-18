@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { makeStyles, Button, Grid, Typography } from '@material-ui/core';
+import MoodboardCanvas from './MoodboardCanvas';
 
 const useStyles = makeStyles({
     grid: {
@@ -14,7 +15,10 @@ const useStyles = makeStyles({
     },
 });
 
-function Moodboard({ setStep, data: { song, name: artist, album: [{ al_name: album }] } }) {
+function Moodboard({ setStep, 
+    data: { song, name: artist, album: [{ al_name: album }], 
+    audio_features: [{ tempo: tempo, energy: energy, danceability: danceability, acousticness: acousticness, valence: valence }]  } }
+    ) {
     const classes = useStyles();
     const nextStep = useCallback(() => {
         setStep('Segmentation');
@@ -63,6 +67,29 @@ function Moodboard({ setStep, data: { song, name: artist, album: [{ al_name: alb
                             继续创建
                         </Button>
                     </Grid>
+                </Grid>
+                <Grid container alignItems="center" justify="space-between">
+                <Grid item>
+                    <MoodboardCanvas
+                        title = 'First Board'
+                        i = '1'
+                        >
+                    </MoodboardCanvas>
+                </Grid>
+                <Grid item>
+                    <MoodboardCanvas
+                        title = 'Second Board'
+                        i = '2'
+                        >
+                    </MoodboardCanvas>
+                </Grid>
+                <Grid item>
+                    <MoodboardCanvas
+                        title = 'Thrid Board'
+                        i = '3'
+                        >
+                    </MoodboardCanvas>
+                </Grid>
                 </Grid>
             </Grid>
             <Grid item xs />

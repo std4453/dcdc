@@ -30,6 +30,7 @@
     "rete-context-menu-plugin": "^0.6.0-rc.1",
     "rete-react-render-plugin": "^0.2.0",
     "seedrandom": "^3.0.5",
+    "tinycolor2": "^1.4.1",
     "type-name": "^2.0.2"
   },
   "devDependencies": {
