@@ -17,7 +17,7 @@ const useStyles = makeStyles({
 
 function Moodboard({ setStep, 
     data: { song, name: artist, album: [{ al_name: album }], 
-    audio_features: [{ tempo: tempo, energy: energy, danceability: danceability, acousticness: acousticness, valence: valence }]  } }
+    audio_features: [{ tempo, energy, danceability, acousticness, valence }]  } }
     ) {
     const classes = useStyles();
     const nextStep = useCallback(() => {
