@@ -17,7 +17,8 @@
         "danceability": 0.425,
         "acousticness": 0.744,
         "liveness": 0.116,
-        "valence": 0.345
+        "valence": 0.345,
+        "duration_s": 241.987
       }
     ],
     "sections": [
