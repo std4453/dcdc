@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { makeStyles, Button, Grid, Typography, Slider } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
 import grey from '@material-ui/core/colors/grey';
 
 function Length({ time }) {
@@ -54,12 +55,38 @@ function Segmentation({
         album: [{ al_name: album }],
         sections,
         audio_features: [{ duration_s: length }],
+        music_url: url,
     },
 }) {
     const classes = useStyles();
     const nextStep = useCallback(() => {
         setStep('Generation');
     }, [setStep]);
+    const audio = useMemo(() => {
+        return new Audio(url);
+    }, [url]);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [playing, setPlaying] = useState(false);
+    useEffect(() => {
+        if (!audio) return;
+        const onUpdate = () => setCurrentTime(audio.currentTime);
+        const onPlay = () => setPlaying(true);
+        const onPause = () => setPlaying(false);
+        audio.addEventListener('timeupdate', onUpdate);
+        audio.addEventListener('play', onPlay);
+        audio.addEventListener('pause', onPause);
+        return () => {
+            audio.removeEventListener('timeupdate', onUpdate);
+            audio.removeEventListener('play', onPlay);
+            audio.removeEventListener('pause', onPause);
+        };
+    }, [audio]);
+    const onSeek = useCallback((_, newVal) => {
+        audio.currentTime = newVal;
+    }, [audio]);
+    const play = useCallback(() => audio.play(), [audio]);
+    const pause = useCallback(() => audio.pause(), [audio]);
+    
     return (
         <Grid
             container
@@ -107,16 +134,32 @@ function Segmentation({
                 </Grid>
                 <div className={classes.content}>
                     <Typography className={classes.time} color="textPrimary" variant="body2">
-                        <Length time={0}/>
+                        <Length time={currentTime}/>
                         &nbsp;/&nbsp;
                         <Length time={length}/>
                     </Typography>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item>
-                            <PlayArrowIcon style={{ color: grey[100] }} />
+                            {playing ? (
+                                <PauseIcon
+                                    style={{
+                                        color: grey[100],
+                                        cursor: 'pointer',
+                                    }}
+                                    onClick={pause}
+                                />
+                            ) : (
+                                <PlayArrowIcon
+                                    style={{
+                                        color: grey[100],
+                                        cursor: 'pointer',
+                                    }}
+                                    onClick={play}
+                                />
+                            )}
                         </Grid>
                         <Grid item xs>
-                            <Slider />
+                            <Slider value={currentTime} onChange={onSeek} max={length}/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={2} alignItems="center">
