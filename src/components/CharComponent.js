@@ -27,12 +27,13 @@ class CharComponent extends BeanComponent {
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'center';
         ctx.fillStyle = color;
-        ctx.font = `${fontWeight} ${size}px \'${fontFamily}\'`;
+        ctx.font = `${fontWeight} ${size}px '${fontFamily}'`;
         ctx.save();
         ctx.translate(x0, y0);
         ctx.rotate(rotate * Math.PI);
         ctx.fillText(ch, 0, 0);
         ctx.restore();
+        yield;
     }
 }
 

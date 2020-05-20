@@ -40,7 +40,7 @@ function NodeMap({ saveKey }) {
                 }, 3000);
             });
         })();
-    }, [editor]);
+    }, [editor, saveKey]);
 
     return (
         <div ref={setRoot} style={{
