@@ -37,7 +37,6 @@ const useStyles = makeStyles({
         position: 'absolute',
         top: 0,
         bottom: 0,
-        backgroundColor: '#03DAC5',
         border: '1px solid #121212',
         cursor: 'pointer',
         '&:hover': {
@@ -168,13 +167,15 @@ function Segmentation({
                         </Grid>
                         <Grid item xs>
                             <div className={classes.sections}>
-                                {sections.map(({ start, duration }, i) => (
+                                {sections.map(({ start }, i) => (
                                     <div
                                         key={i}
                                         className={classes.section}
                                         style={{
                                             left: `${start / length * 100}%`,
                                             right: `${100 - (i === sections.length - 1 ? length : sections[i + 1].start) / length * 100}%`,
+                                            // backgroundColor: mode === 0 ? '#03DAC5' : '#F2994A',
+                                            backgroundColor: '#03DAC5',
                                         }}
                                     />
                                 ))}
