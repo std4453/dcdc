@@ -1,11 +1,5 @@
 import { BeanComponent } from '../retex/components';
 
-const container = document.querySelector('#container');
-const canvas = document.createElement('canvas');
-canvas.style.transform = `scale(${1 / window.devicePixelRatio})`;
-container.appendChild(canvas);
-const ctx = canvas.getContext('2d');
-
 class CanvasComponent extends BeanComponent {
     constructor() {
         super(
@@ -22,8 +16,11 @@ class CanvasComponent extends BeanComponent {
     }
 
     async * worker({ width, height, background }) {
+        const canvas = document.querySelector('#canvas');
+        canvas.style.transform = `scale(${1 / window.devicePixelRatio})`;
         canvas.width = width;
         canvas.height = height;
+        const ctx = canvas.getContext('2d');
         ctx.fillStyle = background;
         ctx.fillRect(0, 0, width, height);
         yield { ctx };

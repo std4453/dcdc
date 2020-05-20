@@ -59,7 +59,7 @@ function Segmentation({
 }) {
     const classes = useStyles();
     const nextStep = useCallback(() => {
-        setStep('Generation');
+        setStep('InitialValues');
     }, [setStep]);
     const audio = useMemo(() => {
         return new Audio(url);
