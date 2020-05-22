@@ -1,32 +1,13 @@
-import React from 'react';
-class MoodboardCanvas extends React.Component {
-    constructor(props) {
-        super(props)
-        this.initCanvas = this.initCanvas.bind(this)
-    }
-    initCanvas() {
-        const {
-            tempo,
-            energy,
-            danceability,
-            acousticness,
-            valence,
-            i,
-            canvaswidth,
-            canvasheight,
-            title,
-        } = this.props       
+const initCanvas = (tempo, energy, danceability, acousticness, valence, song, canvaswidth, canvasheight) => {
+    var mb = [];
+    for( var i = 1; i <= 9; i++ ){
         var [BG,GR,TX] = colorGenerate(danceability,energy,valence,acousticness,tempo);
         var [letterSpacing,fontSize,fontWeight,fontName,backupFont] = fontGenerate(danceability,energy,valence,acousticness,tempo);
         letterSpacing /= 6;
         fontSize /= 6;
         let c = document.getElementById("littleCanvas"+i);
-        c.onclick = () =>{
-            //to do
-        }
         let ctx = c.getContext("2d");
-        ctx.fillStyle = BG;
-        ctx.fillRect(0, 0, canvaswidth, canvasheight);
+        fillRoundRect(ctx, 0, 0, canvaswidth, canvasheight, 4, BG);
         ctx.fillStyle = GR;
         ctx.beginPath();
         ctx.arc(canvaswidth*0.75,canvasheight*0.5,canvasheight*0.2,0,2*Math.PI);
@@ -41,34 +22,36 @@ class MoodboardCanvas extends React.Component {
         ctx.font = fontWeight+' '+fontSize+'px '+fontName+','+backupFont;
         ctx.fillStyle = TX;
         ctx.textAlign = "center";
-        ctx.fillText(title,(canvaswidth+letterSpacing)*0.5,canvasheight*0.5+fontSize/3);
+        ctx.fillText(song,(canvaswidth+letterSpacing)*0.5,canvasheight*0.5+fontSize/3);
         ctx.font = fontWeight+' '+(fontSize*0.5)+'px '+fontName+','+backupFont;
         ctx.fillStyle = TX;
         ctx.textAlign = "center";
         ctx.fillText(fontName,(canvaswidth+letterSpacing)*0.5,canvasheight*0.8);
+        mb[i] = { BG, GR, TX, letterSpacing, fontSize, fontWeight, fontName, backupFont };
     }
+    return mb;
+};
 
-    componentDidMount() {
-        this.initCanvas()
-    }
-    componentDidUpdate() {
-        this.initCanvas()
-    }
-    static defaultProps = {
-        canvaswidth: 320,
-        canvasheight: 180,
-        i: 1,
-    }
-    render() {
-        const { canvaswidth, canvasheight, i } = this.props
-        return (
-            <canvas id={"littleCanvas"+i} width={canvaswidth} height={canvasheight}></canvas>
-        )
-    }
-}
+function fillRoundRect(cxt, x, y, width, height, radius, /*optional*/ fillColor) {     
+    if (2 * radius > width || 2 * radius > height) { return false; }
+    cxt.save();
+    cxt.translate(x, y); 
+    cxt.beginPath(0);
+    cxt.arc(width - radius, height - radius, radius, 0, Math.PI / 2);
+    cxt.lineTo(radius, height);
+    cxt.arc(radius, height - radius, radius, Math.PI / 2, Math.PI);
+    cxt.lineTo(0, radius);
+    cxt.arc(radius, radius, radius, Math.PI, Math.PI * 3 / 2);
+    cxt.lineTo(width - radius, 0);  
+    cxt.arc(width - radius, radius, radius, Math.PI * 3 / 2, Math.PI * 2);  
+    cxt.lineTo(width, height - radius);
+    cxt.closePath();
+    cxt.fillStyle = fillColor || "#000";
+    cxt.fill();
+    cxt.restore();
+};
 
-
-const colorGenerate = (dan, ene, val, aco, tem, bw = 0) => {
+const colorGenerate = (dan, ene, val, aco, tem) => {
     //get liveness
     var tinycolor = require("tinycolor2");
     var liv,liv_flag;
@@ -81,6 +64,9 @@ const colorGenerate = (dan, ene, val, aco, tem, bw = 0) => {
     else liv = 0;
 
     //color generate
+    var bw = 1;
+    if(Math.random() < 0.3) bw = 0;
+
     var hue, sat, bri;
     var hue_arg, sat_arg, bri_arg;
     var text_flag = 1, graph_flag = 1, rand_flag = 1;
@@ -133,7 +119,7 @@ const colorGenerate = (dan, ene, val, aco, tem, bw = 0) => {
     var GR = tinycolor("hsv(" + (hue + rand_flag * 20 + Math.random() * 10 + 360) % 360 + "," + sat2 + "," + bri2 + ")");
     if(Math.random() > 0 && liv === 1) GR = GR.complement();
     
-    if(bw === 1){
+    if(bw === 0){
         if(Math.random() > 0.5){
             BG = tinycolor("black");
             TX = tinycolor("white");
@@ -213,4 +199,4 @@ const fontGenerate = (dan, ene, val, aco, tem) => {
     return [letterSpacing, fontSize, fontWeight, fontName, backupFont];
 }
 
-export default MoodboardCanvas;
+export default initCanvas;

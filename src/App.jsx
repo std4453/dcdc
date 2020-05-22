@@ -36,13 +36,16 @@ function App() {
     const [id, setId] = useState('');
     const [data, setData] = useState({});
     const [error, setError] = useState(null);
+    const [moodboard, setMoodboard] = useState({});
 
     const params = {
         step, setStep,
         id, setId,
         error, setError,
         data, setData,
+        moodboard, setMoodboard,
     };
+
     return (
         <MuiThemeProvider theme={theme}>
             <div className={classes.root}>

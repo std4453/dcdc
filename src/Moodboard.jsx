@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
-import { makeStyles, Button, Grid, Typography } from '@material-ui/core';
-import MoodboardCanvas from './MoodboardCanvas';
+import React, { useCallback, useEffect } from 'react';
+import { makeStyles, withStyles, Button, Grid, Typography } from '@material-ui/core';
+import initCanvas from './MoodboardCanvas';
 
 const useStyles = makeStyles({
     grid: {
@@ -15,14 +15,45 @@ const useStyles = makeStyles({
     },
 });
 
-function Moodboard({ setStep, 
-    data: { song, name: artist, album: [{ al_name: album }], 
-    audio_features: [{ tempo, energy, danceability, acousticness, valence }]  } }
-    ) {
+const CanvasButton = withStyles({
+    root: {
+        boxShadow: 'none',
+        backgroundColor: '#121212',
+        padding: '0 0',
+        '&:hover': {
+            boxShadow: '0 0 0 0.06rem #BBBBBB',
+        },
+        '&:focus': {
+            boxShadow: '0 0 0 0.06rem #BB86FC',
+        },
+    },
+})(Button);
+
+function Moodboard({ 
+    setStep,
+    setMoodboard, 
+    data: { 
+        song, 
+        name: artist, 
+        album: [{ al_name: album }], 
+        audio_features: [{ tempo, energy, danceability, acousticness, valence }]  
+    },
+}) {
+    const [canvaswidth, canvasheight] = [320, 180];
     const classes = useStyles();
+    var index, mb;
+    const selectCanvas = (i) =>{
+        index = i;
+    };
+    useEffect(()=>{
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        mb = initCanvas( tempo, energy, danceability, acousticness, valence, song, canvaswidth, canvasheight );
+    })
     const nextStep = useCallback(() => {
         setStep('Segmentation');
-    }, [setStep]);
+        setMoodboard(mb[index]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [setStep,setMoodboard]);
     return (
         <Grid
             container
@@ -77,78 +108,105 @@ function Moodboard({ setStep,
                     justify="space-between" 
                     spacing={6}
                 >
-                <Grid item>
-                    <MoodboardCanvas
-                        tempo = {tempo}
-                        energy = {energy}
-                        danceability = {danceability}
-                        acousticness = {acousticness}
-                        valence = {valence}
-                        title = {song}
-                        i = '1'
-                        >
-                    </MoodboardCanvas>
-                </Grid>
-                <Grid item>
-                    <MoodboardCanvas
-                        tempo = {tempo}
-                        energy = {energy}
-                        danceability = {danceability}
-                        acousticness = {acousticness}
-                        valence = {valence}
-                        title = {song}
-                        i = '2'
-                        >
-                    </MoodboardCanvas>
-                </Grid>
-                <Grid item>
-                    <MoodboardCanvas
-                        tempo = {tempo}
-                        energy = {energy}
-                        danceability = {danceability}
-                        acousticness = {acousticness}
-                        valence = {valence}
-                        title = {song}
-                        i = '3'
-                        >
-                    </MoodboardCanvas>
-                </Grid>
-                <Grid item>
-                    <MoodboardCanvas
-                        tempo = {tempo}
-                        energy = {energy}
-                        danceability = {danceability}
-                        acousticness = {acousticness}
-                        valence = {valence}
-                        title = {song}
-                        i = '4'
-                        >
-                    </MoodboardCanvas>
-                </Grid>
-                <Grid item>
-                    <MoodboardCanvas
-                        tempo = {tempo}
-                        energy = {energy}
-                        danceability = {danceability}
-                        acousticness = {acousticness}
-                        valence = {valence}
-                        title = {song}
-                        i = '5'
-                        >
-                    </MoodboardCanvas>
-                </Grid>
-                <Grid item>
-                    <MoodboardCanvas
-                        tempo = {tempo}
-                        energy = {energy}
-                        danceability = {danceability}
-                        acousticness = {acousticness}
-                        valence = {valence}
-                        title = {song}
-                        i = '6'
-                        >
-                    </MoodboardCanvas>
-                </Grid>
+                    <Grid item>
+                        <CanvasButton>
+                            <canvas
+                                id={"littleCanvas1"}
+                                width={canvaswidth}
+                                height={canvasheight}
+                                onClick={()=>selectCanvas(1)}
+                            >
+                            </canvas>
+                        </CanvasButton>
+                    </Grid>
+                    <Grid item>
+                        <CanvasButton>
+                            <canvas
+                                id={"littleCanvas2"}
+                                width={canvaswidth}
+                                height={canvasheight}
+                                onClick={()=>selectCanvas(2)}
+                            >
+                            </canvas>
+                        </CanvasButton>
+                    </Grid>
+                    <Grid item>
+                        <CanvasButton>
+                            <canvas
+                                id={"littleCanvas3"}
+                                width={canvaswidth}
+                                height={canvasheight}
+                                onClick={()=>selectCanvas(3)}
+                            >
+                            </canvas>
+                        </CanvasButton>
+                    </Grid>
+                    <Grid item>
+                        <CanvasButton>
+                            <canvas
+                                id={"littleCanvas4"}
+                                width={canvaswidth}
+                                height={canvasheight}
+                                onClick={()=>selectCanvas(4)}
+                            >
+                            </canvas>
+                        </CanvasButton>
+                    </Grid>
+                    <Grid item>
+                        <CanvasButton>
+                            <canvas
+                                id={"littleCanvas5"}
+                                width={canvaswidth}
+                                height={canvasheight}
+                                onClick={()=>selectCanvas(5)}
+                            >
+                            </canvas>
+                        </CanvasButton>
+                    </Grid>
+                    <Grid item>
+                        <CanvasButton>
+                            <canvas
+                                id={"littleCanvas6"}
+                                width={canvaswidth}
+                                height={canvasheight}
+                                onClick={()=>selectCanvas(6)}
+                            >
+                            </canvas>
+                        </CanvasButton>
+                    </Grid>
+                    <Grid item>
+                        <CanvasButton>
+                            <canvas
+                                id={"littleCanvas7"}
+                                width={canvaswidth}
+                                height={canvasheight}
+                                onClick={()=>selectCanvas(7)}
+                            >
+                            </canvas>
+                        </CanvasButton>
+                    </Grid>
+                    <Grid item>
+                        <CanvasButton>
+                            <canvas
+                                id={"littleCanvas8"}
+                                width={canvaswidth}
+                                height={canvasheight}
+                                onClick={()=>selectCanvas(8)}
+                            >
+                            </canvas>
+                        </CanvasButton>
+                    </Grid>
+                    <Grid item>
+                        <CanvasButton>
+                            <canvas
+                                id={"littleCanvas9"}
+                                width={canvaswidth}
+                                height={canvasheight}
+                                onClick={()=>selectCanvas(9)}
+                            >
+                            </canvas>
+                        </CanvasButton>
+                    </Grid>
                 </Grid>
             </Grid>
             <Grid item xs />
