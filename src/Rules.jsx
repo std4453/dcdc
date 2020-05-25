@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import NodeMap from './retex/NodeMap';
 
 function InitialValues({ setStep }) {

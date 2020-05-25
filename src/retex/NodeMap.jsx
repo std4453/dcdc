@@ -63,7 +63,7 @@ function NodeMap({ setStep, saveKey, next }) {
         const text = JSON.stringify(data);
         const blob = new Blob([text], { type: 'application/json' });
         saveAs(blob, `${saveKey}.json`);
-    }, [editor]);
+    }, [editor, saveKey]);
     const upload = useCallback(async (files) => {
         if (!editor) return;
         const file = files[0];
