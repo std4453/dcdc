@@ -1,14 +1,17 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import { makeStyles, Button } from '@material-ui/core';
+import { makeStyles, Button, Grid } from '@material-ui/core';
 import Rete from 'rete';
 import ConnectionPlugin from 'rete-connection-plugin';
 import ReactRenderPlugin from 'rete-react-render-plugin';
 import ContextMenuPlugin from 'rete-context-menu-plugin';
+import { saveAs } from 'file-saver';
+import ReactFileReader from 'react-file-reader';
+import { readAsText } from 'promise-file-reader';
 import MyNode from './MyNode';
 import components from "../components";
 
 const useStyles = makeStyles({
-    button: {
+    buttons: {
         position: 'absolute',
         right: 16,
         bottom: 16,
@@ -54,6 +57,20 @@ function NodeMap({ setStep, saveKey, next }) {
             });
         })();
     }, [editor, saveKey]);
+    const download = useCallback(async () => {
+        if (!editor) return;
+        const data = await editor.toJSON();
+        const text = JSON.stringify(data);
+        const blob = new Blob([text], { type: 'application/json' });
+        saveAs(blob, `${saveKey}.json`);
+    }, [editor]);
+    const upload = useCallback(async (files) => {
+        if (!editor) return;
+        const file = files[0];
+        const text = await readAsText(file);
+        const data = JSON.parse(text);
+        await editor.fromJSON(data);
+    }, [editor]);
 
     return <>
         <div ref={setRoot} style={{
@@ -62,16 +79,43 @@ function NodeMap({ setStep, saveKey, next }) {
             top: 0,
             width: '100vw',
             height: '100vh',
-        }}/>
-        <Button
-            variant="contained"
-            color="primary"
-            disableElevation
-            onClick={nextStep}
-            classes={{ root: classes.button }}
-        >
-            下一步
-        </Button>
+        }} />
+        <Grid container spacing={2} classes={{ root: classes.buttons }} justify="flex-end">
+            <Grid item>
+                <ReactFileReader
+                    fileTypes={[".json"]}
+                    handleFiles={upload}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        disableElevation
+                        component="span"
+                    >
+                        上传
+                    </Button>
+                </ReactFileReader>
+            </Grid>
+            <Grid item>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    disableElevation
+                    onClick={download}
+                >
+                    下载
+                </Button>
+            </Grid>
+            <Grid item>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    disableElevation
+                    onClick={nextStep}
+                >
+                    下一步
+                </Button>
+            </Grid>
+        </Grid>
     </>
 }
 
