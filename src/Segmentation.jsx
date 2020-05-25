@@ -3,6 +3,7 @@ import { makeStyles, Button, Grid, Typography, Slider } from '@material-ui/core'
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import grey from '@material-ui/core/colors/grey';
+import * as _ from 'lodash';
 
 function Length({ time }) {
     const secs = Math.round(time);
@@ -48,6 +49,7 @@ const useStyles = makeStyles({
 
 function Segmentation({
     setStep,
+    setData,
     data: {
         song,
         name: artist,
@@ -55,7 +57,7 @@ function Segmentation({
         sections,
         audio_features: [{ duration_s: length }],
         music_url: url,
-    },
+    }, data,
 }) {
     const classes = useStyles();
     const nextStep = useCallback(() => {
@@ -167,15 +169,19 @@ function Segmentation({
                         </Grid>
                         <Grid item xs>
                             <div className={classes.sections}>
-                                {sections.map(({ start }, i) => (
+                                {sections.map(({ start, climax }, i) => (
                                     <div
                                         key={i}
                                         className={classes.section}
                                         style={{
                                             left: `${start / length * 100}%`,
                                             right: `${100 - (i === sections.length - 1 ? length : sections[i + 1].start) / length * 100}%`,
-                                            // backgroundColor: mode === 0 ? '#03DAC5' : '#F2994A',
-                                            backgroundColor: '#03DAC5',
+                                            backgroundColor: climax === 0 ? '#03DAC5' : '#F2994A',
+                                        }}
+                                        onClick={() => {
+                                            const newData = _.cloneDeep(data);
+                                            newData.sections[i].climax = 1 - climax;
+                                            setData(newData);
                                         }}
                                     />
                                 ))}
