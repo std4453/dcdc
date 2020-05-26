@@ -3,6 +3,8 @@ import { makeStyles, Button, Grid, Typography, Slider } from '@material-ui/core'
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import grey from '@material-ui/core/colors/grey';
+import Draggable from 'react-draggable'; // The default
+import useDimensions from "react-use-dimensions";
 import * as _ from 'lodash';
 
 function Length({ time }) {
@@ -45,20 +47,36 @@ const useStyles = makeStyles({
             border: '1px solid #BB86FC',
         },
     },
+    edge: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        zIndex: 2,
+        width: 6,
+        marginLeft: -3,
+        '&:hover': {
+            backgroundColor: '#BB86FC',
+        },
+        cursor: 'ew-resize',
+    },
 });
 
 function Segmentation({
     setStep,
     setData,
-    data: {
+    data: { sections },
+    data,
+}) {
+    const [localData, setLocalData] = useState(data);
+    const {
         song,
         name: artist,
         album: [{ al_name: album }],
-        sections,
+        sections: localSections,
         audio_features: [{ duration_s: length }],
         music_url: url,
-    }, data,
-}) {
+    } = localData;
+
     const classes = useStyles();
     const nextStep = useCallback(() => {
         setStep('InitialValues');
@@ -87,7 +105,9 @@ function Segmentation({
     }, [audio]);
     const play = useCallback(() => audio.play(), [audio]);
     const pause = useCallback(() => audio.pause(), [audio]);
-    
+
+    const [ref, { width }] = useDimensions();
+
     return (
         <Grid
             container
@@ -135,9 +155,9 @@ function Segmentation({
                 </Grid>
                 <div className={classes.content}>
                     <Typography className={classes.time} color="textPrimary" variant="body2">
-                        <Length time={currentTime}/>
+                        <Length time={currentTime} />
                         &nbsp;/&nbsp;
-                        <Length time={length}/>
+                        <Length time={length} />
                     </Typography>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item>
@@ -150,47 +170,73 @@ function Segmentation({
                                     onClick={pause}
                                 />
                             ) : (
-                                <PlayArrowIcon
-                                    style={{
-                                        color: grey[100],
-                                        cursor: 'pointer',
-                                    }}
-                                    onClick={play}
-                                />
-                            )}
+                                    <PlayArrowIcon
+                                        style={{
+                                            color: grey[100],
+                                            cursor: 'pointer',
+                                        }}
+                                        onClick={play}
+                                    />
+                                )}
                         </Grid>
                         <Grid item xs>
-                            <Slider value={currentTime} onChange={onSeek} max={length}/>
+                            <Slider value={currentTime} onChange={onSeek} max={length} />
                         </Grid>
                     </Grid>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item>
-                            <PlayArrowIcon style={{ color: "#121212" }}/>
+                            <PlayArrowIcon style={{ color: "#121212" }} />
                         </Grid>
                         <Grid item xs>
-                            <div className={classes.sections}>
-                                {sections.map(({ start, climax }, i) => (
+                            <div className={classes.sections} ref={ref}>
+                                {localSections.map(({ start, climax }, i) => (
                                     <div
-                                        key={i}
+                                        key={`section-${i}`}
                                         className={classes.section}
                                         style={{
                                             left: `${start / length * 100}%`,
-                                            right: `${100 - (i === sections.length - 1 ? length : sections[i + 1].start) / length * 100}%`,
+                                            right: `${100 - (i === localSections.length - 1 ? length : localSections[i + 1].start) / length * 100}%`,
                                             backgroundColor: climax === 0 ? '#03DAC5' : '#F2994A',
                                         }}
                                         onClick={() => {
-                                            const newData = _.cloneDeep(data);
+                                            const newData = _.cloneDeep(localData);
                                             newData.sections[i].climax = 1 - climax;
+                                            setLocalData(newData);
                                             setData(newData);
                                         }}
                                     />
+                                ))}
+                                {new Array(sections.length - 1).fill(0).map((_, i) => i + 1).map(i => (
+                                    <Draggable
+                                        key={`handle=${i}-${sections[i].start}`}
+                                        axis="x"
+                                        bounds={{
+                                            left: -(sections[i].start - sections[i - 1].start) / length * width,
+                                            right: (i === sections.length - 1 ? length : sections[i + 1].start - sections[i].start) / length * width,
+                                        }}
+                                        onDrag={(__, { x }) => {
+                                            const newData = _.cloneDeep(data);
+                                            newData.sections[i].start += x / width * length;
+                                            setLocalData(newData);
+                                        }}
+                                        onStop={() => {
+                                            setData(localData);
+                                        }}
+                                    >
+                                        <div
+                                            className={classes.edge}
+                                            style={{
+                                                left: sections[i].start / length * width, // unchanged while dragging
+                                            }}
+                                        />
+                                    </Draggable>
                                 ))}
                             </div>
                         </Grid>
                     </Grid>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item>
-                            <PlayArrowIcon style={{ color: "#121212" }}/>
+                            <PlayArrowIcon style={{ color: "#121212" }} />
                         </Grid>
                         <Grid item xs>
                             <Typography color="textSecondary" variant="body2" style={{ marginTop: -16 }}>
