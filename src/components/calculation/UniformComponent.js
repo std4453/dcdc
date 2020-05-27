@@ -1,4 +1,4 @@
-import { BeanComponent } from '../retex/components';
+import { BeanComponent } from '../../retex/components';
 
 class UniformComponent extends BeanComponent {
     constructor() {

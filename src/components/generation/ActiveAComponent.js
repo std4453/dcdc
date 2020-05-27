@@ -1,5 +1,5 @@
-import { BeanComponent } from '../retex/components';
-import { interp, opposite } from '../utils';
+import { BeanComponent } from '../../retex/components';
+import { interp, opposite } from '../../utils';
 
 class ActiveAComponent extends BeanComponent {
     constructor() {

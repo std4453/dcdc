@@ -1,38 +1,17 @@
 // lifecycle
 import InitiatorComponent from './InitiatorComponent';
-import ioComponents from './IOComponents';
 
-// rendering
-import CanvasComponent from './CanvasComponent';
-import FontComponent from './FontComponent';
-import CharComponent from './CharComponent';
-
-// calculation
-import UniformComponent from './UniformComponent';
-import StepComponent from './StepComponent';
-import commonComponents from './ArithmeticComponent';
-
-// generation
-import SplitComponent from './SplitComponent';
-import BalancedAComponent from './BalancedAComponent';
-import BalancedBComponent from './BalancedBComponent';
-import NeutralComponent from './NeutralComponent';
-import ActiveAComponent from './ActiveAComponent';
-import ActiveBComponent from './ActiveBComponent';
+import io from './io';
+import common from './common';
+import render from './render';
+import generation from './generation';
+import calculation from './calculation';
 
 export default [
-    CanvasComponent, 
-    FontComponent, 
-    UniformComponent, 
-    CharComponent,
     InitiatorComponent,
-    StepComponent,
-    BalancedAComponent,
-    SplitComponent,
-    BalancedBComponent,
-    NeutralComponent,
-    ActiveAComponent,
-    ActiveBComponent,
-    ...commonComponents,
-    ...ioComponents,
+    ...io,
+    ...common,
+    ...render,
+    ...generation,
+    ...calculation,
 ];

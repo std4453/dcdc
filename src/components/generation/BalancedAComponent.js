@@ -1,5 +1,5 @@
-import { BeanComponent } from '../retex/components';
-import { interp, divide } from '../utils';
+import { BeanComponent } from '../../retex/components';
+import { interp, divide } from '../../utils';
 
 class BalancedAComponent extends BeanComponent {
     constructor() {

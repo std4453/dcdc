@@ -1,4 +1,4 @@
-import { BeanComponent } from '../retex/components';
+import { BeanComponent } from '../../retex/components';
 
 class SplitComponent extends BeanComponent {
     constructor() {
