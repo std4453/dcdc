@@ -20,10 +20,17 @@ function Loading({ id, setStep, setData }) {
     const classes = useStyles();
     useEffect(() => {
         (async () => {
-            // TODO: query backend
-            await delay(1000);
-            setData(sample);
-            setStep('Moodboard');
+            try {
+                // TODO: switch to actual api when server is ready
+                // const resp = await fetch(`https://dcdcapi.herokuapp.com/song/${id}`);
+                // const data = await resp.json();
+                // setData(data);
+                await delay(1000);
+                setData(sample);
+                setStep('Moodboard');
+            } catch (e) {
+                console.log(e);
+            }
         })();
     }, [setStep, setData]);
     return (
