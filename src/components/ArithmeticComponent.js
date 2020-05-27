@@ -107,10 +107,10 @@ class DimensionComponent extends BeanComponent {
     }
 }
 
-export {
+export default [
     ArithmeticComponent,
     Arithmetic2Component,
     NumberComponent,
     StringComponent,
     DimensionComponent,
-};
+];
