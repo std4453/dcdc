@@ -6,6 +6,7 @@ import Loading from './Loading';
 import Moodboard from './Moodboard';
 import Segmentation from './Segmentation';
 import { InitialValues, GenerationRules } from './Rules';
+import Generation from './Generation';
 
 import './index.css';
 
@@ -30,7 +31,7 @@ function App() {
     const [step, setStep] = useState('SongSelection');
     const Component = {
         SongSelection, Loading, Moodboard, Segmentation,
-        InitialValues, GenerationRules,
+        InitialValues, GenerationRules, Generation,
     }[step];
 
     const [id, setId] = useState('');

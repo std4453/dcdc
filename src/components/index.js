@@ -11,6 +11,7 @@ import BalancedBComponent from './BalancedBComponent';
 import NeutralComponent from './NeutralComponent';
 import ActiveAComponent from './ActiveAComponent';
 import ActiveBComponent from './ActiveBComponent';
+import IOComponents from './IOComponents';
 
 export default [
     CanvasComponent, 
@@ -30,4 +31,5 @@ export default [
     ActiveAComponent,
     DimensionComponent,
     ActiveBComponent,
+    ...IOComponents,
 ];
