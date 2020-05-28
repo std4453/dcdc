@@ -1,4 +1,5 @@
 import { BeanComponent } from '../retex/components';
+import * as _ from 'lodash';
 
 class NumberInputComponent extends BeanComponent {
     constructor() {
@@ -13,9 +14,9 @@ class NumberInputComponent extends BeanComponent {
         );
     }
 
-    * worker({ key }, _, { inputs }) {
+    * worker({ key }, __, { inputs }) {
         yield {
-            val: inputs[key],
+            val: _.get(inputs, key),
         };
     }
 }
@@ -33,9 +34,9 @@ class StringInputComponent extends BeanComponent {
         );
     }
 
-    * worker({ key }, _, { inputs }) {
+    * worker({ key }, __, { inputs }) {
         yield {
-            val: inputs[key],
+            val: _.get(inputs, key),
         };
     }
 }
@@ -52,9 +53,9 @@ class NumberOutputComponent extends BeanComponent {
         );
     }
 
-    * worker({ val, key }, _, { outputs }) {
-        if (!(key in outputs)) outputs[key] = [];
-        outputs[key].push(val);
+    * worker({ val, key }, __, { outputs }) {
+        if (!_.has(outputs, key)) _.set(outputs, key, []);
+        _.get(outputs, key).push(val);
         yield;
     }
 }
@@ -71,9 +72,9 @@ class StringOutputComponent extends BeanComponent {
         );
     }
 
-    * worker({ val, key }, _, { outputs }) {
-        if (!(key in outputs)) outputs[key] = [];
-        outputs[key].push(val);
+    * worker({ val, key }, __, { outputs }) {
+        if (!_.has(outputs, key)) _.set(outputs, key, []);
+        _.get(outputs, key).push(val);
         yield;
     }
 }
