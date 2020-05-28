@@ -15,9 +15,18 @@ class NumberInputComponent extends BeanComponent {
     }
 
     * worker({ key }, __, { inputs }) {
-        yield {
-            val: _.get(inputs, key),
-        };
+        const values = _.get(inputs, key);
+        if (values instanceof Array) {
+            for (const value of values) {
+                yield {
+                    val: value,
+                };
+            }
+        } else {
+            yield {
+                val: values,
+            };
+        }
     }
 }
 
@@ -35,9 +44,18 @@ class StringInputComponent extends BeanComponent {
     }
 
     * worker({ key }, __, { inputs }) {
-        yield {
-            val: _.get(inputs, key),
-        };
+        const values = _.get(inputs, key);
+        if (values instanceof Array) {
+            for (const value of values) {
+                yield {
+                    val: value,
+                };
+            }
+        } else {
+            yield {
+                val: values,
+            };
+        }
     }
 }
 
