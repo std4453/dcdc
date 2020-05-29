@@ -15,9 +15,8 @@ class CanvasComponent extends BeanComponent {
         );
     }
 
-    async * worker({ width, height, background }) {
-        const canvas = document.querySelector('#canvas');
-        canvas.style.transform = `scale(${1 / window.devicePixelRatio})`;
+    async * worker({ width, height, background }, __, { canvas }) {
+        // canvas.style.transform = `scale(${1 / window.devicePixelRatio})`;
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
