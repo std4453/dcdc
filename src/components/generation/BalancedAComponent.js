@@ -1,5 +1,5 @@
 import { BeanComponent } from '../BeanComponent';
-import { interp, divide } from '../../utils';
+import { interp, divide } from '../utils';
 
 class BalancedAComponent extends BeanComponent {
     constructor() {
