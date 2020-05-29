@@ -2,8 +2,9 @@ import { makeStyles, Grid, Typography, Button, Slider } from '@material-ui/core'
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import DatGui, { DatFolder, DatString } from 'react-dat-gui';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import grey from '@material-ui/core/colors/grey';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import PauseIcon from '@material-ui/icons/Pause';
+import grey from '@material-ui/core/colors/grey';
 import Length from './Length';
 import exec from '../retex/exec';
 
@@ -54,10 +55,6 @@ const useStyles = makeStyles({
         top: 0,
         bottom: 0,
         border: '1px solid #121212',
-        '&:hover': {
-            outline: '1px solid #BB86FC',
-            border: '1px solid #BB86FC',
-        },
     },
     bottomInner: {
         height: '100%',
@@ -188,12 +185,23 @@ function Generation({
                         </Grid>
                         <Grid item xs container justify="center" spacing={4}>
                             <Grid item>
-                                <PlayArrowIcon
-                                    style={{
-                                        color: grey[100],
-                                        cursor: 'pointer',
-                                    }}
-                                />
+                                {playing ? (
+                                    <PauseIcon
+                                        style={{
+                                            color: grey[100],
+                                            cursor: 'pointer',
+                                        }}
+                                        onClick={pause}
+                                    />
+                                ) : (
+                                        <PlayArrowIcon
+                                            style={{
+                                                color: grey[100],
+                                                cursor: 'pointer',
+                                            }}
+                                            onClick={play}
+                                        />
+                                    )}
                             </Grid>
                             <Grid item>
                                 <FullscreenIcon
@@ -230,17 +238,21 @@ function Generation({
                         </Grid>
                         <Grid item>
                             <div className={classes.sections}>
-                                {sections.map(({ start, climax }, i) => (
-                                    <div
-                                        key={`section-${i}`}
-                                        className={classes.section}
-                                        style={{
-                                            left: `${start / length * 100}%`,
-                                            right: `${100 - (i === sections.length - 1 ? length : sections[i + 1].start) / length * 100}%`,
-                                            backgroundColor: climax === 0 ? '#03DAC5' : '#F2994A',
-                                        }}
-                                    />
-                                ))}
+                                {sections.map(({ start, climax }, i) => {
+                                    const end = (i === sections.length - 1 ? length : sections[i + 1].start);
+                                    return (
+                                        <div
+                                            key={`section-${i}`}
+                                            className={classes.section}
+                                            style={{
+                                                left: `${start / length * 100}%`,
+                                                right: `${(1 - end / length) * 100}%`,
+                                                backgroundColor: climax === 0 ? '#03DAC5' : '#F2994A',
+                                                opacity: currentTime >= start && currentTime < end ? 1.0 : 0.2,
+                                            }}
+                                        />
+                                    );
+                                })}
                             </div>
                         </Grid>
                     </Grid>

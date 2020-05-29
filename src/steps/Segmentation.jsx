@@ -164,14 +164,14 @@ function Segmentation({
                                     onClick={pause}
                                 />
                             ) : (
-                                    <PlayArrowIcon
-                                        style={{
-                                            color: grey[100],
-                                            cursor: 'pointer',
-                                        }}
-                                        onClick={play}
-                                    />
-                                )}
+                                <PlayArrowIcon
+                                    style={{
+                                        color: grey[100],
+                                        cursor: 'pointer',
+                                    }}
+                                    onClick={play}
+                                />
+                            )}
                         </Grid>
                         <Grid item xs>
                             <Slider value={currentTime} onChange={onSeek} max={length} />
