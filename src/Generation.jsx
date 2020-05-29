@@ -15,11 +15,22 @@ const useStyles = makeStyles({
         position: 'absolute',
         top: 0,
         right: 0,
+        padding: 4,
+        width: 345,
     },
-    canvas: {
+    canvasContainer: {
         position: 'absolute',
         top: 0,
         left: 0,
+        width: 'calc(100vw - 345px)',
+        height: 'calc(100vh - 195px)',
+        backgroundColor: '#222',
+        overflow: 'hidden',
+    },
+    canvas: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
     },
 });
 
@@ -68,7 +79,7 @@ function Generation({
         const convert = ({ name, path, type, children }) => {
             switch (type) {
                 case 'folder': return (
-                    <DatFolder title={name}>
+                    <DatFolder title={name} closed={false}>
                         {children.map(convert)}
                     </DatFolder>
                 );
@@ -82,7 +93,9 @@ function Generation({
     }, []);
     return (
         <div className={classes.root}>
-            <canvas className={classes.canvas} ref={setCanvas}/>
+            <div className={classes.canvasContainer}>
+                <canvas className={classes.canvas} ref={setCanvas} />
+            </div>
             <div className={classes.side}>
                 <DatGui
                     data={params}
@@ -93,6 +106,8 @@ function Generation({
                     style={{
                         position: 'relative',
                         backgroundColor: '#1A1A1A',
+                        right: 0,
+                        width: '100%',
                     }}
                 >
                     {config.map(convert)}

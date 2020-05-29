@@ -16,9 +16,12 @@ class CanvasComponent extends BeanComponent {
     }
 
     async * worker({ width, height, background }, __, { canvas }) {
-        // canvas.style.transform = `scale(${1 / window.devicePixelRatio})`;
         canvas.width = width;
         canvas.height = height;
+        const scale = Math.min(canvas.parentNode.clientWidth / canvas.width, canvas.parentNode.clientHeight / canvas.height);
+        canvas.style.transform = `scale(${scale})`;
+        canvas.style.marginLeft = `${-width / 2}px`;
+        canvas.style.marginTop = `${-height / 2}px`;
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = background;
         ctx.fillRect(0, 0, width, height);
