@@ -6,13 +6,7 @@ import grey from '@material-ui/core/colors/grey';
 import Draggable from 'react-draggable'; // The default
 import useDimensions from "react-use-dimensions";
 import * as _ from 'lodash';
-
-function Length({ time }) {
-    const secs = Math.round(time);
-    const s = secs % 60, m = ~~(secs / 60);
-    const ss = s < 10 ? `0${s}` : `${s}`, sm = m < 10 ? `0${m}` : `${m}`;
-    return `${sm}:${ss}`;
-}
+import Length from './Length';
 
 const useStyles = makeStyles({
     grid: {

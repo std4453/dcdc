@@ -1,6 +1,10 @@
-import { makeStyles } from '@material-ui/core';
-import React, { useEffect, useMemo, useState } from 'react';
+import { makeStyles, Grid, Typography, Button, Slider } from '@material-ui/core';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import DatGui, { DatFolder, DatString } from 'react-dat-gui';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import grey from '@material-ui/core/colors/grey';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import Length from './Length';
 import exec from '../retex/exec';
 
 const useStyles = makeStyles({
@@ -32,6 +36,32 @@ const useStyles = makeStyles({
         top: '50%',
         left: '50%',
     },
+    bottom: {
+        position: 'absolute',
+        left: 0,
+        bottom: 0,
+        height: 195,
+        width: 'calc(100vw - 345px)',
+        padding: '20px 30px 40px 30px',
+        boxSizing: 'border-box',
+    },
+    sections: {
+        position: 'relative',
+        height: 16,
+    },
+    section: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        border: '1px solid #121212',
+        '&:hover': {
+            outline: '1px solid #BB86FC',
+            border: '1px solid #BB86FC',
+        },
+    },
+    bottomInner: {
+        height: '100%',
+    },
 });
 
 const config = [
@@ -47,8 +77,17 @@ const config = [
 function Generation({
     moodboard,
     data,
+    data: {
+        song,
+        name: artist,
+        album: [{ al_name: album }],
+        sections,
+        audio_features: [{ duration_s: length }],
+        music_url: url,
+    },
 }) {
     const classes = useStyles();
+
     const [params, setParams] = useState(null);
     useEffect(() => {
         (async () => {
@@ -91,6 +130,32 @@ function Generation({
         };
         return convert;
     }, []);
+
+    const audio = useMemo(() => {
+        return new Audio(url);
+    }, [url]);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [playing, setPlaying] = useState(false);
+    useEffect(() => {
+        if (!audio) return;
+        const onUpdate = () => setCurrentTime(audio.currentTime);
+        const onPlay = () => setPlaying(true);
+        const onPause = () => setPlaying(false);
+        audio.addEventListener('timeupdate', onUpdate);
+        audio.addEventListener('play', onPlay);
+        audio.addEventListener('pause', onPause);
+        return () => {
+            audio.removeEventListener('timeupdate', onUpdate);
+            audio.removeEventListener('play', onPlay);
+            audio.removeEventListener('pause', onPause);
+        };
+    }, [audio]);
+    const onSeek = useCallback((_, newVal) => {
+        audio.currentTime = newVal;
+    }, [audio]);
+    const play = useCallback(() => audio.play(), [audio]);
+    const pause = useCallback(() => audio.pause(), [audio]);
+
     return (
         <div className={classes.root}>
             <div className={classes.canvasContainer}>
@@ -112,6 +177,74 @@ function Generation({
                 >
                     {config.map(convert)}
                 </DatGui>
+            </div>
+            <div className={classes.bottom}>
+                <Grid container direction="column" justify="space-between" classes={{ root: classes.bottomInner }}>
+                    <Grid item container>
+                        <Grid item xs={3}>
+                            <Typography color="textSecondary">
+                                {song} / {artist} - {album}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs container justify="center" spacing={4}>
+                            <Grid item>
+                                <PlayArrowIcon
+                                    style={{
+                                        color: grey[100],
+                                        cursor: 'pointer',
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <FullscreenIcon
+                                    style={{
+                                        color: grey[100],
+                                        cursor: 'pointer',
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={3} container justify="flex-end" spacing={2}>
+                            <Grid item>
+                                <Button variant="outlined" color="primary">
+                                    换个效果
+                            </Button>
+                            </Grid>
+                            <Grid item>
+                                <Button variant="outlined" color="primary">
+                                    下载视频
+                            </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item container direction="column" spacing={0}>
+                        <Grid item>
+                            <Typography color="textPrimary" variant="body2">
+                                <Length time={currentTime} />
+                                &nbsp;/&nbsp;
+                                <Length time={length} />
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Slider value={currentTime} onChange={onSeek} max={length} />
+                        </Grid>
+                        <Grid item>
+                            <div className={classes.sections}>
+                                {sections.map(({ start, climax }, i) => (
+                                    <div
+                                        key={`section-${i}`}
+                                        className={classes.section}
+                                        style={{
+                                            left: `${start / length * 100}%`,
+                                            right: `${100 - (i === sections.length - 1 ? length : sections[i + 1].start) / length * 100}%`,
+                                            backgroundColor: climax === 0 ? '#03DAC5' : '#F2994A',
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </div>
         </div>
     );
