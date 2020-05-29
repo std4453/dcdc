@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import React, { useCallback, useEffect, useState, useMemo, useRef } from 'react';
 import { makeStyles, Button, Grid } from '@material-ui/core';
 import Rete from 'rete';
 import ConnectionPlugin from 'rete-connection-plugin';
@@ -18,7 +18,7 @@ const useStyles = makeStyles({
     },
 });
 
-function NodeMap({ setStep, saveKey, next }) {
+function NodeMap({ setStep, defaults, onUpdate, name, next }) {
     const classes = useStyles();
     const nextStep = useCallback(() => {
         setStep(next);
@@ -28,6 +28,10 @@ function NodeMap({ setStep, saveKey, next }) {
         if (!root) return null;
         return new Rete.NodeEditor('dcdc@0.1.0', root);
     }, [root]);
+    const onUpdateRef = useRef(onUpdate);
+    useEffect(() => {
+        onUpdateRef.current = onUpdate;
+    }, [onUpdate]);
     useEffect(() => {
         if (!editor) return;
         (async () => {
@@ -36,34 +40,20 @@ function NodeMap({ setStep, saveKey, next }) {
             editor.use(ContextMenuPlugin);
             components.forEach(component => editor.register(new component()));
 
-            if (localStorage[saveKey]) {
-                try {
-                    const data = JSON.parse(localStorage[saveKey]);
-                    await editor.fromJSON(data);
-                } catch (e) {
-                    console.log(e);
-                }
-            }
+            if (defaults) await editor.fromJSON(defaults);
 
-            let lastData = null;
             editor.on('process nodecreated noderemoved connectioncreated connectionremoved', async () => {
-                const data = await editor.toJSON();
-                lastData = data;
-                setTimeout(() => {
-                    if (data !== lastData) return;
-                    localStorage[saveKey] = JSON.stringify(data);
-                    console.log('Data saved!');
-                }, 3000);
+                (onUpdateRef.current)(await editor.toJSON());
             });
         })();
-    }, [editor, saveKey]);
+    }, [editor, defaults]);
     const download = useCallback(async () => {
         if (!editor) return;
         const data = await editor.toJSON();
         const text = JSON.stringify(data);
         const blob = new Blob([text], { type: 'application/json' });
-        saveAs(blob, `${saveKey}.json`);
-    }, [editor, saveKey]);
+        saveAs(blob, `${name}.json`);
+    }, [editor, name]);
     const upload = useCallback(async (files) => {
         if (!editor) return;
         const file = files[0];

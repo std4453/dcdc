@@ -78,6 +78,8 @@ function Generation({
         audio_features: [{ duration_s: length }],
         music_url: url,
     },
+    initialRef: { current: initialGraph },
+    generationRef: { current: generationGraph },
 }) {
     const classes = useStyles();
 
@@ -91,10 +93,10 @@ function Generation({
                 },
                 outputs: {},
             };
-            await exec('initial', ctx);
+            await exec(initialGraph, ctx);
             setParams(ctx.outputs);
         })();
-    }, [data, moodboard]);
+    }, [data, moodboard, initialGraph]);
     const [canvas, setCanvas] = useState(null);
     useEffect(() => {
         if (!params || !canvas) return;
@@ -104,9 +106,9 @@ function Generation({
                 inputs: { ...params },
                 outputs: {},
             };
-            await exec('generation', ctx);
+            await exec(generationGraph, ctx);
         })();
-    }, [canvas, params]);
+    }, [canvas, params, generationGraph]);
     const convert = useMemo(() => {
         const convert = ({ name, path, type, children }) => {
             switch (type) {
