@@ -1,4 +1,4 @@
-import { BeanComponent } from '../../retex/components';
+import { BeanComponent } from '../BeanComponent';
 import { interp, divide } from '../../utils';
 
 class BalancedAComponent extends BeanComponent {

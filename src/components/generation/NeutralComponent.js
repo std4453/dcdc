@@ -1,4 +1,4 @@
-import { BeanComponent } from '../../retex/components';
+import { BeanComponent } from '../BeanComponent';
 import { interp, opposite, scatter, translate } from '../../utils';
 
 class NeutralComponent extends BeanComponent {

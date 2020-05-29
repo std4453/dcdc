@@ -1,4 +1,4 @@
-import { BeanComponent } from '../retex/components';
+import { BeanComponent } from './BeanComponent';
 import * as _ from 'lodash';
 
 class NumberInputComponent extends BeanComponent {

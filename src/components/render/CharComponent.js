@@ -1,4 +1,4 @@
-import { BeanComponent } from '../../retex/components';
+import { BeanComponent } from '../BeanComponent';
 
 class CharComponent extends BeanComponent {
     constructor() {

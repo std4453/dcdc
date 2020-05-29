@@ -2,7 +2,7 @@ import Rete from 'rete';
 import typeName from 'type-name';
 import * as _ from 'lodash';
 
-import sockets from './sockets';
+import sockets from '../retex/sockets';
 
 class BeanComponent extends Rete.Component {
     constructor(name, inputDefs, outputDefs) {

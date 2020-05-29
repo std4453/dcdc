@@ -1,4 +1,4 @@
-import { BeanComponent } from '../retex/components';
+import { BeanComponent } from './BeanComponent';
 import { Parser } from 'expr-eval';
 
 class ArithmeticComponent extends BeanComponent {

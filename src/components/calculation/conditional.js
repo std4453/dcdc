@@ -1,4 +1,4 @@
-import { BeanComponent } from '../../retex/components';
+import { BeanComponent } from '../BeanComponent';
 
 class ScatterComponent extends BeanComponent {
     constructor() {
