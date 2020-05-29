@@ -78,6 +78,8 @@ function Generation({
         audio_features: [{ duration_s: length }],
         music_url: url,
     },
+    initialRef: { current: initialGraph },
+    generationRef: { current: generationGraph },
 }) {
     const classes = useStyles();
 
@@ -91,7 +93,7 @@ function Generation({
                 },
                 outputs: {},
             };
-            await exec('initial', ctx);
+            await exec(initialGraph, ctx);
             setParams(ctx.outputs);
         })();
     }, [data, moodboard]);
@@ -104,7 +106,7 @@ function Generation({
                 inputs: { ...params },
                 outputs: {},
             };
-            await exec('generation', ctx);
+            await exec(generationGraph, ctx);
         })();
     }, [canvas, params]);
     const convert = useMemo(() => {
