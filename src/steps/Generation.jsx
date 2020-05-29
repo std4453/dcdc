@@ -59,6 +59,11 @@ const useStyles = makeStyles({
     bottomInner: {
         height: '100%',
     },
+    title: {
+        lineHeight: 2.5,
+        fontWeight: 300,
+        paddingLeft: 16,
+    },
 });
 
 const config = [
@@ -153,12 +158,23 @@ function Generation({
     const play = useCallback(() => audio.play(), [audio]);
     const pause = useCallback(() => audio.pause(), [audio]);
 
+    const currentSegment = useMemo(() => {
+        for (let i = 0; i < sections.length; ++i) {
+            const { start, duration } = sections[i];
+            if (currentTime < start + duration) return i;
+        }
+        return sections.length - 1;
+    }, [currentTime, sections]);
+
     return (
         <div className={classes.root}>
             <div className={classes.canvasContainer}>
                 <canvas className={classes.canvas} ref={setCanvas} />
             </div>
             <div className={classes.side}>
+                <Typography color="textPrimary" variant="h6" classes={{ root: classes.title }}>
+                    段落 {currentSegment + 1}
+                </Typography>
                 <DatGui
                     data={params}
                     onUpdate={(newData) => {
@@ -169,7 +185,8 @@ function Generation({
                         position: 'relative',
                         backgroundColor: '#1A1A1A',
                         right: 0,
-                        width: '100%',
+                        left: 8,
+                        width: 'calc(100% - 8px)',
                     }}
                 >
                     {config.map(convert)}
@@ -248,7 +265,7 @@ function Generation({
                                                 left: `${start / length * 100}%`,
                                                 right: `${(1 - end / length) * 100}%`,
                                                 backgroundColor: climax === 0 ? '#03DAC5' : '#F2994A',
-                                                opacity: currentTime >= start && currentTime < end ? 1.0 : 0.2,
+                                                opacity: i === currentSegment ? 1.0 : 0.2,
                                             }}
                                         />
                                     );
