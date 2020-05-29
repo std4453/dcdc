@@ -5,6 +5,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import PauseIcon from '@material-ui/icons/Pause';
 import grey from '@material-ui/core/colors/grey';
+import config from './params';
 import Length from './Length';
 import exec from '../retex/exec';
 
@@ -65,16 +66,6 @@ const useStyles = makeStyles({
         paddingLeft: 16,
     },
 });
-
-const config = [
-    {
-        name: 'folder title',
-        type: 'folder',
-        children: [
-            { name: 'text', type: 'string', path: 'text' },
-        ],
-    },
-];
 
 function Generation({
     moodboard,
