@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { makeStyles, Button, TextField, Grid, Link, Container } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
-import logo from './assets/logo-colored.svg';
+import logo from '../assets/logo-colored.svg';
 
 const useStyles = makeStyles({
     form: {

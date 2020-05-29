@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core';
 import React, { useEffect, useMemo, useState } from 'react';
 import DatGui, { DatFolder, DatString } from 'react-dat-gui';
-import exec from './retex/exec';
+import exec from '../retex/exec';
 
 const useStyles = makeStyles({
     root: {

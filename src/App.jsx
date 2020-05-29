@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
 import { MuiThemeProvider, makeStyles } from '@material-ui/core';
 import { createMuiTheme } from '@material-ui/core/styles';
-import SongSelection from './SongSelection';
-import Loading from './Loading';
-import Moodboard from './Moodboard';
-import Segmentation from './Segmentation';
-import { InitialValues, GenerationRules } from './Rules';
-import Generation from './Generation';
 
 import './index.css';
+import { steps, initialStep } from './steps';
 
 const theme = createMuiTheme({
     palette: {
@@ -28,11 +23,8 @@ const useStyles = makeStyles({
 
 function App() {
     const classes = useStyles();
-    const [step, setStep] = useState('SongSelection');
-    const Component = {
-        SongSelection, Loading, Moodboard, Segmentation,
-        InitialValues, GenerationRules, Generation,
-    }[step];
+    const [step, setStep] = useState(initialStep);
+    const Component = steps[step];
 
     const [id, setId] = useState('');
     const [data, setData] = useState({});

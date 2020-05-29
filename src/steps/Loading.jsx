@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { makeStyles, LinearProgress, Grid } from '@material-ui/core';
-import logo from './assets/logo-colored.svg';
-import sample from './assets/sample.json';
+import logo from '../assets/logo-colored.svg';
+import sample from '../assets/sample.json';
 
 const useStyles = makeStyles({
     grid: {

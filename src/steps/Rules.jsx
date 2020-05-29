@@ -1,5 +1,5 @@
 import React from 'react';
-import NodeMap from './retex/NodeMap';
+import NodeMap from '../retex/NodeMap';
 
 function InitialValues({ setStep }) {
     return (
