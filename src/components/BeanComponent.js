@@ -21,14 +21,14 @@ class BeanComponent extends Rete.Component {
         for (let [name, { type, defaultVal, displayName = name }] of _.toPairs(this.inputDefs)) {
             if (!type) type = typeName(defaultVal);
             if (name in node.data) defaultVal = node.data[name];
-            const input = new Rete.Input(name, displayName, sockets[type]);
+            const input = new Rete.Input(name, displayName, sockets.any);
             if (!(name in node.data)) {
                 node.data[name] = defaultVal;
             }
             node.addInput(input);
         }
         for (const [name, { type, displayName = name }] of _.toPairs(this.outputDefs)) {
-            const output = new Rete.Output(name, displayName, sockets[type]);
+            const output = new Rete.Output(name, displayName, sockets.any);
             node.addOutput(output);
         }
         return node;
