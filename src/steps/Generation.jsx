@@ -85,29 +85,18 @@ function Generation({
 
     const [params, setParams] = useState(null);
     useEffect(() => {
-        (async () => {
-            const ctx = {
-                inputs: {
-                    moodboard,
-                    data,
-                },
-                outputs: {},
-            };
-            await exec(initialGraph, ctx);
-            setParams(ctx.outputs);
-        })();
+        exec(initialGraph, {
+            moodboard,
+            data,
+        }).then(setParams);
     }, [data, moodboard, initialGraph]);
     const [canvas, setCanvas] = useState(null);
     useEffect(() => {
         if (!params || !canvas) return;
-        (async () => {
-            const ctx = {
-                canvas,
-                inputs: { ...params },
-                outputs: {},
-            };
-            await exec(generationGraph, ctx);
-        })();
+        exec(generationGraph, {
+            canvas,
+            ...params,
+        });
     }, [canvas, params, generationGraph]);
     const convert = useMemo(() => {
         const convert = ({ name, path, type, children }) => {

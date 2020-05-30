@@ -15,7 +15,7 @@ class CanvasComponent extends BeanComponent {
         );
     }
 
-    async * worker({ width, height, background }, __, { canvas }) {
+    async * worker({ width, height, background }, __, { inputs: { canvas } }) {
         canvas.width = width;
         canvas.height = height;
         const scale = Math.min(canvas.parentNode.clientWidth / canvas.width, canvas.parentNode.clientHeight / canvas.height);
