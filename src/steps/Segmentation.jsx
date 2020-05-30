@@ -64,11 +64,11 @@ function Segmentation({
     const [localData, setLocalData] = useState(data);
     const {
         song,
-        name: artist,
-        album: [{ al_name: album }],
+        artist,
+        album: { al_name: album },
         sections: localSections,
-        audio_features: [{ duration_s: length }],
-        music_url: url,
+        featuress: { duration_s: length },
+        url,
     } = localData;
 
     const classes = useStyles();

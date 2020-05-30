@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { makeStyles, withStyles, Button, Grid, Typography } from '@material-ui/core';
 import initCanvas from './MoodboardCanvas';
 
@@ -36,15 +36,16 @@ function Moodboard({
     setMoodboard,
     data: {
         song,
-        name: artist,
-        album: [{ al_name: album }],
-        audio_features: [{ tempo, energy, danceability, acousticness, valence }]
+        artist,
+        album: { al_name: album },
+        featuress: { tempo, energy, danceability, acousticness, valence }
     },
 }) {
     const classes = useStyles();
     const [index, selectCanvas] = useState(-1);
-    const mb = useMemo(() => {
-        return initCanvas(tempo, energy, danceability, acousticness, valence, song, canvaswidth, canvasheight);
+    const [mb, setMB] = useState([]);
+    useEffect(() => {
+        setMB(initCanvas(tempo, energy, danceability, acousticness, valence, song, canvaswidth, canvasheight));
     }, [acousticness, danceability, energy, song, tempo, valence]);
     const nextStep = useCallback(() => {
         setStep('Segmentation');
