@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import { makeStyles, withStyles, Button, Grid, Typography } from '@material-ui/core';
 import initCanvas from './MoodboardCanvas';
 
@@ -29,31 +29,27 @@ const CanvasButton = withStyles({
     },
 })(Button);
 
-function Moodboard({ 
+const [canvaswidth, canvasheight] = [320, 180];
+
+function Moodboard({
     setStep,
-    setMoodboard, 
-    data: { 
-        song, 
-        name: artist, 
-        album: [{ al_name: album }], 
-        audio_features: [{ tempo, energy, danceability, acousticness, valence }]  
+    setMoodboard,
+    data: {
+        song,
+        name: artist,
+        album: [{ al_name: album }],
+        audio_features: [{ tempo, energy, danceability, acousticness, valence }]
     },
 }) {
-    const [canvaswidth, canvasheight] = [320, 180];
     const classes = useStyles();
-    var index, mb;
-    const selectCanvas = (i) =>{
-        index = i;
-    };
-    useEffect(()=>{
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        mb = initCanvas( tempo, energy, danceability, acousticness, valence, song, canvaswidth, canvasheight );
-    })
+    const [index, selectCanvas] = useState(-1);
+    const mb = useMemo(() => {
+        return initCanvas(tempo, energy, danceability, acousticness, valence, song, canvaswidth, canvasheight);
+    }, [acousticness, danceability, energy, song, tempo, valence]);
     const nextStep = useCallback(() => {
         setStep('Segmentation');
         setMoodboard(mb[index]);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [setStep,setMoodboard]);
+    }, [mb, index, setStep, setMoodboard]);
     return (
         <Grid
             container
@@ -69,9 +65,9 @@ function Moodboard({
                 >
                     {song} / {artist} - {album}
                 </Typography>
-                <Grid container 
-                    alignItems="center" 
-                    justify="space-evenly" 
+                <Grid container
+                    alignItems="center"
+                    justify="space-evenly"
                     spacing={6}
                 >
                     <Grid item container direction="column" xs>
@@ -103,9 +99,9 @@ function Moodboard({
                         </Button>
                     </Grid>
                 </Grid>
-                <Grid container 
-                    alignItems="center" 
-                    justify="space-between" 
+                <Grid container
+                    alignItems="center"
+                    justify="space-between"
                     spacing={6}
                 >
                     <Grid item>
@@ -114,7 +110,7 @@ function Moodboard({
                                 id={"littleCanvas1"}
                                 width={canvaswidth}
                                 height={canvasheight}
-                                onClick={()=>selectCanvas(1)}
+                                onClick={() => selectCanvas(1)}
                             >
                             </canvas>
                         </CanvasButton>
@@ -125,7 +121,7 @@ function Moodboard({
                                 id={"littleCanvas2"}
                                 width={canvaswidth}
                                 height={canvasheight}
-                                onClick={()=>selectCanvas(2)}
+                                onClick={() => selectCanvas(2)}
                             >
                             </canvas>
                         </CanvasButton>
@@ -136,7 +132,7 @@ function Moodboard({
                                 id={"littleCanvas3"}
                                 width={canvaswidth}
                                 height={canvasheight}
-                                onClick={()=>selectCanvas(3)}
+                                onClick={() => selectCanvas(3)}
                             >
                             </canvas>
                         </CanvasButton>
@@ -147,7 +143,7 @@ function Moodboard({
                                 id={"littleCanvas4"}
                                 width={canvaswidth}
                                 height={canvasheight}
-                                onClick={()=>selectCanvas(4)}
+                                onClick={() => selectCanvas(4)}
                             >
                             </canvas>
                         </CanvasButton>
@@ -158,7 +154,7 @@ function Moodboard({
                                 id={"littleCanvas5"}
                                 width={canvaswidth}
                                 height={canvasheight}
-                                onClick={()=>selectCanvas(5)}
+                                onClick={() => selectCanvas(5)}
                             >
                             </canvas>
                         </CanvasButton>
@@ -169,7 +165,7 @@ function Moodboard({
                                 id={"littleCanvas6"}
                                 width={canvaswidth}
                                 height={canvasheight}
-                                onClick={()=>selectCanvas(6)}
+                                onClick={() => selectCanvas(6)}
                             >
                             </canvas>
                         </CanvasButton>
@@ -180,7 +176,7 @@ function Moodboard({
                                 id={"littleCanvas7"}
                                 width={canvaswidth}
                                 height={canvasheight}
-                                onClick={()=>selectCanvas(7)}
+                                onClick={() => selectCanvas(7)}
                             >
                             </canvas>
                         </CanvasButton>
@@ -191,7 +187,7 @@ function Moodboard({
                                 id={"littleCanvas8"}
                                 width={canvaswidth}
                                 height={canvasheight}
-                                onClick={()=>selectCanvas(8)}
+                                onClick={() => selectCanvas(8)}
                             >
                             </canvas>
                         </CanvasButton>
@@ -202,7 +198,7 @@ function Moodboard({
                                 id={"littleCanvas9"}
                                 width={canvaswidth}
                                 height={canvasheight}
-                                onClick={()=>selectCanvas(9)}
+                                onClick={() => selectCanvas(9)}
                             >
                             </canvas>
                         </CanvasButton>
