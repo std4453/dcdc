@@ -5,6 +5,9 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import PauseIcon from '@material-ui/icons/Pause';
 import grey from '@material-ui/core/colors/grey';
+import { Lrc } from 'lrc-kit';
+import * as _ from 'lodash';
+
 import config from './params';
 import Length from './Length';
 import exec from '../retex/exec';
@@ -77,27 +80,43 @@ function Generation({
         sections,
         featuress: { duration_s: length },
         url,
+        lrc,
     },
     initialRef: { current: initialGraph },
     generationRef: { current: generationGraph },
 }) {
     const classes = useStyles();
 
+    const lyrics = useMemo(() => {
+        let { lyrics } = Lrc.parse(lrc);
+        lyrics.sort(({ timestamp: t1 }, { timestamp: t2 }) => t1 - t2);
+        lyrics = lyrics.map(({ timestamp, ...rest }, i) => ({
+            start: timestamp,
+            end: i === lyrics.length - 1 ? length : lyrics[i + 1].timestamp,
+            ...rest,
+        }));
+        for (const l of lyrics) {
+            const { start: ls, end: le } = l;
+            l.section = sections.map(({ start: ss, duration: sd }, i) => ({
+                idx: i,
+                len: Math.max(0, Math.min(le, ss + sd) - Math.max(ls, ss)),
+            })).sort(({ len: l1 }, { len: l2 }) => l1 - l2)[0].i;
+        }
+        return lyrics;
+    }, [lrc, length, sections]);
+
     const [params, setParams] = useState(null);
     useEffect(() => {
-        exec(initialGraph, {
+        Promise.all(sections.map((section, i) => exec(initialGraph, {
             moodboard,
             data,
-        }).then(setParams);
-    }, [data, moodboard, initialGraph]);
+            idx: i,
+            section,
+        }))).then(setParams);
+    }, [data, moodboard, initialGraph, sections]);
+
     const [canvas, setCanvas] = useState(null);
-    useEffect(() => {
-        if (!params || !canvas) return;
-        exec(generationGraph, {
-            canvas,
-            ...params,
-        });
-    }, [canvas, params, generationGraph]);
+
     const convert = useMemo(() => {
         const convert = ({ name, path, type, children }) => {
             switch (type) {
@@ -148,6 +167,14 @@ function Generation({
         return sections.length - 1;
     }, [currentTime, sections]);
 
+    useEffect(() => {
+        if (!params || !canvas) return;
+        exec(generationGraph, {
+            canvas,
+            ...params[currentSegment],
+        });
+    }, [canvas, params, generationGraph, currentSegment]);
+
     return (
         <div className={classes.root}>
             <div className={classes.canvasContainer}>
@@ -157,11 +184,15 @@ function Generation({
                 <Typography color="textPrimary" variant="h6" classes={{ root: classes.title }}>
                     段落 {currentSegment + 1}
                 </Typography>
-                <DatGui
-                    data={params}
+                {params && <DatGui
+                    data={params[currentSegment]}
                     onUpdate={(newData) => {
                         newData = { ...data, ...newData };
-                        setParams(newData);
+                        setParams(params => {
+                            const newParams = _.cloneDeep(params);
+                            newParams[currentSegment] = newData;
+                            return newParams;
+                        });
                     }}
                     style={{
                         position: 'relative',
@@ -172,7 +203,7 @@ function Generation({
                     }}
                 >
                     {config.map(convert)}
-                </DatGui>
+                </DatGui>}
             </div>
             <div className={classes.bottom}>
                 <Grid container direction="column" justify="space-between" classes={{ root: classes.bottomInner }}>
