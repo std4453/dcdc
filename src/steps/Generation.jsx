@@ -1,6 +1,6 @@
 import { makeStyles, Grid, Typography, Button, Slider } from '@material-ui/core';
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import DatGui, { DatFolder, DatString } from 'react-dat-gui';
+import DatGui, { DatFolder, DatString, DatNumber, DatBoolean, DatColor } from 'react-dat-gui';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -96,7 +96,6 @@ function Generation({
         lrc,
     },
     initialRef: { current: initialGraph },
-    generationRef: { current: generationGraph },
 }) {
     const classes = useStyles();
 
@@ -140,6 +139,15 @@ function Generation({
                 );
                 case 'string': return (
                     <DatString path={path} label={name} />
+                );
+                case 'color': return (
+                    <DatColor path={path} label={name} />
+                );
+                case 'number': return (
+                    <DatNumber path={path} label={name} />
+                );
+                case 'boolean': return (
+                    <DatBoolean path={path} label={name} />
                 );
                 default: return null;
             }
