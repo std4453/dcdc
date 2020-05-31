@@ -130,24 +130,24 @@ function Generation({
     const [canvas, setCanvas] = useState(null);
 
     const convert = useMemo(() => {
-        const convert = ({ name, path, type, children }) => {
+        const convert = ({ name, path, type, children, ...rest }) => {
             switch (type) {
                 case 'folder': return (
-                    <DatFolder title={name} closed={false}>
+                    <DatFolder title={name} closed={false} {...rest}>
                         {children.map(convert)}
                     </DatFolder>
                 );
                 case 'string': return (
-                    <DatString path={path} label={name} />
+                    <DatString path={path} label={name} {...rest} />
                 );
                 case 'color': return (
-                    <DatColor path={path} label={name} />
+                    <DatColor path={path} label={name} {...rest} />
                 );
                 case 'number': return (
-                    <DatNumber path={path} label={name} />
+                    <DatNumber path={path} label={name} {...rest} />
                 );
                 case 'boolean': return (
-                    <DatBoolean path={path} label={name} />
+                    <DatBoolean path={path} label={name} {...rest} />
                 );
                 default: return null;
             }
@@ -188,7 +188,10 @@ function Generation({
         return sections.length - 1;
     }, [currentTime, sections]);
 
-    const initTime = useMemo(() => new Date().getTime(), []);
+    const [initTime, setInitTime] = useState(new Date().getTime());
+    const renewTime = useCallback(() => {
+        setInitTime(() => new Date().getTime());
+    }, []);
     const renderFrame = useCallback(() => {
         if (!params || !canvas) return;
 
@@ -208,15 +211,15 @@ function Generation({
 
         lyrics
             .filter(({ section }) => section === currentSegment)
-            .filter(({ start, end }) => start <= currentTime && end >= currentTime)
             .forEach(({ start, end, content: lyric }, lyricIdx) => {
+                if (!(start <= currentTime && end >= currentTime)) return;
                 render({
                     width, height, ctx, lyric, currentTime, start, end,
                     seed: initTime + currentSegment * 1000 + lyricIdx,
                     params: params[currentSegment],
                 });
             });
-    }, [canvas, params, currentSegment, lyrics, audio]);
+    }, [canvas, params, currentSegment, lyrics, audio, initTime]);
     useFrame(renderFrame);
 
     return (
@@ -288,14 +291,14 @@ function Generation({
                         </Grid>
                         <Grid item xs={3} container justify="flex-end" spacing={2}>
                             <Grid item>
-                                <Button variant="outlined" color="primary">
+                                <Button variant="outlined" color="primary" onClick={renewTime}>
                                     换个效果
-                            </Button>
+                                </Button>
                             </Grid>
                             <Grid item>
                                 <Button variant="outlined" color="primary">
                                     下载视频
-                            </Button>
+                                </Button>
                             </Grid>
                         </Grid>
                     </Grid>

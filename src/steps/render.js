@@ -3,7 +3,7 @@ import pickRandom from 'pick-random';
 import random from 'random';
 import seedrandom from 'seedrandom';
 
-import { interp, divide } from '../components/utils';
+import { interp, divide, opposite, scatter, translate } from '../components/utils';
 
 const textWidth = (text, sizes, spacing) => {
     // VERY SIMPLE
@@ -117,6 +117,41 @@ function* balancedA({ width, height, i, parts, dist, dir }) {
     };
 }
 
+function* balancedB({ text, rows, cols, dist, width, height, size }) {
+    const indices = pickRandom(
+        new Array(cols).fill(0).map(
+            (_, u) => new Array(rows).fill(0).map((_, v) => ({ u, v }))
+        ).reduce((a, b) => [...a, ...b], []),
+        { count: Math.min(rows * cols, text.length) },
+    ).sort(({ u: u1, v: v1 }, { u: u2, v: v2 }) => v2 === v1 ? (u1 - u2) : (v1 - v2));
+
+    for (let i = 0; i < indices.length; ++i) {
+        const { u, v } = indices[i];
+        const x = width / 2 + (u - (cols - 1) / 2) * dist * size;
+        const y = height / 2 + (v - (rows - 1) / 2) * dist * size;
+        yield {
+            text: text[i],
+            x0: x,
+            y0: y,
+            align: 'middle',
+        };
+    }
+}
+
+function* neutral({ width, height, size, lineSpacing, i, dir, align, position, x0, y0 }) {
+    const x = opposite(x0, align === 'end');
+    const y = opposite(y0, position === 'right');
+    let point = interp(width, height, x, y, dir);
+    const delta = scatter(size * lineSpacing * (position === 'left' ? 1 : -1), dir, true);
+    for (; i > 0; --i) point = translate(point, delta);
+    yield {
+        x0: point.x,
+        y0: point.y,
+        dir,
+        align,
+    };
+}
+
 random.patch();
 
 const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTime }) => {
@@ -142,6 +177,51 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
                     width, height, i, parts,
                     dist: random.float(params.modes.a.minDist, params.modes.a.maxDist),
                     dir,
+                });
+                for (const { x0, y0, dir, align } of it) {
+                    const it = font({
+                        text, x0, y0,
+                        size: params.size,
+                        dir, align,
+                        spacing: params.letterSpacing,
+                        ignoreWhitespaces: true,
+                        alignBaseline: false,
+                    });
+                    for (const { ch, x0, y0, size } of it) {
+                        const inTime = chi * (end - start) / lyric.length;
+                        ++chi;
+                        if (start + inTime > currentTime) continue;
+                        char({
+                            ctx, ch, x0, y0,
+                            size,
+                            rotate: 0,
+                            color: params.textColor,
+                            fontFamily: params.fontFamily,
+                            fontWeight: params.fontWeight,
+                        });
+                    }
+                }
+            }
+            break;
+        }
+        case 'b': {
+            const parts = random.int(1, params.splitMax);
+            const dir = pickRandom(['horizontal', 'vertical'])[0];
+            const align = pickRandom(['begin', 'end'])[0];
+            const position = pickRandom(['left', 'right'])[0];
+            const it = split({
+                text: lyric,
+                parts,
+                randomness: 0,
+            });
+            let chi = 0;
+            for (const { i, text } of it) {
+                const it = neutral({
+                    width, height,
+                    size: params.size,
+                    lineSpacing: params.modes.b.lineSpacing,
+                    i, dir, align, position,
+                    x0: 0.2, y0: 0.25,
                 });
                 for (const { x0, y0, dir, align } of it) {
                     const it = font({
