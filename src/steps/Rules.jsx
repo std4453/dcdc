@@ -3,7 +3,7 @@ import NodeMap from '../retex/NodeMap';
 
 function InitialValues({ initial, setInitial, setStep }) {
     return (
-        <NodeMap setStep={setStep} defaults={initial} onUpdate={setInitial} name="initial" next="GenerationRules"/>
+        <NodeMap setStep={setStep} defaults={initial} onUpdate={setInitial} name="initial" next="Generation"/>
     );
 }
 
