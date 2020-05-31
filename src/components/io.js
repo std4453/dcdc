@@ -50,8 +50,9 @@ class OutputComponent extends BeanComponent {
     }
 
     * worker({ val, key }, __, { outputs }) {
-        if (!_.has(outputs, key)) _.set(outputs, key, []);
-        _.get(outputs, key).push(val);
+        // if (!_.has(outputs, key)) _.set(outputs, key, []);
+        // _.get(outputs, key).push(val);
+        _.set(outputs, key, val);
         yield;
     }
 }

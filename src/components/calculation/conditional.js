@@ -32,8 +32,8 @@ class GatherComponent extends BeanComponent {
             {
                 cond: { type: 'number' },
                 thres: { type: 'number' },
-                lt: { type: 'number' },
-                gt: { type: 'number' },
+                lt: { defaultVal: 0 },
+                gt: { defaultVal: 0 },
             },
             {
                 val: { type: 'number' },
@@ -56,16 +56,16 @@ class Gather10Component extends BeanComponent {
             'Gather10',
             {
                 ind: { defaultVal: 0, min: 0, max: 9 },
-                n0: { type: 'number' },
-                n1: { type: 'number' },
-                n2: { type: 'number' },
-                n3: { type: 'number' },
-                n4: { type: 'number' },
-                n5: { type: 'number' },
-                n6: { type: 'number' },
-                n7: { type: 'number' },
-                n8: { type: 'number' },
-                n9: { type: 'number' },
+                n0: { defaultVal: 0 },
+                n1: { defaultVal: 0 },
+                n2: { defaultVal: 0 },
+                n3: { defaultVal: 0 },
+                n4: { defaultVal: 0 },
+                n5: { defaultVal: 0 },
+                n6: { defaultVal: 0 },
+                n7: { defaultVal: 0 },
+                n8: { defaultVal: 0 },
+                n9: { defaultVal: 0 },
             },
             {
                 val: { type: 'number' },
@@ -73,7 +73,7 @@ class Gather10Component extends BeanComponent {
         );
     }
 
-    * worker({ ind, n0, n1, n2, n3, n4, n5 , n6, n7, n8, n9 }) {
+    * worker({ ind, n0, n1, n2, n3, n4, n5, n6, n7, n8, n9 }) {
         const vals = [n0, n1, n2, n3, n4, n5, n6, n7, n8, n9];
         yield { val: vals[ind] };
     }

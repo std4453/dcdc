@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 import config from './params';
 import Length from './Length';
 import exec from '../retex/exec';
+import render from './render';
 
 const useStyles = makeStyles({
     root: {
@@ -70,6 +71,18 @@ const useStyles = makeStyles({
     },
 });
 
+const useFrame = (fn) => {
+    useEffect(() => {
+        let valid = true;
+        const onFrameWrapped = () => {
+            if (fn) fn();
+            if (valid) requestAnimationFrame(onFrameWrapped);
+        };
+        requestAnimationFrame(onFrameWrapped);
+        return () => { valid = false; };
+    }, [fn]);
+}
+
 function Generation({
     moodboard,
     data,
@@ -100,7 +113,7 @@ function Generation({
             l.section = sections.map(({ start: ss, duration: sd }, i) => ({
                 idx: i,
                 len: Math.max(0, Math.min(le, ss + sd) - Math.max(ls, ss)),
-            })).sort(({ len: l1 }, { len: l2 }) => l1 - l2)[0].i;
+            })).sort(({ len: l1 }, { len: l2 }) => -l1 + l2)[0].idx;
         }
         return lyrics;
     }, [lrc, length, sections]);
@@ -167,13 +180,22 @@ function Generation({
         return sections.length - 1;
     }, [currentTime, sections]);
 
-    useEffect(() => {
+    const initTime = useMemo(() => new Date().getTime(), []);
+    const renderFrame = useCallback(() => {
         if (!params || !canvas) return;
-        exec(generationGraph, {
+        const currentTime = audio.currentTime;
+        const lyricIdx = lyrics.findIndex(({ start, end }) => start <= currentTime && end >= currentTime);
+        if (lyricIdx === -1) return;
+        const { content: lyric } = lyrics[lyricIdx];
+        render({
+            seed: initTime + currentSegment * 1000 + lyricIdx,
             canvas,
-            ...params[currentSegment],
+            params: params[currentSegment],
+            lyric,
+            currentTime,
         });
-    }, [canvas, params, generationGraph, currentSegment]);
+    }, [canvas, params, currentSegment, lyrics, audio]);
+    useFrame(renderFrame);
 
     return (
         <div className={classes.root}>
@@ -264,7 +286,7 @@ function Generation({
                             </Typography>
                         </Grid>
                         <Grid item>
-                            <Slider value={currentTime} onChange={onSeek} max={length} />
+                            <Slider value={currentTime} onChange={onSeek} max={length} step={0.01}/>
                         </Grid>
                         <Grid item>
                             <div className={classes.sections}>
