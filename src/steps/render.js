@@ -119,21 +119,9 @@ function* balancedA({ width, height, i, parts, dist, dir }) {
 
 random.patch();
 
-const render = ({ seed, currentTime, canvas, params, lyric }) => {
-    const width = 1920, height = 1080;
+const render = ({ width, height, seed, ctx, params, lyric }) => {
     const rng = seedrandom(`${seed}`);
     random.use(rng);
-
-    // canvas
-    canvas.width = width;
-    canvas.height = height;
-    const scale = Math.min(canvas.parentNode.clientWidth / canvas.width, canvas.parentNode.clientHeight / canvas.height);
-    canvas.style.transform = `scale(${scale})`;
-    canvas.style.marginLeft = `${-width / 2}px`;
-    canvas.style.marginTop = `${-height / 2}px`;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = params.backgroundColor;
-    ctx.fillRect(0, 0, width, height);
 
     const mode = pickRandom(_
         .keys(params.modes)

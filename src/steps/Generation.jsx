@@ -183,17 +183,31 @@ function Generation({
     const initTime = useMemo(() => new Date().getTime(), []);
     const renderFrame = useCallback(() => {
         if (!params || !canvas) return;
+
         const currentTime = audio.currentTime;
-        const lyricIdx = lyrics.findIndex(({ start, end }) => start <= currentTime && end >= currentTime);
-        if (lyricIdx === -1) return;
-        const { content: lyric } = lyrics[lyricIdx];
-        render({
-            seed: initTime + currentSegment * 1000 + lyricIdx,
-            canvas,
-            params: params[currentSegment],
-            lyric,
-            currentTime,
-        });
+
+        const width = 1920, height = 1080;
+        // canvas
+        canvas.width = width;
+        canvas.height = height;
+        const scale = Math.min(canvas.parentNode.clientWidth / canvas.width, canvas.parentNode.clientHeight / canvas.height);
+        canvas.style.transform = `scale(${scale})`;
+        canvas.style.marginLeft = `${-width / 2}px`;
+        canvas.style.marginTop = `${-height / 2}px`;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = params[currentSegment].backgroundColor;
+        ctx.fillRect(0, 0, width, height);
+
+        lyrics
+            .filter(({ section }) => section === currentSegment)
+            .filter(({ start, end }) => start <= currentTime && end >= currentTime)
+            .forEach(({ content: lyric }, lyricIdx) => {
+                render({
+                    width, height, ctx, lyric, currentTime,
+                    seed: initTime + currentSegment * 1000 + lyricIdx,
+                    params: params[currentSegment],
+                });
+            });
     }, [canvas, params, currentSegment, lyrics, audio]);
     useFrame(renderFrame);
 
@@ -286,7 +300,7 @@ function Generation({
                             </Typography>
                         </Grid>
                         <Grid item>
-                            <Slider value={currentTime} onChange={onSeek} max={length} step={0.01}/>
+                            <Slider value={currentTime} onChange={onSeek} max={length} step={0.01} />
                         </Grid>
                         <Grid item>
                             <div className={classes.sections}>
