@@ -1,90 +1,49 @@
 import { BeanComponent } from './BeanComponent';
 import * as _ from 'lodash';
 
-class NumberInputComponent extends BeanComponent {
+class InputComponent extends BeanComponent {
     constructor() {
         super(
-            'NumberInput',
+            'Input',
             {
                 key: { type: 'string' },
+                type: { defaultVal: 'number', type: 'string', controlType: 'select', options: ['number', 'string'] },
             },
             {
-                val: { type: 'number' },
+                val: { type: 'any', controlType: 'string', },
             },
         );
     }
 
-    * worker({ key }, __, { inputs }) {
+    convert(value, type) {
+        if (type === 'number' && typeof value === 'string') return parseFloat(value);
+        if (type === 'string' && typeof value === 'number') return `${value}`;
+        return value;
+    }
+
+    * worker({ key, type }, __, { inputs }) {
         const values = _.get(inputs, key);
         if (values instanceof Array) {
             for (const value of values) {
                 yield {
-                    val: value,
+                    val: this.convert(value, type),
                 };
             }
         } else {
             yield {
-                val: values,
+                val: this.convert(values, type),
             };
         }
     }
 }
 
-class StringInputComponent extends BeanComponent {
+class OutputComponent extends BeanComponent {
     constructor() {
         super(
-            'StringInput',
+            'Output',
             {
                 key: { type: 'string' },
-            },
-            {
-                val: { type: 'string' },
-            },
-        );
-    }
-
-    * worker({ key }, __, { inputs }) {
-        const values = _.get(inputs, key);
-        if (values instanceof Array) {
-            for (const value of values) {
-                yield {
-                    val: value,
-                };
-            }
-        } else {
-            yield {
-                val: values,
-            };
-        }
-    }
-}
-
-class NumberOutputComponent extends BeanComponent {
-    constructor() {
-        super(
-            'NumberOutput',
-            {
-                key: { type: 'string' },
-                val: { type: 'number' },
-            },
-            {},
-        );
-    }
-
-    * worker({ val, key }, __, { outputs }) {
-        if (!_.has(outputs, key)) _.set(outputs, key, []);
-        _.get(outputs, key).push(val);
-        yield;
-    }
-}
-
-class StringOutputComponent extends BeanComponent {
-    constructor() {
-        super(
-            'StringOutput',
-            {
-                key: { type: 'string' },
-                val: { type: 'string' },
+                val: { type: 'any', controlType: 'string' },
             },
             {},
         );
@@ -98,8 +57,6 @@ class StringOutputComponent extends BeanComponent {
 }
 
 export default [
-    NumberInputComponent,
-    StringInputComponent,
-    NumberOutputComponent,
-    StringOutputComponent,
+    InputComponent,
+    OutputComponent,
 ];

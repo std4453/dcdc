@@ -48,12 +48,13 @@ class Arithmetic2Component extends BeanComponent {
     }
 }
 
-class StringComponent extends BeanComponent {
+class ConstComponent extends BeanComponent {
     constructor() {
         super(
-            'String',
+            'Const',
             {
-                val: { defaultVal: '', type: 'string' },
+                val: { type: 'any', controlType: 'string' },
+                type: { defaultVal: 'number', type: 'string', controlType: 'select', options: ['number', 'string'] },
             },
             {
                 val: { type: 'string' },
@@ -61,56 +62,14 @@ class StringComponent extends BeanComponent {
         );
     }
 
-    * worker({ val }) {
+    * worker({ val, type }) {
+        if (type === 'number') val = parseFloat(val);
         yield { val };
-    }
-}
-
-class NumberComponent extends BeanComponent {
-    constructor() {
-        super(
-            'Number',
-            {
-                val: { defaultVal: 0.0, min: -Infinity, max: Infinity },
-            },
-            {
-                val: { type: 'number' },
-            },
-        );
-    }
-
-    * worker({ val }) {
-        yield { val };
-    }
-}
-
-class DimensionComponent extends BeanComponent {
-    constructor() {
-        super(
-            'Dimension',
-            {
-                x0: { defaultVal: 0.25, min: 0, max: 1 },
-                y0: { defaultVal: 0.25, min: 0, max: 1 },
-                x1: { defaultVal: 0.75, min: 0, max: 1 },
-                y1: { defaultVal: 0.75, min: 0, max: 1 },
-            },
-            {
-                val: { type: 'dimension' },
-            },
-        );
-    }
-
-    * worker({ x0, y0, x1, y1 }) {
-        yield {
-            val: { x0, y0, x1, y1 },
-        };
     }
 }
 
 export default [
     ArithmeticComponent,
     Arithmetic2Component,
-    NumberComponent,
-    StringComponent,
-    DimensionComponent,
+    ConstComponent,
 ];
