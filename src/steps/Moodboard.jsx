@@ -13,6 +13,18 @@ const useStyles = makeStyles({
         marginTop: '1em',
         marginBottom: '8em',
     },
+    '@global': {
+        '*::-webkit-scrollbar': {
+            width: '0.4em'
+        },
+        '*::-webkit-scrollbar-track': {
+            '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)'
+        },
+        '*::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(80,80,80,.1)',
+            outline: '1px solid slategrey'
+        }
+    }
 });
 
 const CanvasButton = withStyles({
@@ -44,6 +56,7 @@ function Moodboard({
     const classes = useStyles();
     const [index, selectCanvas] = useState(-1);
     const [mb, setMB] = useState([]);
+    const [items, setItems] = useState(Array.from({length: 200}));;
     useEffect(() => {
         setMB(initCanvas(tempo, energy, danceability, acousticness, valence, song, canvaswidth, canvasheight));
     }, [acousticness, danceability, energy, song, tempo, valence]);
@@ -51,6 +64,7 @@ function Moodboard({
         setStep('Segmentation');
         setMoodboard(mb[index]);
     }, [mb, index, setStep, setMoodboard]);
+
     return (
         <Grid
             container
@@ -77,7 +91,7 @@ function Moodboard({
                                 color="textPrimary"
                                 variant="h4"
                             >
-                                选择氛围板
+                                选择情绪板
                             </Typography>
                         </Grid>
                         <Grid item>
@@ -100,111 +114,28 @@ function Moodboard({
                         </Button>
                     </Grid>
                 </Grid>
-                <Grid container
-                    alignItems="center"
-                    justify="space-between"
-                    spacing={6}
-                >
-                    <Grid item>
-                        <CanvasButton>
-                            <canvas
-                                id={"littleCanvas1"}
-                                width={canvaswidth}
-                                height={canvasheight}
-                                onClick={() => selectCanvas(1)}
-                            >
-                            </canvas>
-                        </CanvasButton>
+                <div style={{height:'80vh', overflow:'hidden auto'}}>
+                    <Grid container 
+                        alignItems="center" 
+                        justify="space-between" 
+                        spacing={6}
+                        className={classes.grid}
+                    >
+                        {items.map((i, index) => (
+                            <Grid item key = {index}>
+                                <CanvasButton>
+                                    <canvas
+                                        id={"littleCanvas"+(index+1)}
+                                        width={canvaswidth}
+                                        height={canvasheight}
+                                        onClick={()=>selectCanvas(index+1)}
+                                    >
+                                    </canvas>
+                                </CanvasButton>
+                            </Grid>
+                        ))}
                     </Grid>
-                    <Grid item>
-                        <CanvasButton>
-                            <canvas
-                                id={"littleCanvas2"}
-                                width={canvaswidth}
-                                height={canvasheight}
-                                onClick={() => selectCanvas(2)}
-                            >
-                            </canvas>
-                        </CanvasButton>
-                    </Grid>
-                    <Grid item>
-                        <CanvasButton>
-                            <canvas
-                                id={"littleCanvas3"}
-                                width={canvaswidth}
-                                height={canvasheight}
-                                onClick={() => selectCanvas(3)}
-                            >
-                            </canvas>
-                        </CanvasButton>
-                    </Grid>
-                    <Grid item>
-                        <CanvasButton>
-                            <canvas
-                                id={"littleCanvas4"}
-                                width={canvaswidth}
-                                height={canvasheight}
-                                onClick={() => selectCanvas(4)}
-                            >
-                            </canvas>
-                        </CanvasButton>
-                    </Grid>
-                    <Grid item>
-                        <CanvasButton>
-                            <canvas
-                                id={"littleCanvas5"}
-                                width={canvaswidth}
-                                height={canvasheight}
-                                onClick={() => selectCanvas(5)}
-                            >
-                            </canvas>
-                        </CanvasButton>
-                    </Grid>
-                    <Grid item>
-                        <CanvasButton>
-                            <canvas
-                                id={"littleCanvas6"}
-                                width={canvaswidth}
-                                height={canvasheight}
-                                onClick={() => selectCanvas(6)}
-                            >
-                            </canvas>
-                        </CanvasButton>
-                    </Grid>
-                    <Grid item>
-                        <CanvasButton>
-                            <canvas
-                                id={"littleCanvas7"}
-                                width={canvaswidth}
-                                height={canvasheight}
-                                onClick={() => selectCanvas(7)}
-                            >
-                            </canvas>
-                        </CanvasButton>
-                    </Grid>
-                    <Grid item>
-                        <CanvasButton>
-                            <canvas
-                                id={"littleCanvas8"}
-                                width={canvaswidth}
-                                height={canvasheight}
-                                onClick={() => selectCanvas(8)}
-                            >
-                            </canvas>
-                        </CanvasButton>
-                    </Grid>
-                    <Grid item>
-                        <CanvasButton>
-                            <canvas
-                                id={"littleCanvas9"}
-                                width={canvaswidth}
-                                height={canvasheight}
-                                onClick={() => selectCanvas(9)}
-                            >
-                            </canvas>
-                        </CanvasButton>
-                    </Grid>
-                </Grid>
+                </div>
             </Grid>
             <Grid item xs />
         </Grid>
