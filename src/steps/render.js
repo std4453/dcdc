@@ -119,7 +119,7 @@ function* balancedA({ width, height, i, parts, dist, dir }) {
 
 random.patch();
 
-const render = ({ width, height, seed, ctx, params, lyric }) => {
+const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTime }) => {
     const rng = seedrandom(`${seed}`);
     random.use(rng);
 
@@ -136,6 +136,7 @@ const render = ({ width, height, seed, ctx, params, lyric }) => {
                 parts,
                 randomness: 0,
             });
+            let chi = 0;
             for (const { i, text } of it) {
                 const it = balancedA({
                     width, height, i, parts,
@@ -152,6 +153,9 @@ const render = ({ width, height, seed, ctx, params, lyric }) => {
                         alignBaseline: false,
                     });
                     for (const { ch, x0, y0, size } of it) {
+                        const inTime = chi * (end - start) / lyric.length;
+                        ++chi;
+                        if (start + inTime > currentTime) continue;
                         char({
                             ctx, ch, x0, y0,
                             size,

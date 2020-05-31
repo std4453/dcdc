@@ -201,9 +201,9 @@ function Generation({
         lyrics
             .filter(({ section }) => section === currentSegment)
             .filter(({ start, end }) => start <= currentTime && end >= currentTime)
-            .forEach(({ content: lyric }, lyricIdx) => {
+            .forEach(({ start, end, content: lyric }, lyricIdx) => {
                 render({
-                    width, height, ctx, lyric, currentTime,
+                    width, height, ctx, lyric, currentTime, start, end,
                     seed: initTime + currentSegment * 1000 + lyricIdx,
                     params: params[currentSegment],
                 });
