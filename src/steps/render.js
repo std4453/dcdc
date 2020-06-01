@@ -462,6 +462,8 @@ function char2({
 random.patch();
 
 const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTime }) => {
+    if (lyric.length === 0) return;
+
     const rng = seedrandom(`${seed}`);
     random.use(rng);
 

@@ -132,7 +132,7 @@ function Segmentation({
                                 color="textSecondary"
                                 variant="body2"
                             >
-                                双击段落以调整起止时间，点击加号以在选中段落后新建段落
+                                拖动段落以调整起止时间
                             </Typography>
                         </Grid>
                     </Grid>
@@ -234,7 +234,7 @@ function Segmentation({
                         </Grid>
                         <Grid item xs>
                             <Typography color="textSecondary" variant="body2" style={{ marginTop: -16 }}>
-                                蓝绿色为普通段，橙色为高潮段，鼠标右击色块可在普通/高潮段状态间切换
+                                蓝绿色为普通段，橙色为高潮段，鼠标左击色块可在普通/高潮段状态间切换
                             </Typography>
                         </Grid>
                     </Grid>
