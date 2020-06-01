@@ -13,6 +13,7 @@
   "dependencies": {
     "@material-ui/core": "^4.9.14",
     "@material-ui/icons": "^4.9.1",
+    "bezier-easing": "^2.1.0",
     "classnames": "^2.2.6",
     "color": "^3.1.2",
     "dat.gui": "^0.7.7",

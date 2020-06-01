@@ -6,6 +6,7 @@ import random from 'random';
 import seedrandom from 'seedrandom';
 import Color from 'color';
 import inside from 'point-in-polygon';
+import BezierEasing from 'bezier-easing';
 
 import { interp, divide, opposite, scatter, translate } from '../components/utils';
 
@@ -266,35 +267,79 @@ function* activeB({ width, height, text, tries, size, minR, sort: shouldSort, so
         const { x, y, r } = sorted[i];
         yield {
             i,
-                text: text[i],
-                    x0: x,
-                        y0: y,
-                            size: r * 2,
-                                align: 'middle',
-            };
+            text: text[i],
+            x0: x,
+            y0: y,
+            size: r * 2,
+            align: 'middle',
+        };
     }
 }
 
 function char2({
     start, end, lyric, currentTime, duration = 0.5,
-    chi, ctx, ch, x0, y0, rotate, size, params,
+    chi, ctx, ch, x0, y0, rotate, size, params, outEffect, inEffect,
 }) {
     const inEndTime = chi * (end - duration - start) / lyric.length + start;
     const inStartTime = inEndTime - duration;
     const outStartTime = end - duration;
     const outEndTime = outStartTime + duration;
-    if (currentTime < inStartTime) {}
+    if (currentTime < inStartTime) { }
     else if (currentTime < inEndTime) {
         const t = (currentTime - inStartTime) / (inEndTime - inStartTime);
-        const opacity = t;
-        char({
-            ctx, ch, x0, y0,
-            size,
-            rotate,
-            color: Color(params.textColor).alpha(opacity).string(),
-            fontFamily: params.fontFamily,
-            fontWeight: params.fontWeight,
-        });
+        switch (inEffect) {
+            case 'fade': {
+                const opacity = t;
+                char({
+                    ctx, ch, x0, y0,
+                    size,
+                    rotate,
+                    color: Color(params.textColor).alpha(opacity).string(),
+                    fontFamily: params.fontFamily,
+                    fontWeight: params.fontWeight,
+                });
+                break;
+            }
+            case 'blink': {
+                const thres = 0.2;
+                const opacity = t < thres ? 1 : (t - thres) / (1 - thres);
+                char({
+                    ctx, ch, x0, y0,
+                    size,
+                    rotate,
+                    color: Color(params.textColor).alpha(opacity).string(),
+                    fontFamily: params.fontFamily,
+                    fontWeight: params.fontWeight,
+                });
+                break;
+            }
+            case 'zoom': {
+                const easing = BezierEasing(0.22, 1, 0.36, 1);
+                char({
+                    ctx, ch, x0, y0,
+                    size: size * easing(t),
+                    rotate,
+                    color: params.textColor,
+                    fontFamily: params.fontFamily,
+                    fontWeight: params.fontWeight,
+                });
+                break;
+            }
+            case 'slide': {
+                const easing = BezierEasing(0.22, 1, 0.36, 1);
+                const k = 1 - easing(t);
+                const dx = 0, dy = -1;
+                char({
+                    ctx, ch, x0: x0 + dx * size * k, y0: y0 + dy * size * k,
+                    size,
+                    rotate,
+                    color: params.textColor,
+                    fontFamily: params.fontFamily,
+                    fontWeight: params.fontWeight,
+                });
+                break;
+            }
+        }
     } else if (currentTime < outStartTime) {
         char({
             ctx, ch, x0, y0,
@@ -306,16 +351,46 @@ function char2({
         });
     } else if (currentTime < outEndTime) {
         const t = (currentTime - outStartTime) / (outEndTime - outStartTime);
-        const opacity = 1 - t;
-        char({
-            ctx, ch, x0, y0,
-            size,
-            rotate,
-            color: Color(params.textColor).alpha(opacity).string(),
-            fontFamily: params.fontFamily,
-            fontWeight: params.fontWeight,
-        });
-    } else {}
+        switch (outEffect) {
+            case 'fade': {
+                const opacity = 1 - t;
+                char({
+                    ctx, ch, x0, y0,
+                    size,
+                    rotate,
+                    color: Color(params.textColor).alpha(opacity).string(),
+                    fontFamily: params.fontFamily,
+                    fontWeight: params.fontWeight,
+                });
+                break;
+            }
+            case 'blink': {
+                const thres = 0.2;
+                const opacity = 1 - (t < thres ? 1 : (t - thres) / (1 - thres));
+                char({
+                    ctx, ch, x0, y0,
+                    size,
+                    rotate,
+                    color: Color(params.textColor).alpha(opacity).string(),
+                    fontFamily: params.fontFamily,
+                    fontWeight: params.fontWeight,
+                });
+                break;
+            }
+            case 'zoom': {
+                const easing = BezierEasing(0.64, 0, 0.78, 0);
+                char({
+                    ctx, ch, x0, y0,
+                    size: size * (1 - easing(t)),
+                    rotate,
+                    color: params.textColor,
+                    fontFamily: params.fontFamily,
+                    fontWeight: params.fontWeight,
+                });
+                break;
+            }
+        }
+    } else { }
 }
 
 random.patch();
@@ -330,9 +405,12 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
     if (modes.length === 0) return;
     const mode = pickRandom(modes)[0];
 
+    const inEffect = pickRandom(['fade', 'blink', 'zoom', 'slide'])[0];
+    const outEffect = pickRandom(['fade', 'blink', 'zoom'])[0];
+
     switch (mode) {
         case 'a': {
-            const parts = random.int(1, params.splitMax);
+            const parts = Math.max(random.int(1, params.splitMax), Math.ceil(lyric.length / 12));
             const dir = pickRandom(['horizontal', 'vertical'])[0];
             const it = split({
                 text: lyric,
@@ -358,7 +436,7 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
                     for (const { ch, x0, y0, size } of it) {
                         char2({
                             start, end, lyric, currentTime, chi, ctx, ch, x0, y0,
-                            rotate: 0, size, params,
+                            rotate: 0, size, params, inEffect, outEffect,
                         });
                         ++chi;
                     }
@@ -367,7 +445,7 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
             break;
         }
         case 'b': {
-            const parts = random.int(1, params.splitMax);
+            const parts = Math.max(random.int(1, params.splitMax), Math.ceil(lyric.length / 12));
             const dir = pickRandom(['horizontal', 'vertical'])[0];
             const align = pickRandom(['begin', 'end'])[0];
             const position = pickRandom(['left', 'right'])[0];
@@ -397,7 +475,7 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
                     for (const { ch, x0, y0, size } of it) {
                         char2({
                             start, end, lyric, currentTime, chi, ctx, ch, x0, y0,
-                            rotate: 0, size, params,
+                            rotate: 0, size, params, inEffect, outEffect,
                         });
                         ++chi;
                     }
@@ -432,7 +510,7 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
                     for (const { ch, x0, y0, size } of it) {
                         char2({
                             start, end, lyric, currentTime, chi, ctx, ch, x0, y0,
-                            rotate, size, params,
+                            rotate, size, params, inEffect, outEffect,
                         });
                         ++chi;
                     }
@@ -444,14 +522,14 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
             let chi = 0;
             let rows, cols;
             do {
-                if (lyric.length > 25) {
-                    rows = 5;
+                if (lyric.length > 20) {
+                    rows = 4;
                     cols = 5;
                 } else {
-                    rows = random.int(2, 5);
+                    rows = random.int(2, 4);
                     cols = random.int(2, 5);
                 }
-            } while (!(lyric.length > 25 || rows * cols >= lyric.length));
+            } while (!(lyric.length > 20 || rows * cols >= lyric.length));
             const it = balancedB({
                 text: lyric, rows, cols,
                 dist: random.float(params.modes.d.minDist, params.modes.d.maxDist),
@@ -469,7 +547,7 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
                 for (const { ch, x0, y0, size } of it) {
                     char2({
                         start, end, lyric, currentTime, chi, ctx, ch, x0, y0,
-                        rotate: 0, size, params,
+                        rotate: 0, size, params, inEffect, outEffect,
                     });
                     ++chi;
                 }
@@ -495,7 +573,7 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
                 for (const { ch, x0, y0, size } of it) {
                     char2({
                         start, end, lyric, currentTime, chi: i, ctx, ch, x0, y0,
-                        rotate: 0, size, params,
+                        rotate: 0, size, params, inEffect, outEffect,
                     });
                 }
             }

@@ -215,7 +215,7 @@ function Generation({
                 if (!(start - 1 <= currentTime && end + 1 >= currentTime)) return;
                 render({
                     width, height, ctx, lyric, currentTime, start, end,
-                    seed: initTime + currentSegment * 1000 + lyricIdx,
+                    seed: initTime /* + currentSegment * 1000 */ + lyricIdx,
                     params: params[currentSegment],
                 });
             });
