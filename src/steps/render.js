@@ -1,4 +1,4 @@
-/* eslint-disable default-case */
+/* eslint-disable default-case, no-fallthrough */
 
 import * as _ from 'lodash';
 import pickRandom from 'pick-random';
