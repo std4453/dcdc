@@ -210,7 +210,7 @@ function Generation({
         ctx.fillRect(0, 0, width, height);
 
         lyrics
-            .filter(({ section }) => section === currentSegment)
+            // .filter(({ section }) => section === currentSegment)
             .forEach(({ start, end, content: lyric }, lyricIdx) => {
                 if (!(start - 1 <= currentTime && end + 1 >= currentTime)) return;
                 render({
