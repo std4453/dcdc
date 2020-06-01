@@ -255,9 +255,9 @@ function Generation({
             <div className={classes.bottom}>
                 <Grid container direction="column" justify="space-between" classes={{ root: classes.bottomInner }}>
                     <Grid item container>
-                        <Grid item xs={3}>
+                        <Grid item xs={5}>
                             <Typography color="textSecondary">
-                                {song} / {artist} - {album}
+                                {song} / {artist} - {album.substring(0, 10)}
                             </Typography>
                         </Grid>
                         <Grid item xs container justify="center" spacing={4}>
@@ -289,7 +289,7 @@ function Generation({
                                 />
                             </Grid>
                         </Grid>
-                        <Grid item xs={3} container justify="flex-end" spacing={2}>
+                        <Grid item xs={5} container justify="flex-end" spacing={2}>
                             <Grid item>
                                 <Button variant="outlined" color="primary" onClick={renewTime}>
                                     换个效果

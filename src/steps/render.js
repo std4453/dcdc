@@ -1,3 +1,5 @@
+/* eslint-disable default-case */
+
 import * as _ from 'lodash';
 import pickRandom from 'pick-random';
 import random from 'random';
@@ -277,9 +279,9 @@ function char2({
     start, end, lyric, currentTime, duration = 0.5,
     chi, ctx, ch, x0, y0, rotate, size, params,
 }) {
-    const inEndTime = chi * (end - start) / lyric.length + start;
+    const inEndTime = chi * (end - duration - start) / lyric.length + start;
     const inStartTime = inEndTime - duration;
-    const outStartTime = end;
+    const outStartTime = end - duration;
     const outEndTime = outStartTime + duration;
     if (currentTime < inStartTime) {}
     else if (currentTime < inEndTime) {
@@ -470,6 +472,31 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
                         rotate: 0, size, params,
                     });
                     ++chi;
+                }
+            }
+            break;
+        }
+        case 'e': {
+            const it = activeB({
+                text: lyric, width, height,
+                tries: 5000, size: params.size * 2,
+                minR: params.modes.e.minR,
+                sort: true, sortAngle: 0.2, sortScale: 3.0,
+                dimension: { x0: 0.25, x1: 0.75, y0: 0.2, y1: 0.8 },
+            });
+            for (const { i, text, x0, y0, size, align } of it) {
+                const it = font({
+                    text, x0, y0, size: size * params.modes.e.scale,
+                    dir: 'horizontal', align,
+                    spacing: 0,
+                    ignoreWhitespaces: true,
+                    alignBaseline: false,
+                });
+                for (const { ch, x0, y0, size } of it) {
+                    char2({
+                        start, end, lyric, currentTime, chi: i, ctx, ch, x0, y0,
+                        rotate: 0, size, params,
+                    });
                 }
             }
             break;

@@ -60,6 +60,15 @@ const config = [
                     { name: 'Maximum distance', type: 'number', path: 'modes.d.maxDist' },
                 ],
             },
+            {
+                name: 'Type E',
+                type: 'folder',
+                children: [
+                    { name: 'Enabled', type: 'boolean', path: 'modes.e.enabled' },
+                    { name: 'Minimum radius', type: 'number', path: 'modes.e.minR' },
+                    { name: 'Scale', type: 'number', path: 'modes.e.scale' },
+                ],
+            },
         ],
     }
 ];
