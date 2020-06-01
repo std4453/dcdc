@@ -5,7 +5,6 @@ const config = [
         children: [
             { name: 'Text color', type: 'color', path: 'textColor' },
             { name: 'Background color', type: 'color', path: 'backgroundColor' },
-            { name: 'Graphic color', type: 'color', path: 'graphicColor' },
         ],
     },
     {
@@ -69,6 +68,17 @@ const config = [
                     { name: 'Scale', type: 'number', path: 'modes.e.scale', step: 0.01 },
                 ],
             },
+        ],
+    },
+    {
+        name: 'Pattern',
+        type: 'folder',
+        children: [
+            { name: 'Shape', type: 'string', path: 'pattern.shape' },
+            { name: 'Graphic color', type: 'color', path: 'pattern.color' },
+            { name: 'Center', type: 'boolean', path: 'pattern.center.enabled' },
+            { name: 'Follow', type: 'boolean', path: 'pattern.follow.enabled' },
+            { name: 'Random', type: 'boolean', path: 'pattern.random.enabled' },
         ],
     }
 ];

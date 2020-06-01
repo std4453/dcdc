@@ -27,6 +27,8 @@ function* font({
     size, dir, align,
     spacing, ignoreWhitespaces,
     alignBaseline,
+    // pattern
+    patternType, ctx, currentTime, start, end, params,
 }) {
     if (ignoreWhitespaces) text = text.split(/\s+/).join('');
     let x = x0, y = y0;
@@ -60,6 +62,20 @@ function* font({
             y += sizes[0] / 2;
             break;
     }
+
+    if (patternType === 'follow') {
+        const x0 = x, y0 = y;
+        const x1 = x + (dir === 'horizontal' ? width : 0);
+        const y1 = y + (dir === 'vertical' ? width : 0);
+        const t = random.float(0, 1);
+        pattern({
+            ctx, currentTime, start, end, params,
+            x0: x0 * (1 - t) + x1 * t,
+            y0: y0 * (1 - t) + y1 * t,
+            size: params.size * 1.5,
+        });
+    }
+
     for (let i = 0; i < text.length; ++i) {
         const ch = text[i];
         const bx = x;
@@ -276,6 +292,56 @@ function* activeB({ width, height, text, tries, size, minR, sort: shouldSort, so
     }
 }
 
+function pattern({
+    ctx, x0, y0, currentTime, start, end, duration = 0.5, params, size,
+}) {
+    const rotation = currentTime * 1;
+    const easing1 = BezierEasing(0.22, 1, 0.36, 1);
+    const easing2 = BezierEasing(0.64, 0, 0.78, 0);
+    let t = 0;
+    if (currentTime < start) t = 0;
+    else if (currentTime < start + duration) t = easing1((currentTime - start) / duration);
+    else if (currentTime < end - duration) t = 1;
+    else if (currentTime < end) t = 1 - easing2(1 - (end - currentTime) / duration);
+    else t = 0;
+    ctx.save();
+    ctx.fillStyle = params.pattern.color;
+    ctx.translate(x0, y0);
+    const scale = t * size / 2;
+    ctx.scale(scale, scale);
+    const shape = params.pattern.shape;
+    if (shape !== 'line') ctx.rotate(rotation);
+    switch (params.pattern.shape) {
+        case 'square': case 'triangle': case 'pentagon': {
+            const sides = { square: 4, triangle: 3, pentagon: 5 }[params.pattern.shape];
+            ctx.beginPath();
+            ctx.moveTo(1, 0);
+            for (let i = 0; i < sides; ++i) {
+                const angle = Math.PI * 2 / sides * (i + 1);
+                ctx.lineTo(Math.cos(angle), Math.sin(angle));
+            }
+            ctx.fill();
+            break;
+        }
+        case 'circle': {
+            ctx.beginPath();
+            ctx.arc(0, 0, 1, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+        }
+        case 'line': {
+            ctx.beginPath();
+            ctx.moveTo(+1.5, -0.2);
+            ctx.lineTo(+1.5, +0.2);
+            ctx.lineTo(-1.5, +0.2);
+            ctx.lineTo(-1.5, -0.2);
+            ctx.fill();
+            break;
+        }
+    }
+    ctx.restore();
+}
+
 function char2({
     start, end, lyric, currentTime, duration = 0.5,
     chi, ctx, ch, x0, y0, rotate, size, params, outEffect, inEffect,
@@ -408,6 +474,34 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
     const inEffect = pickRandom(['fade', 'blink', 'zoom', 'slide'])[0];
     const outEffect = pickRandom(['fade', 'blink', 'zoom'])[0];
 
+    const patternType = pickRandom(['center', 'follow', 'random'].filter(type => params.pattern[type].enabled))[0];
+    switch (patternType) {
+        case 'center': {
+            pattern({
+                ctx, currentTime, start, end, params,
+                x0: width / 2, y0: height / 2,
+                size: params.size * 2,
+            });
+            break;
+        }
+        case 'follow': {
+            if (['a', 'b', 'c'].indexOf(mode) !== -1) break;
+            // intended fall through
+        }
+        case 'random': {
+            const num = random.int(7, 16);
+            for (let i = 0; i < num; ++i) {
+                const x0 = random.float(0, 1) * width;
+                const y0 = random.float(0, 1) * height;
+                const size = random.float(0.4, 1.0) * params.size;
+                pattern({
+                    ctx, x0, y0, currentTime, start, end, params, size,
+                });
+            }
+            break;
+        }
+    }
+
     switch (mode) {
         case 'a': {
             const parts = Math.max(random.int(1, params.splitMax), Math.ceil(lyric.length / 12));
@@ -432,6 +526,8 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
                         spacing: params.letterSpacing,
                         ignoreWhitespaces: true,
                         alignBaseline: false,
+
+                        ctx, patternType, currentTime, start, end, params,
                     });
                     for (const { ch, x0, y0, size } of it) {
                         char2({
@@ -471,6 +567,8 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
                         spacing: params.letterSpacing,
                         ignoreWhitespaces: true,
                         alignBaseline: false,
+
+                        ctx, patternType, currentTime, start, end, params,
                     });
                     for (const { ch, x0, y0, size } of it) {
                         char2({
@@ -506,6 +604,8 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
                         spacing: params.letterSpacing,
                         ignoreWhitespaces: true,
                         alignBaseline: false,
+
+                        ctx, patternType, currentTime, start, end, params,
                     });
                     for (const { ch, x0, y0, size } of it) {
                         char2({
