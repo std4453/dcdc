@@ -22,11 +22,11 @@ function Loading({ id, setStep, setData }) {
         (async () => {
             try {
                 // TODO: switch to actual api when server is ready
-                // const resp = await fetch(`https://dcdcapi.herokuapp.com/song/${id}`);
-                // const data = await resp.json();
-                // setData(data);
-                await delay(1000);
-                setData(sample);
+                const resp = await fetch(`https://dcdcapi.herokuapp.com/song/${id}`);
+                const data = await resp.json();
+                setData(data);
+                // await delay(1000);
+                // setData(sample);
                 setStep('Moodboard');
             } catch (e) {
                 console.log(e);

@@ -3,8 +3,9 @@ import pickRandom from 'pick-random';
 import random from 'random';
 import seedrandom from 'seedrandom';
 import Color from 'color';
+import inside from 'point-in-polygon';
 
-import { interp, divide, opposite, scatter, translate, inside } from '../components/utils';
+import { interp, divide, opposite, scatter, translate } from '../components/utils';
 
 const textWidth = (text, sizes, spacing) => {
     // VERY SIMPLE
