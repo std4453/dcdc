@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { makeStyles, LinearProgress, Grid } from '@material-ui/core';
 import logo from '../assets/logo-colored.svg';
-import sample from '../assets/sample3.json';
+// import sample from '../assets/sample3.json';
 
 const useStyles = makeStyles({
     grid: {
@@ -12,9 +12,9 @@ const useStyles = makeStyles({
     },
 });
 
-const delay = (time) => new Promise((resolve) => {
-    setTimeout(resolve, time);
-});
+// const delay = (time) => new Promise((resolve) => {
+//     setTimeout(resolve, time);
+// });
 
 function Loading({ id, setStep, setData }) {
     const classes = useStyles();
@@ -32,7 +32,7 @@ function Loading({ id, setStep, setData }) {
                 console.log(e);
             }
         })();
-    }, [setStep, setData]);
+    }, [setStep, setData, id]);
     return (
         <Grid
             container

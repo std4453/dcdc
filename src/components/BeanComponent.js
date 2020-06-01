@@ -27,7 +27,7 @@ class BeanComponent extends Rete.Component {
             }
             node.addInput(input);
         }
-        for (const [name, { type, displayName = name }] of _.toPairs(this.outputDefs)) {
+        for (const [name, { /* type, */ displayName = name }] of _.toPairs(this.outputDefs)) {
             const output = new Rete.Output(name, displayName, sockets.any);
             node.addOutput(output);
         }
