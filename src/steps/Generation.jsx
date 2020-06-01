@@ -212,7 +212,7 @@ function Generation({
         lyrics
             .filter(({ section }) => section === currentSegment)
             .forEach(({ start, end, content: lyric }, lyricIdx) => {
-                if (!(start <= currentTime && end >= currentTime)) return;
+                if (!(start - 1 <= currentTime && end + 1 >= currentTime)) return;
                 render({
                     width, height, ctx, lyric, currentTime, start, end,
                     seed: initTime + currentSegment * 1000 + lyricIdx,

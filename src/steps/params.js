@@ -42,6 +42,24 @@ const config = [
                     { name: 'Line spacing', type: 'number', path: 'modes.b.lineSpacing' },
                 ],
             },
+            {
+                name: 'Type C',
+                type: 'folder',
+                children: [
+                    { name: 'Enabled', type: 'boolean', path: 'modes.c.enabled' },
+                    { name: 'Minimum angle', type: 'number', path: 'modes.c.minAngle' },
+                    { name: 'Maximum angle', type: 'number', path: 'modes.c.maxAngle' },
+                ],
+            },
+            {
+                name: 'Type D',
+                type: 'folder',
+                children: [
+                    { name: 'Enabled', type: 'boolean', path: 'modes.d.enabled' },
+                    { name: 'Minimum distance', type: 'number', path: 'modes.d.minDist' },
+                    { name: 'Maximum distance', type: 'number', path: 'modes.d.maxDist' },
+                ],
+            },
         ],
     }
 ];
