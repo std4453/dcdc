@@ -1,4 +1,5 @@
-import { BeanComponent } from '../retex/components';
+/* eslint-disable default-case */
+import { BeanComponent } from '../BeanComponent';
 
 const textWidth = (text, sizes, spacing) => {
     // VERY SIMPLE

@@ -1,4 +1,4 @@
-import { BeanComponent } from '../retex/components';
+import { BeanComponent } from '../BeanComponent';
 import pickRandom from 'pick-random';
 
 class BalancedBComponent extends BeanComponent {

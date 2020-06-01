@@ -60,7 +60,7 @@ class MyNode extends Node {
 
     render() {
         const { node, editor, bindSocket, bindControl } = this.props;
-        const { data, outputs, controls, inputs, selected } = this.state;
+        const { data, outputs, controls, inputs /*, selected */ } = this.state;
 
         return (
             <DatGui

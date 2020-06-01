@@ -1,4 +1,4 @@
-import { BeanComponent } from '../retex/components';
+import { BeanComponent } from '../BeanComponent';
 import inside from 'point-in-polygon';
 import pickRandom from 'pick-random';
 import { uniform } from '../utils';

@@ -1,4 +1,4 @@
-import { BeanComponent } from '../retex/components';
+import { BeanComponent } from './BeanComponent';
 import { Parser } from 'expr-eval';
 
 class ArithmeticComponent extends BeanComponent {
@@ -41,6 +41,7 @@ class Arithmetic2Component extends BeanComponent {
     }
 
     * worker({ expr, x, y }) {
+        console.log(expr, x, y);
         const parsed = this.parser.parse(expr);
         yield {
             z: parsed.evaluate({ x, y }),
@@ -48,12 +49,13 @@ class Arithmetic2Component extends BeanComponent {
     }
 }
 
-class StringComponent extends BeanComponent {
+class ConstComponent extends BeanComponent {
     constructor() {
         super(
-            'String',
+            'Const',
             {
-                val: { defaultVal: '', type: 'string' },
+                val: { type: 'any', controlType: 'string' },
+                type: { defaultVal: 'number', type: 'string', controlType: 'select', options: ['number', 'string'] },
             },
             {
                 val: { type: 'string' },
@@ -61,56 +63,14 @@ class StringComponent extends BeanComponent {
         );
     }
 
-    * worker({ val }) {
+    * worker({ val, type }) {
+        if (type === 'number') val = parseFloat(val);
         yield { val };
     }
 }
 
-class NumberComponent extends BeanComponent {
-    constructor() {
-        super(
-            'Number',
-            {
-                val: { defaultVal: 0.0, min: -Infinity, max: Infinity },
-            },
-            {
-                val: { type: 'number' },
-            },
-        );
-    }
-
-    * worker({ val }) {
-        yield { val };
-    }
-}
-
-class DimensionComponent extends BeanComponent {
-    constructor() {
-        super(
-            'Dimension',
-            {
-                x0: { defaultVal: 0.25, min: 0, max: 1 },
-                y0: { defaultVal: 0.25, min: 0, max: 1 },
-                x1: { defaultVal: 0.75, min: 0, max: 1 },
-                y1: { defaultVal: 0.75, min: 0, max: 1 },
-            },
-            {
-                val: { type: 'dimension' },
-            },
-        );
-    }
-
-    * worker({ x0, y0, x1, y1 }) {
-        yield {
-            val: { x0, y0, x1, y1 },
-        };
-    }
-}
-
-export {
+export default [
     ArithmeticComponent,
     Arithmetic2Component,
-    NumberComponent,
-    StringComponent,
-    DimensionComponent,
-};
+    ConstComponent,
+];

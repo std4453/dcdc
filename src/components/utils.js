@@ -6,6 +6,7 @@ const interp = (width, height, a, b, dir = 'horizontal') => {
         case 'vertical': return {
             x: b * width, y: a * height,
         }
+        default: return { x: 0, y: 0 };
     }
 }
 
@@ -30,6 +31,7 @@ const scatter = (val, dir, opposite = false, mirrored = false) => {
         case 'vertical': return {
             x: 0, y: val,
         }
+        default: return { x: 0, y: 0 };
     }
 }
 

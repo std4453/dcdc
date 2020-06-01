@@ -1,4 +1,6 @@
-import '@babel/polyfill';
-import init from './retex';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-init();
+import App from './App';
+
+ReactDOM.render(<App/>, document.querySelector('#root'));
