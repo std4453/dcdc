@@ -30,8 +30,8 @@ const config = [
                 type: 'folder',
                 children: [
                     { name: 'Enabled', type: 'boolean', path: 'modes.a.enabled' },
-                    { name: 'Minimum distance', type: 'number', path: 'modes.a.minDist' },
-                    { name: 'Maximum distance', type: 'number', path: 'modes.a.maxDist' },
+                    { name: 'Minimum distance', type: 'number', path: 'modes.a.minDist', step: 0.01 },
+                    { name: 'Maximum distance', type: 'number', path: 'modes.a.maxDist', step: 0.01 },
                 ],
             },
             {
@@ -39,7 +39,7 @@ const config = [
                 type: 'folder',
                 children: [
                     { name: 'Enabled', type: 'boolean', path: 'modes.b.enabled' },
-                    { name: 'Line spacing', type: 'number', path: 'modes.b.lineSpacing' },
+                    { name: 'Line spacing', type: 'number', path: 'modes.b.lineSpacing', step: 0.01 },
                 ],
             },
             {
@@ -47,8 +47,8 @@ const config = [
                 type: 'folder',
                 children: [
                     { name: 'Enabled', type: 'boolean', path: 'modes.c.enabled' },
-                    { name: 'Minimum angle', type: 'number', path: 'modes.c.minAngle' },
-                    { name: 'Maximum angle', type: 'number', path: 'modes.c.maxAngle' },
+                    { name: 'Minimum angle', type: 'number', path: 'modes.c.minAngle', step: 0.01 },
+                    { name: 'Maximum angle', type: 'number', path: 'modes.c.maxAngle', step: 0.01 },
                 ],
             },
             {
@@ -56,8 +56,8 @@ const config = [
                 type: 'folder',
                 children: [
                     { name: 'Enabled', type: 'boolean', path: 'modes.d.enabled' },
-                    { name: 'Minimum distance', type: 'number', path: 'modes.d.minDist' },
-                    { name: 'Maximum distance', type: 'number', path: 'modes.d.maxDist' },
+                    { name: 'Minimum distance', type: 'number', path: 'modes.d.minDist', step: 0.01 },
+                    { name: 'Maximum distance', type: 'number', path: 'modes.d.maxDist', step: 0.01 },
                 ],
             },
             {
@@ -65,8 +65,8 @@ const config = [
                 type: 'folder',
                 children: [
                     { name: 'Enabled', type: 'boolean', path: 'modes.e.enabled' },
-                    { name: 'Minimum radius', type: 'number', path: 'modes.e.minR' },
-                    { name: 'Scale', type: 'number', path: 'modes.e.scale' },
+                    { name: 'Minimum radius', type: 'number', path: 'modes.e.minR', min: 0, max: 1, step: 0.01 },
+                    { name: 'Scale', type: 'number', path: 'modes.e.scale', step: 0.01 },
                 ],
             },
         ],
