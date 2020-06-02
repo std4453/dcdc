@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { makeStyles, LinearProgress, Grid } from '@material-ui/core';
+import { Lrc } from 'lrc-kit';
 import logo from '../assets/logo-colored.svg';
 
 function FetchData({ id, setData, ...params }) {
@@ -13,8 +14,34 @@ function FetchData({ id, setData, ...params }) {
     );
 }
 
-function FetchFont({ data, ...params }) {
+function FetchFont({
+    data: { lrc },
+    moodboard: { fontName: family, fontWeight: weight },
+    ...params
+}) {
     const action = useMemo(async () => {
+        const { lyrics } = Lrc.parse(lrc);
+        const chs = new Set();
+        for (const { content } of lyrics) {
+            for (const ch of content) {
+                chs.add(ch);
+            }
+        }
+        console.log(Array.from(chs).join(''));        const resp = await fetch('https://dcdcapi.herokuapp.com/font', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                font: family,
+                weight: weight,
+                glyphs: Array.from(chs).join(''),
+            }),
+        });
+        const blob = await resp.arrayBuffer();
+        const font = new FontFace(family, blob, { weight });
+        await font.load();
+        document.fonts.add(font);
     }, []);
     return (
         <Loading {...params} action={action} />
@@ -42,6 +69,7 @@ function Loading({ setStep, next, action }) {
             }
         })();
     }, [setStep, action, next]);
+
     return (
         <Grid
             container

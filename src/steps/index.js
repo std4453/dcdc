@@ -13,7 +13,7 @@ const steps = {
 const nextSteps = {
     SongSelection: 'FetchData',
     FetchData: 'Moodboard',
-    Moodboard: 'Segmentation',
+    Moodboard: 'FetchFont',
     FetchFont: 'Segmentation',
     Segmentation: 'InitialValues',
     InitialValues: 'Generation',
