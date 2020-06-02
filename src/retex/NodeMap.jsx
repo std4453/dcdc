@@ -18,11 +18,14 @@ const useStyles = makeStyles({
     },
 });
 
-function NodeMap({ setStep, defaults, onUpdate, name, next }) {
+function NodeMap({ setStep, defaults, onUpdate, name, next, prev }) {
     const classes = useStyles();
     const nextStep = useCallback(() => {
         setStep(next);
     }, [setStep, next]);
+    const prevStep = useCallback(() => {
+        setStep(prev);
+    }, [setStep, prev]);
     const [root, setRoot] = useState(null);
     const editor = useMemo(() => {
         if (!root) return null;
@@ -93,6 +96,16 @@ function NodeMap({ setStep, defaults, onUpdate, name, next }) {
                     onClick={download}
                 >
                     下载
+                </Button>
+            </Grid>
+            <Grid item>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    disableElevation
+                    onClick={prevStep}
+                >
+                    上一步
                 </Button>
             </Grid>
             <Grid item>

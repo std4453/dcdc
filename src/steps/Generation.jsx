@@ -99,6 +99,7 @@ function Generation({
         lrc,
     },
     initialRef: { current: initialGraph },
+    setStep, prev,
 }) {
     const classes = useStyles();
 
@@ -293,6 +294,11 @@ function Generation({
                             </Grid>
                         </Grid>
                         <Grid item xs={5} container justify="flex-end" spacing={2}>
+                            <Grid item>
+                                <Button variant="outlined" color="primary" onClick={() => setStep(prev)}>
+                                    上一步
+                                </Button>
+                            </Grid>
                             <Grid item>
                                 <Button variant="outlined" color="primary" onClick={renewTime}>
                                     换个效果

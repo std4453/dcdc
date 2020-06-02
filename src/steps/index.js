@@ -1,23 +1,30 @@
 import SongSelection from './SongSelection';
-import Loading from './Loading';
 import Moodboard from './Moodboard';
+import { FetchData, FetchFont } from './Loading';
 import Segmentation from './Segmentation';
-import { InitialValues, GenerationRules } from './Rules';
+import { InitialValues } from './Rules';
 import Generation from './Generation';
 
 const steps = {
-    SongSelection, Loading, Moodboard, Segmentation,
-    InitialValues, GenerationRules, Generation,
+    SongSelection, FetchData, FetchFont, Moodboard, Segmentation,
+    InitialValues, Generation, 
 };
 
 const nextSteps = {
-    SongSelection: 'Loading',
-    Loading: 'Moodboard',
+    SongSelection: 'FetchData',
+    FetchData: 'Moodboard',
     Moodboard: 'Segmentation',
-    Segmentation: 'GenerationRules',
-    GenerationRules: 'Generation',
+    FetchFont: 'Segmentation',
+    Segmentation: 'InitialValues',
+    InitialValues: 'Generation',
+};
+
+const prevSteps = {
+    Segmentation: 'Moodboard',
+    InitialValues: 'Segmentation',
+    Generation: 'InitialValues',
 };
 
 const initialStep = 'SongSelection';
 
-export { steps, nextSteps, initialStep };
+export { steps, nextSteps, initialStep, prevSteps };

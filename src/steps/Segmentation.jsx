@@ -75,6 +75,9 @@ function Segmentation({
     const nextStep = useCallback(() => {
         setStep(next);
     }, [setStep, next]);
+    const prevStep = useCallback(() => {
+        setStep(prev);
+    }, [setStep, prev]);
     const audio = useMemo(() => {
         return new Audio(url);
     }, [url]);
@@ -117,7 +120,7 @@ function Segmentation({
                 >
                     {song} / {artist} - {album}
                 </Typography>
-                <Grid container alignItems="center" justify="space-between">
+                <Grid container alignItems="center" justify="space-between" spacing={2}>
                     <Grid item container direction="column" xs>
                         <Grid item>
                             <Typography
@@ -135,6 +138,16 @@ function Segmentation({
                                 拖动段落以调整起止时间
                             </Typography>
                         </Grid>
+                    </Grid>
+                    <Grid item>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            disableElevation
+                            onClick={prevStep}
+                        >
+                            上一步
+                        </Button>
                     </Grid>
                     <Grid item>
                         <Button

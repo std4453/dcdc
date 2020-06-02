@@ -1,6 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { makeStyles, LinearProgress, Grid } from '@material-ui/core';
 import logo from '../assets/logo-colored.svg';
+
+function FetchData({ id, setData, ...params }) {
+    const action = useMemo(async () => {
+        const resp = await fetch(`https://dcdcapi.herokuapp.com/song/${id}`);
+        const data = await resp.json();
+        setData(data);
+    }, [id, setData]);
+    return (
+        <Loading {...params} action={action} />
+    );
+}
+
+function FetchFont({ data, ...params }) {
+    const action = useMemo(async () => {
+    }, []);
+    return (
+        <Loading {...params} action={action} />
+    );
+}
 
 const useStyles = makeStyles({
     grid: {
@@ -11,20 +30,18 @@ const useStyles = makeStyles({
     },
 });
 
-function Loading({ id, setStep, setData, next }) {
+function Loading({ setStep, next, action }) {
     const classes = useStyles();
     useEffect(() => {
         (async () => {
             try {
-                const resp = await fetch(`https://dcdcapi.herokuapp.com/song/${id}`);
-                const data = await resp.json();
-                setData(data);
+                await action;
                 setStep(next);
             } catch (e) {
                 console.log(e);
             }
         })();
-    }, [setStep, setData, id, next]);
+    }, [setStep, action, next]);
     return (
         <Grid
             container
@@ -41,7 +58,7 @@ function Loading({ id, setStep, setData, next }) {
                 <LinearProgress />
             </Grid>
         </Grid>
-    )
+    );
 }
 
-export default Loading;
+export { FetchData, FetchFont };
