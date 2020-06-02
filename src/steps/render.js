@@ -659,10 +659,10 @@ const render = ({ width, height, seed, ctx, params, lyric, start, end, currentTi
         case 'e': {
             const it = activeB({
                 text: lyric, width, height,
-                tries: 5000, size: params.size * 2,
+                tries: 5000, size: params.size,
                 minR: params.modes.e.minR,
                 sort: true, sortAngle: 0.2, sortScale: 3.0,
-                dimension: { x0: 0.25, x1: 0.75, y0: 0.2, y1: 0.8 },
+                dimension: { x0: 0.2, x1: 0.8, y0: 0.15, y1: 0.85 },
             });
             for (const { i, text, x0, y0, size, align } of it) {
                 const it = font({

@@ -211,6 +211,9 @@ function Segmentation({
                                         onDrag={(__, { x }) => {
                                             const newData = _.cloneDeep(data);
                                             newData.sections[i].start += x / width * length;
+                                            const end = i === newData.sections.length - 1 ? length : newData.sections[i + 1].start;
+                                            newData.sections[i].duration = end - newData.sections[i].start;
+                                            if (i > 0) newData.sections[i - 1].duration = newData.sections[i].start - newData.sections[i - 1].start;
                                             setLocalData(newData);
                                         }}
                                         onStop={() => {

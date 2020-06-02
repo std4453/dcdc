@@ -27,6 +27,9 @@ const useStyles = makeStyles({
         right: 0,
         padding: 4,
         width: 345,
+        height: '100%',
+        overflow: 'auto',
+        boxSizing: 'border-box',
     },
     canvasContainer: {
         position: 'absolute',
@@ -245,8 +248,8 @@ function Generation({
                         position: 'relative',
                         backgroundColor: '#1A1A1A',
                         right: 0,
-                        left: 8,
-                        width: 'calc(100% - 8px)',
+                        left: 0,
+                        width: '100%',
                     }}
                 >
                     {config.map(convert)}
