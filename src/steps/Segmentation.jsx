@@ -81,6 +81,10 @@ function Segmentation({
     const audio = useMemo(() => {
         return new Audio(url);
     }, [url]);
+    useEffect(() => {
+        if (!audio) return;
+        return () => audio.pause();
+    }, [audio]);
     const [currentTime, setCurrentTime] = useState(0);
     const [playing, setPlaying] = useState(false);
     useEffect(() => {
