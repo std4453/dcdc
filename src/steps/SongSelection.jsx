@@ -15,13 +15,13 @@ const useStyles = makeStyles({
     },
 });
 
-function SongSelection({ setId, setStep }) {
+function SongSelection({ next, setId, setStep }) {
     const classes = useStyles();
     const { register, handleSubmit } = useForm();
     const onSubmit = useCallback(({ id }) => {
         setId(id);
-        setStep('Loading');
-    }, [setStep, setId]);
+        setStep(next);
+    }, [setStep, setId, next]);
     return (
         <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
             <Grid

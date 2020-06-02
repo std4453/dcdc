@@ -3,7 +3,7 @@ import { MuiThemeProvider, makeStyles } from '@material-ui/core';
 import { createMuiTheme } from '@material-ui/core/styles';
 
 import './index.css';
-import { steps, initialStep } from './steps';
+import { steps, initialStep, nextSteps } from './steps';
 import defaultInitial from './assets/initial.json';
 import defaultGeneration from './assets/generation.json';
 
@@ -54,6 +54,7 @@ function App() {
     const [generation, setGeneration, generationRef] = useAutoSave(defaultGeneration, 'generation');
 
     const params = {
+        next: nextSteps[step],
         step, setStep,
         id, setId,
         error, setError,

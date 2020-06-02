@@ -11,7 +11,7 @@ const useStyles = makeStyles({
     },
 });
 
-function Loading({ id, setStep, setData }) {
+function Loading({ id, setStep, setData, next }) {
     const classes = useStyles();
     useEffect(() => {
         (async () => {
@@ -19,12 +19,12 @@ function Loading({ id, setStep, setData }) {
                 const resp = await fetch(`https://dcdcapi.herokuapp.com/song/${id}`);
                 const data = await resp.json();
                 setData(data);
-                setStep('Moodboard');
+                setStep(next);
             } catch (e) {
                 console.log(e);
             }
         })();
-    }, [setStep, setData, id]);
+    }, [setStep, setData, id, next]);
     return (
         <Grid
             container

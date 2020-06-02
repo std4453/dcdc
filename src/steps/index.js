@@ -10,6 +10,14 @@ const steps = {
     InitialValues, GenerationRules, Generation,
 };
 
+const nextSteps = {
+    SongSelection: 'Loading',
+    Loading: 'Moodboard',
+    Moodboard: 'Segmentation',
+    Segmentation: 'GenerationRules',
+    GenerationRules: 'Generation',
+};
+
 const initialStep = 'SongSelection';
 
-export { steps, initialStep };
+export { steps, nextSteps, initialStep };

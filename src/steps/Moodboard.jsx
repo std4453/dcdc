@@ -44,7 +44,7 @@ const CanvasButton = withStyles({
 const [canvaswidth, canvasheight] = [320, 180];
 
 function Moodboard({
-    setStep,
+    setStep, next,
     setMoodboard,
     data: {
         song,
@@ -61,9 +61,9 @@ function Moodboard({
         setMB(initCanvas(tempo, energy, danceability, acousticness, valence, song, canvaswidth, canvasheight));
     }, [acousticness, danceability, energy, song, tempo, valence]);
     const nextStep = useCallback(() => {
-        setStep('Segmentation');
+        setStep(next);
         setMoodboard(mb[index]);
-    }, [mb, index, setStep, setMoodboard]);
+    }, [mb, index, setStep, setMoodboard, next]);
 
     return (
         <Grid

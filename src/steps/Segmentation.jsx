@@ -56,7 +56,7 @@ const useStyles = makeStyles({
 });
 
 function Segmentation({
-    setStep,
+    setStep, next, prev,
     setData,
     data: { sections },
     data,
@@ -73,8 +73,8 @@ function Segmentation({
 
     const classes = useStyles();
     const nextStep = useCallback(() => {
-        setStep('InitialValues');
-    }, [setStep]);
+        setStep(next);
+    }, [setStep, next]);
     const audio = useMemo(() => {
         return new Audio(url);
     }, [url]);
