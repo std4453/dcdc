@@ -41,7 +41,6 @@ class Arithmetic2Component extends BeanComponent {
     }
 
     * worker({ expr, x, y }) {
-        console.log(expr, x, y);
         const parsed = this.parser.parse(expr);
         yield {
             z: parsed.evaluate({ x, y }),

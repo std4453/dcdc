@@ -27,7 +27,7 @@ function FetchFont({
                 chs.add(ch);
             }
         }
-        console.log(Array.from(chs).join(''));        const resp = await fetch('https://dcdcapi.herokuapp.com/font', {
+        const resp = await fetch('https://dcdcapi.herokuapp.com/font', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ function FetchFont({
         const font = new FontFace(family, blob, { weight });
         await font.load();
         document.fonts.add(font);
-    }, []);
+    }, [family, lrc, weight]);
     return (
         <Loading {...params} action={action} />
     );

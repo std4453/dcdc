@@ -134,24 +134,24 @@ function Generation({
     const [canvas, setCanvas] = useState(null);
 
     const convert = useMemo(() => {
-        const convert = ({ name, path, type, children, ...rest }) => {
+        const convert = ({ name, path, type, children, ...rest }, i) => {
             switch (type) {
                 case 'folder': return (
-                    <DatFolder title={name} closed={false} {...rest}>
+                    <DatFolder key={i} title={name} closed={false} {...rest}>
                         {children.map(convert)}
                     </DatFolder>
                 );
                 case 'string': return (
-                    <DatString path={path} label={name} {...rest} />
+                    <DatString key={i} path={path} label={name} {...rest} />
                 );
                 case 'color': return (
-                    <DatColor path={path} label={name} {...rest} />
+                    <DatColor key={i} path={path} label={name} {...rest} />
                 );
                 case 'number': return (
-                    <DatNumber path={path} label={name} {...rest} />
+                    <DatNumber key={i} path={path} label={name} {...rest} />
                 );
                 case 'boolean': return (
-                    <DatBoolean path={path} label={name} {...rest} />
+                    <DatBoolean key={i} path={path} label={name} {...rest} />
                 );
                 default: return null;
             }
