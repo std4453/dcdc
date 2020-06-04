@@ -3,8 +3,8 @@ const initCanvas = (tempo, energy, danceability, acousticness, valence, song, ca
     for( var i = 1; i <= 200; i++ ){
         var [BG,GR,TX,shape,liveness] = colorGenerate(danceability,energy,valence,acousticness,tempo);
         var [letterSpacing,fontSize,fontWeight,fontName,backupFont] = fontGenerate(danceability,energy,valence,acousticness,tempo);
-        letterSpacing /= 3;
-        fontSize /= 3;
+        letterSpacing /= 4;
+        fontSize /= 4;
         let c = document.getElementById("littleCanvas"+i);
         let ctx = c.getContext("2d");
         ctx.fillStyle = BG;
@@ -12,11 +12,11 @@ const initCanvas = (tempo, energy, danceability, acousticness, valence, song, ca
         ctx.fillStyle = GR;
         drawShape(ctx, shape, canvaswidth, canvasheight);
         c.style.letterSpacing = letterSpacing+'px';
-        ctx.font = fontWeight+' '+fontSize+'px '+fontName+','+backupFont;
+        ctx.font = fontWeight+' '+fontSize+'px '+fontName+'subfont, '+backupFont+'subfont';
         ctx.fillStyle = TX;
         ctx.textAlign = "center";
-        ctx.fillText(song,(canvaswidth+letterSpacing)*0.5,canvasheight*0.5+fontSize/3);
-        ctx.font = fontWeight+' '+(fontSize*0.5)+'px '+fontName+','+backupFont;
+        ctx.fillText("动词打次",(canvaswidth+letterSpacing)*0.5,canvasheight*0.5+fontSize/3);
+        ctx.font = fontWeight+' '+(fontSize*0.5)+'px '+fontName+'subfont, '+backupFont+'subfont';
         ctx.fillStyle = TX;
         ctx.textAlign = "center";
         ctx.fillText(fontName,(canvaswidth+letterSpacing)*0.5,canvasheight*0.8);
@@ -227,23 +227,23 @@ const fontGenerate = (dan, ene, val, aco, tem) => {
     else{
         if(tem < 86 && val > 0.45){
             r = Math.random();
-            if(r < 0.2) fontName = "未来莹黑";
+            if(r < 0.2) fontName = "未来荧黑";
             else if(r < 0.4) fontName = "思源黑体";
             else if(r < 0.6) fontName = "清松手写体";
             else if(r < 0.8) fontName = "粉圆";
             else fontName = "资源黑体";
         }
-        else fontName = "未来莹黑";
+        else fontName = "未来荧黑";
     }
 
     if(fontName === "ORADANO明朝" || fontName === "源云明体" || fontName === "源界明朝" || fontName === "装甲明朝") backupFont = "思源宋体";
     else if(fontName === "源石黑体") backupFont = "思源黑体";
     else if(fontName === "粉圆") backupFont = "资源黑体";
-    else backupFont = "未来莹黑";
+    else backupFont = "未来荧黑";
 
-    var letterSpacing = 0; //letter spacing
-    var fontWeight = 300;   //font weight
-    var fontSize = 60;    //font size
+    var letterSpacing = 0;
+    var fontWeight = 300;
+    var fontSize = 60;
 
     letterSpacing = -0.7949 - 18.2496 * Math.log(ene);
     fontSize = 40 * Math.pow(7,ene);

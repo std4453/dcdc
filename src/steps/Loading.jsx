@@ -62,6 +62,7 @@ function Loading({ setStep, next, action }) {
     useEffect(() => {
         (async () => {
             try {
+                loadFont();
                 await action;
                 setStep(next);
             } catch (e) {
@@ -87,6 +88,41 @@ function Loading({ setStep, next, action }) {
             </Grid>
         </Grid>
     );
+}
+
+const loadFont = async() => {
+    let font = new FontFace('未来荧黑subfont', 'url(未来荧黑subfont.ttf)');
+    await font.load();
+    document.fonts.add(font);
+    font = new FontFace('思源黑体subfont', 'url(思源黑体subfont.ttf)');
+    await font.load();
+    document.fonts.add(font);
+    font = new FontFace('源石黑体subfont', 'url(源石黑体subfont.ttf)');
+    await font.load();
+    document.fonts.add(font);
+    font = new FontFace('清松手写体subfont', 'url(清松手写体subfont.ttf)');
+    await font.load();
+    document.fonts.add(font);
+    font = new FontFace('粉圆subfont', 'url(粉圆subfont.ttf)');
+    await font.load();
+    document.fonts.add(font);
+    font = new FontFace('资源黑体subfont', 'url(资源黑体subfont.ttf)');
+    await font.load();
+    document.fonts.add(font);
+    font = new FontFace('思源宋体subfont', 'url(思源宋体subfont.ttf)');
+    await font.load();
+    document.fonts.add(font);
+    font = new FontFace('源云明体subfont', 'url(源云明体subfont.ttf)');
+    await font.load();
+    document.fonts.add(font);
+    font = new FontFace('装甲明朝subfont', 'url(装甲明朝subfont.ttf)');
+    await font.load();
+    document.fonts.add(font);
+    font = new FontFace('源界明朝subfont', 'url(源界明朝subfont.ttf)');
+    await font.load();
+    document.fonts.add(font);
+    font = new FontFace('ORADANO明朝subfont', 'url(ORADANO明朝subfont.ttf)');
+    await font.load();
 }
 
 export { FetchData, FetchFont };

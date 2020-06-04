@@ -56,7 +56,7 @@ function Moodboard({
     const classes = useStyles();
     const [index, selectCanvas] = useState(-1);
     const [mb, setMB] = useState([]);
-    const [items, /* setItems */] = useState(Array.from({length: 200}));;
+    const items = Array.from({length: 200});
     useEffect(() => {
         setMB(initCanvas(tempo, energy, danceability, acousticness, valence, song, canvaswidth, canvasheight));
     }, [acousticness, danceability, energy, song, tempo, valence]);
@@ -64,7 +64,6 @@ function Moodboard({
         setStep(next);
         setMoodboard(mb[index]);
     }, [mb, index, setStep, setMoodboard, next]);
-
     return (
         <Grid
             container
