@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { makeStyles, Button, TextField, Grid, Link, Container } from '@material-ui/core';
+import React, { useCallback, useRef } from 'react';
+import { makeStyles, Button, TextField, Grid, Link, Container, Popover } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 import logo from '../assets/logo-colored.svg';
 
@@ -22,8 +22,18 @@ function SongSelection({ next, setId, setStep }) {
         setId(id);
         setStep(next);
     }, [setStep, setId, next]);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const divRef = useRef();
+    const handleClick = () => {
+        setAnchorEl(divRef.current);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    const open = Boolean(anchorEl);
+    const id = open ? "popover" : undefined;
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+        <form ref={divRef} onSubmit={handleSubmit(onSubmit)} className={classes.form}>
             <Grid
                 container
                 justify="center"
@@ -63,12 +73,38 @@ function SongSelection({ next, setId, setStep }) {
                 </Grid>
                 <Container maxWidth = 'sm'>
                     <Link
+                        aria-describedby={id}
                         variant = "caption"
-                        href="#"
                         color="secondary"
+                        onClick={handleClick}
                     >
                         如何获取?
                     </Link>
+                    <img
+                        src={"如何获取.jpg"}
+                        alt="如何获取"
+                        width="0"
+                    />
+                    <Popover
+                        id={id}
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleClose}
+                        anchorOrigin={{
+                            vertical: "center",
+                            horizontal: "center"
+                        }}
+                        transformOrigin={{
+                            vertical: 'center',
+                            horizontal: 'center',
+                        }}
+                    >
+                        <img
+                            src={"如何获取.jpg"}
+                            alt="如何获取"
+                            width="800"
+                        />
+                    </Popover>
                 </Container>
             </Grid>
         </form>
