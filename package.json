@@ -19,7 +19,7 @@
     "dat.gui": "^0.7.7",
     "expr-eval": "^2.0.2",
     "file-saver": "^2.0.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "lrc-kit": "^1.1.1",
     "pick-random": "^2.0.0",
     "point-in-polygon": "^1.0.1",
