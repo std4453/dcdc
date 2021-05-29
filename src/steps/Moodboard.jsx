@@ -44,7 +44,7 @@ const CanvasButton = withStyles({
 const [canvaswidth, canvasheight] = [320, 180];
 
 function Moodboard({
-    setStep, next,
+    setStep, next, prev,
     setMoodboard,
     data: {
         song,
@@ -64,6 +64,9 @@ function Moodboard({
         setStep(next);
         setMoodboard(mb[index]);
     }, [mb, index, setStep, setMoodboard, next]);
+    const prevStep = useCallback(() => {
+        setStep(prev);
+    }, [setStep, prev]);
     return (
         <Grid
             container
@@ -101,6 +104,16 @@ function Moodboard({
                                 为您的歌词动画选择外观风格
                             </Typography>
                         </Grid>
+                    </Grid>
+                    <Grid item>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            disableElevation
+                            onClick={prevStep}
+                        >
+                            上一步
+                        </Button>
                     </Grid>
                     <Grid item>
                         <Button

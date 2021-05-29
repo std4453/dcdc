@@ -1,4 +1,5 @@
 import SongSelection from './SongSelection';
+import EditLyrics from './EditLyrics';
 import Moodboard from './Moodboard';
 import { FetchData, FetchFont } from './Loading';
 import Segmentation from './Segmentation';
@@ -6,13 +7,14 @@ import { InitialValues } from './Rules';
 import Generation from './Generation';
 
 const steps = {
-    SongSelection, FetchData, FetchFont, Moodboard, Segmentation,
+    SongSelection, FetchData, EditLyrics, FetchFont, Moodboard, Segmentation,
     InitialValues, Generation, 
 };
 
 const nextSteps = {
     SongSelection: 'FetchData',
-    FetchData: 'Moodboard',
+    FetchData: 'EditLyrics',
+    EditLyrics: 'Moodboard',
     Moodboard: 'FetchFont',
     FetchFont: 'Segmentation',
     Segmentation: 'InitialValues',
@@ -20,6 +22,7 @@ const nextSteps = {
 };
 
 const prevSteps = {
+    Moodboard: 'EditLyrics',
     Segmentation: 'Moodboard',
     InitialValues: 'Segmentation',
     Generation: 'InitialValues',
